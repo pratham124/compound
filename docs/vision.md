@@ -71,4 +71,4 @@ Only the weekly check-in's first place was decided. The rest of the order is a s
 - Whether reading email receipts needs a Google security review
 - Which assistants and plans support MCP connectors
 
-Full reasoning is in the [decision record](vision-decisions.md).
+Full reasoning is kept in a local decision record, outside this repo.

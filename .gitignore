@@ -6,3 +6,5 @@ node_modules/
 __pycache__/
 .venv/
 docs/tradeoffs.md
+docs/vision-decisions.md
+docs/brainstorm.md
