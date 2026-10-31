@@ -1,4 +1,4 @@
-# Whealthy: Vision
+# Compound: Vision
 
 Oct 31, 2026 · @Pratham
 

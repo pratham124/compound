@@ -1,4 +1,4 @@
-# Whealthy
+# Compound
 
 One place for your training, health and spending, which your AI assistant can read and reason across.
 
