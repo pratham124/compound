@@ -14,7 +14,7 @@ Pratham. The first version is built for one real user. Opening it to a small inv
 
 ## Goals
 
-1. **Learn system design and build real interview material.** This is the main reason for the project.
+1. **Learn system.** This is the main reason for the project.
 2. **Make it good enough for many people to use.** Being useful to real people is a requirement, not a bonus.
 3. **Design for 100k real users, and prove it under load with 100k synthetic users.** There's no target for how many real users sign up.
 
