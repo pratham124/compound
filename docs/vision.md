@@ -49,8 +49,8 @@ The first version targets iPhone. The PRD picks the exact features and keeps eac
 
 1. Proactive AI: weekly check-in first, then adaptive plans, readiness and insights
 2. Android
-3. Screen time, if Apple's limits allow the data to be used
-4. Itemized food delivery from email receipts
+3. Screen time on Android only, because Apple keeps this data on the iPhone
+4. Itemized food delivery from forwarded email receipts, or from Gmail after Google's verification and security assessment
 5. Camera form check, as a separate project on a few key lifts
 6. Social and motivation
 7. Wild cards, with any money ideas as reminders or manual tracking
@@ -64,11 +64,5 @@ Only the weekly check-in's first place was decided. The rest of the order is a s
 2. **Invite-only group**, free with usage caps.
 3. **Public launch**, once privacy, account deletion and security work are done. A paid upgrade for bank sync and more in-app chat is added before this stage.
 
-## Still to check before the PRD
-
-- Plaid's current pricing and production approval requirements
-- What Apple's Screen Time APIs actually allow
-- Whether reading email receipts needs a Google security review
-- Which assistants and plans support MCP connectors
 
 Full reasoning is kept in a local decision record, outside this repo.
