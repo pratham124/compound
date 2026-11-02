@@ -39,7 +39,7 @@ Chasing user growth is also not a goal.
 |---|---|
 | Workouts | An offline logger with past workouts, PRs, a rest timer and saved routines, using an exercise database, plus AI-written deload messages |
 | Passive health data | Sleep, steps, resting heart rate and HRV from Apple Health, shown on a Today card and one Trends screen beside your training |
-| Money | Bank sync and spending |
+| Money | Bank sync from checking, savings and credit cards, with spending sorted into Compound's own categories, a monthly view, budgets with alerts, and subscriptions Compound finds itself, shown in a list and calendar with cost per workout for a gym. Eating out spending joins the Trends screen |
 | MCP | Your assistant can read and work with your data |
 | In-app chat | A capped chat on a low-cost model, using the same tools as MCP |
 
@@ -62,8 +62,8 @@ Only the weekly check-in's first place was decided. The rest of the order is a s
 ## How it launches
 
 1. **Pratham only**, for at least 4 weeks of real use.
-2. **Invite-only group**, free with usage caps.
-3. **Public launch**, once privacy, account deletion and security work are done. A paid upgrade for bank sync and more in-app chat is added before this stage.
+2. **Invite-only group** of around 15 to 20 people, free with usage caps. It stays on Plaid's free trial, which allows 10 bank logins over the app's whole life, so only about 6 invitees get bank sync. The rest use everything else without it.
+3. **Public launch**, once privacy, account deletion and security work are done. Before this stage, Compound settles whether it needs a company, applies for Plaid's paid plan, and adds a paid upgrade for bank sync and more in-app chat.
 
 
 Full reasoning is kept in a local decision record, outside this repo.
