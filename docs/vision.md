@@ -37,24 +37,25 @@ Chasing user growth is also not a goal.
 
 | Area | What it means here |
 |---|---|
-| Workouts | Logging and history |
+| Workouts | An offline logger with past workouts, PRs, a rest timer and saved routines, using an exercise database, plus AI-written deload messages |
 | Passive health data | Sleep, steps and heart data from Apple Health |
 | Money | Bank sync and spending |
 | MCP | Your assistant can read and work with your data |
 | In-app chat | A capped chat on a low-cost model, using the same tools as MCP |
 
-The first version targets iPhone. The PRD picks the exact features and keeps each area thin.
+The first version targets iPhone. AI runs only when someone asks, with one exception: deload messages. The PRD picks the remaining features and keeps each area thin.
 
 **Later list**, roughly in this order:
 
-1. Proactive AI: weekly check-in first, then adaptive plans, readiness and insights
+1. More proactive AI: weekly check-in first, then adaptive plans, readiness and insights
 2. Android
 3. Screen time on Android only, because Apple keeps this data on the iPhone
 4. Itemized food delivery from forwarded email receipts, or from Gmail after Google's verification and security assessment
 5. Camera form check, as a separate project on a few key lifts
-6. Social and motivation
-7. Wild cards, with any money ideas as reminders or manual tracking
-8. User-provided API keys, if in-app AI costs become a problem
+6. Voice logging, and writing workouts back to Apple Health
+7. Social and motivation
+8. Wild cards, with any money ideas as reminders or manual tracking
+9. User-provided API keys, if in-app AI costs become a problem
 
 Only the weekly check-in's first place was decided. The rest of the order is a starting suggestion, and when Android arrives is still open.
 
