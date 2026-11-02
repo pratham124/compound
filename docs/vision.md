@@ -10,7 +10,7 @@ Plenty of apps do workouts or budgets well. This one answers questions that need
 
 ## Who it's for
 
-Pratham first. After that, a small invite-only group, then anyone who's interested through a public launch.
+Pratham. The first version is built for one real user. Opening it to a small invite-only group, and then to anyone through a public launch, are optional later steps. Each one has a plan ready for when Pratham chooses to take it.
 
 ## Goals
 
@@ -61,9 +61,11 @@ Only the weekly check-in's first place was decided. The rest of the order is a s
 
 ## How it launches
 
-1. **Pratham only**, for at least 4 weeks of real use, with secrets kept out of the repo, data encrypted and MFA on every admin account.
-2. **Invite-only group** of around 15 to 20 people in the US and Canada, free with usage caps, through TestFlight. It stays on Plaid's free trial, which allows 10 bank logins over the app's whole life, so only about 6 invitees get bank sync. The rest use everything else without it. People here get the same data protection as public users: in-app account deletion, separate permission before their health or bank data goes to AI, encrypted tokens and an incident plan.
-3. **Public launch**, once a company owns the App Store account and Apple's and Plaid's reviews have passed. Before this stage, Compound forms the company, applies for Plaid's paid plan, and adds a paid upgrade for bank sync and more in-app chat.
+The first version commits only to the first stage. The other two are optional, and each starts only when Pratham decides to open up. Nearly all the legal and paperwork weight (privacy policies, health data laws, a company, store review) arrives with the first person other than Pratham, so it waits until then.
+
+1. **Pratham only** (committed), for at least 4 weeks of real use, with secrets kept out of the repo, data encrypted and MFA on every admin account. There's no billing, company or store review. Account deletion and keeping each person's data separate are still built, as system design practice and so later stages cost less.
+2. **Invite-only group** (optional), around 15 to 20 people in the US and Canada, free with usage caps, through TestFlight. Before it starts, the app meets the invite-only privacy and security bar: a privacy policy, in-app account deletion, separate permission before health or bank data goes to AI, encrypted tokens, an incident plan, and Plaid's written answer on AI use. Bank sync uses Plaid's free trial, which allows 10 bank logins over the app's whole life, so about 6 invitees get it and the rest use everything else.
+3. **Public launch** (optional), once a company owns the App Store account and Apple's review has passed. Bank sync stays on whatever trial slots remain, and anyone past them sees that it isn't available yet. Plaid's paid plan, and a paid upgrade for bank sync and more in-app chat, come only if enough people want bank sync to justify them.
 
 
 Full reasoning is kept in a local decision record, outside this repo.
