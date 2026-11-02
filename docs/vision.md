@@ -61,9 +61,9 @@ Only the weekly check-in's first place was decided. The rest of the order is a s
 
 ## How it launches
 
-1. **Pratham only**, for at least 4 weeks of real use.
-2. **Invite-only group** of around 15 to 20 people, free with usage caps. It stays on Plaid's free trial, which allows 10 bank logins over the app's whole life, so only about 6 invitees get bank sync. The rest use everything else without it.
-3. **Public launch**, once privacy, account deletion and security work are done. Before this stage, Compound settles whether it needs a company, applies for Plaid's paid plan, and adds a paid upgrade for bank sync and more in-app chat.
+1. **Pratham only**, for at least 4 weeks of real use, with secrets kept out of the repo, data encrypted and MFA on every admin account.
+2. **Invite-only group** of around 15 to 20 people in the US and Canada, free with usage caps, through TestFlight. It stays on Plaid's free trial, which allows 10 bank logins over the app's whole life, so only about 6 invitees get bank sync. The rest use everything else without it. People here get the same data protection as public users: in-app account deletion, separate permission before their health or bank data goes to AI, encrypted tokens and an incident plan.
+3. **Public launch**, once a company owns the App Store account and Apple's and Plaid's reviews have passed. Before this stage, Compound forms the company, applies for Plaid's paid plan, and adds a paid upgrade for bank sync and more in-app chat.
 
 
 Full reasoning is kept in a local decision record, outside this repo.
