@@ -38,7 +38,7 @@ Chasing user growth is also not a goal.
 | Area | What it means here |
 |---|---|
 | Workouts | An offline logger with past workouts, PRs, a rest timer and saved routines, using an exercise database, plus AI-written deload messages |
-| Passive health data | Sleep, steps and heart data from Apple Health |
+| Passive health data | Sleep, steps, resting heart rate and HRV from Apple Health, shown on a Today card and one Trends screen beside your training |
 | Money | Bank sync and spending |
 | MCP | Your assistant can read and work with your data |
 | In-app chat | A capped chat on a low-cost model, using the same tools as MCP |
