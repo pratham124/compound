@@ -40,14 +40,14 @@ Chasing user growth is also not a goal.
 | Workouts | An offline logger with past workouts, PRs, a rest timer and saved routines, using an exercise database, plus AI-written deload messages |
 | Passive health data | Sleep, steps, resting heart rate and HRV from Apple Health, shown on a Today card and one Trends screen beside your training |
 | Money | Bank sync from checking, savings and credit cards, with spending sorted into Compound's own categories, a monthly view, budgets with alerts, and subscriptions Compound finds itself, shown in a list and calendar with cost per workout for a gym. Eating out spending joins the Trends screen |
-| MCP | Your assistant can read and work with your data |
-| In-app chat | A capped chat on a low-cost model, using the same tools as MCP |
+| MCP | Your assistant can read your data and make a few changes you can undo, such as saving a routine, logging a workout or relabeling a purchase |
+| In-app chat | A chat on a low-cost model with a daily limit, using the same tools as MCP |
 
 The first version targets iPhone. AI runs only when someone asks, with one exception: deload messages. The PRD picks the remaining features and keeps each area thin.
 
 **Later list**, roughly in this order:
 
-1. More proactive AI: weekly check-in first, then adaptive plans, readiness and insights
+1. More proactive AI: weekly check-in first, then adaptive plans, readiness and insights, and chat that remembers you across conversations
 2. Android
 3. Screen time on Android only, because Apple keeps this data on the iPhone
 4. Itemized food delivery from forwarded email receipts, or from Gmail after Google's verification and security assessment
