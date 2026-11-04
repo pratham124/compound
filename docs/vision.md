@@ -45,6 +45,8 @@ Chasing user growth is also not a goal.
 
 The first version targets iPhone. AI runs only when someone asks, with one exception: deload messages. The PRD picks the remaining features and keeps each area thin.
 
+The first version is done when Pratham uses it day to day and a load test at 100k synthetic users passes a written bar. The test then keeps ramping until something breaks, and that part is fixed and tested again. Scaling parts beyond what the features need, such as a cache, a read replica or an analytics database, are added only when a load test shows they're needed.
+
 **Later list**, roughly in this order:
 
 1. More proactive AI: weekly check-in first, then adaptive plans, readiness and insights, and chat that remembers you across conversations
