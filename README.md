@@ -1,40 +1,40 @@
 # Compound
 
-One place for your training, health and spending, which your AI assistant can read and reason across.
+One place for your workouts, health and spending, so your AI assistant can see all three and answer questions that need them together. For example: "Do I order more takeout after a bad night's sleep?" or "Is my gym membership worth it, given how often I actually went?"
 
-This project is in planning. Start with the [vision](docs/vision.md).
+Compound is still being planned, and nothing is built yet. To see what it will do and why, start with the [vision](docs/vision.md).
 
-## Architecture
+## How it will work
 
-The planned architecture for the first version. It's designed for 100k users and will be tested with 100k synthetic users. These diagrams will change as planning finishes.
+These diagrams show the plan for the first version. It's built to handle 100,000 people, and that will be tested with 100,000 simulated users. The diagrams will change as planning finishes.
 
-**Stack:**
-- iPhone app: Expo (React Native) with Apple Health.
-- Backend: a TypeScript monolith (Fastify), split into modules, on AWS Fargate.
-- Data: Postgres with row-level security, and Valkey for sessions and rate limits.
-- Background work: SQS with a transactional outbox, plus EventBridge Scheduler for timed jobs.
-- Assistants connect through an MCP server with its own OAuth 2.1 server.
+**What it's built with:**
+- **iPhone app:** made with Expo (React Native). It reads sleep, steps and heart data from Apple Health, and logs workouts even with no signal.
+- **Server:** one TypeScript program, split into separate parts, running on Amazon Web Services (AWS).
+- **Data:** stored in a Postgres database that keeps each person's data walled off from everyone else's, plus a fast in-memory store (Valkey) for sign-ins and usage limits.
+- **Background work:** jobs like syncing bank transactions go through a queue (Amazon SQS) and are written down in the same step as the change that caused them, so none get lost. A scheduler (EventBridge) handles timed work.
+- **AI assistants:** Claude or ChatGPT can connect through MCP, a standard way for assistants to use apps. You approve exactly what they can see and change.
 
-### Deployment
+### The big picture
 
-The app, your assistant and Plaid's webhooks come in through one load balancer. The same code runs in two roles. The api role answers requests, and the worker role sends outbox rows to SQS, runs jobs, and calls Plaid, the model provider and Apple's push service. A larger copy, built from the same Terraform, runs for each load test.
+Everything comes in through one front door: the app, your AI assistant, and Plaid (the service that connects bank accounts). The server runs as two kinds of worker. One answers requests right away. The other handles background jobs and talks to Plaid, the AI model, and Apple's notification service. For load tests, a bigger copy of the whole setup is created, run, and then torn down.
 
-![Always-on deployment](docs/architecture/deployment.svg)
+![The big picture](docs/architecture/deployment.svg)
 
-### Modules
+### Inside the server
 
-Seven modules share one process. Solid arrows are calls through another module's public interface, never its tables. Dashed arrows are jobs: an outbox row written in the same transaction as the change, then delivered through SQS.
+The server is split into seven parts: workouts, health, money, coaching, notifications, the AI assistant, and sign-in. Each part keeps its own data. Solid arrows mean one part asks another directly. Dashed arrows mean it leaves a job to be done later, through the queue.
 
-![Backend modules](docs/architecture/modules.svg)
+![Inside the server](docs/architecture/modules.svg)
 
-### Flow: Plaid webhook to stored transactions
+### When your bank has new transactions
 
-Repeat webhooks for the same bank login collapse into one sync. A lease keeps one sync per bank login at a time. Transactions, the cursor and daily spending totals commit together, so a retry never saves anything twice.
+Plaid tells Compound when there are new transactions. If it says so several times in a row, Compound still fetches them only once. Only one fetch per bank connection runs at a time, and everything is saved in a single step, so a retry never creates duplicates.
 
-![Plaid webhook flow](docs/architecture/plaid-webhook-flow.svg)
+![New bank transactions](docs/architecture/plaid-webhook-flow.svg)
 
-### Flow: sleep upload to deload push
+### From last night's sleep to a training note
 
-The phone uploads Apple Health samples when they arrive. Daily summaries are rebuilt in batches, off the request path. After a short wait for more data, one check per person per day decides whether to send a deload message.
+When your phone has new sleep data, it sends it to Compound. Compound waits a few minutes in case more data arrives, then checks your recovery once for the day. If you might need a lighter day, it writes a short note and sends you a notification.
 
-![Sleep to deload flow](docs/architecture/sleep-deload-flow.svg)
+![Sleep to training note](docs/architecture/sleep-deload-flow.svg)
