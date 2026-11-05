@@ -287,8 +287,8 @@ Two kinds of push: **recovery notes** and **budget alerts**.
 **Sign-in** is Sign in with Apple plus email one-time codes, with no passwords. The same sign-in serves the MCP consent page. Phone sessions are opaque tokens looked up in Valkey, kept in the phone's SecureStore.
 
 **Pratham-only baseline**, required:
-- no secrets or personal data in the repo; HTTPS only; encryption at rest;
-- Plaid, model and push keys in a secrets manager;
+- no secrets or personal data in the repo; HTTPS only; encryption at rest (on the laptop during M1 to M6, that means full-disk encryption);
+- Plaid, model and push keys in a secrets manager on AWS, and in a git-ignored `.env` file on the laptop before then;
 - MFA on every AWS, GitHub, Plaid and Apple account;
 - Plaid's Developer Policy followed;
 - the HealthKit capability, usage descriptions and privacy manifests set from the first TestFlight upload;
@@ -297,7 +297,7 @@ Two kinds of push: **recovery notes** and **budget alerts**.
 **Built anyway, as practice:**
 - **Tenant isolation.** Every query is filtered by user id in the app. Postgres row-level security also refuses other people's rows, using a per-transaction `app.user_id`. System jobs get only a narrow function that returns user ids, then fan out into per-person jobs under the normal rules. Isolation tests cover screens, chat tools and MCP tools. CI fails if any table with a `user_id` lacks forced row-level security.
 - **Account deletion** in the app. The account is locked and signed out at once. Within 24 hours a job deletes every row, removes bank logins from Plaid, revokes assistant and Sign in with Apple tokens, and cancels queued jobs. Backups age out within 35 days. The phone wipes its local database.
-- **Data handling.** No personal data in logs, traces, metrics or error reports. No analytics or ad SDKs. The phone's local database is excluded from iCloud backup.
+- **Data handling.** No personal data in logs, traces, metrics or error reports. No analytics or ad SDKs; Sentry is used only for crash and error reports, with personal-data capture turned off (section 12). The phone's local database is excluded from iCloud backup.
 
 The invite-only and public stages add more (a privacy policy, encrypted tokens with a key-management service, an incident plan, an audit log and others). Those gates aren't part of this PRD.
 
@@ -308,16 +308,29 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 - **Phone:** Expo SDK 58, `@kingstinct/react-native-healthkit` 16.x, `expo-sqlite` for the logger, and TanStack Query with a saved cache for other screens.
 - **Server:** Node 24 and TypeScript, Fastify 5, Kysely with hand-written SQL migrations, and better-auth. Uses the official `plaid` client (pinned), `jose` for webhooks, and `ioredis` for Valkey.
 - **AWS:** ALB, Fargate ARM, RDS Postgres, ElastiCache Serverless Valkey, SQS and EventBridge Scheduler.
-- **Ops:** Terraform for both setups, GitHub Actions for CI and deploys, and OpenTelemetry to Grafana Cloud.
+- **Local:** Docker Compose runs Postgres, Valkey, an SQS emulator and a small tick sender (standing in for EventBridge Scheduler) on the laptop. It's the same stack CI uses. Cloudflare Tunnel gives the laptop a public HTTPS address for Plaid's webhooks, Claude's MCP connector, and the phone away from home Wi-Fi.
+- **Ops:** Terraform for the always-on and load-test setups, GitHub Actions for CI and deploys, OpenTelemetry for the server, and Sentry for the phone.
 - **Lint:** the anti-slop Oxlint rules across every package (`apps/mobile`, `apps/server`, `packages/contracts`, `mocks/`, `loadtest/`), run in CI on every merge alongside the smoke test. Findings are fixed, never silenced by weakening or suppressing a rule. Two rules need a policy for Expo, decided when lint is installed: `no-module-mocking` (Expo tests often mock native modules) and `no-array-filter-map` (iterator helpers must be supported on Hermes).
 
 **Shape**
 - A **modular monolith** of seven modules. Each is a Fastify plugin with its own tables, one data-access place and a small public interface. No module reads another module's tables.
-- **One build, two process roles.** The api role serves HTTP. The worker role runs the outbox relay, queue consumers and tick handlers. Always-on runs both in one process; the load test runs them as separate services.
+- **One build, two process roles.** The api role serves HTTP. The worker role runs the outbox relay, queue consumers and tick handlers. The laptop and always-on run both in one process; the load test runs them as separate services.
 - **Background work:** the app writes an outbox row in the same commit as the change. A relay deletes it, sends it to SQS and commits. SQS standard queues have dead-letter queues. Recurring EventBridge Scheduler ticks wake workers to find due rows.
 - **Seams:** every read goes through a module's data-access place, so a cache or replica plugs in there. Nothing beyond the required parts is built until a run proves it's needed.
 - **Fast-counter seam:** phone sessions, the MCP rate limiter and the chat meter all go through one small storage interface. Only the Valkey version is built in the first version. A Postgres version can be added later without changing any caller ([section 17](#a-cheaper-just-me-setup-later)).
 - **Keys:** every large table's key starts with `user_id`, and new ids are UUIDv7. Hot and cold data sit in separate tables (raw Plaid payloads, raw health arrays, chat parts and undo before-states are cold).
+
+**Observability**
+- **Server:** OpenTelemetry sends traces, metrics and logs. During M1 to M6 they go to Grafana's all-in-one container (`grafana/otel-lgtm`) in Docker Compose, so nothing leaves the laptop. From M7 they go to Grafana Cloud's free tier. Only the endpoint setting changes.
+- **Phone:** Sentry's React Native SDK, on its free plan, reports crashes and errors with the stack trace, app version and device. Request bodies, screenshots, session replay and breadcrumbs that could hold personal data are turned off.
+- **Starter dashboard**, from M1:
+  - requests: rate, errors and p95 response time per route
+  - background work: outbox lag, queue depth and dead-letter count
+  - health sync: when each data type last arrived, and how long last night's sleep took to reach the app after waking
+  - bank sync: how far behind each bank login is
+  - AI: chat spend per day against the allowance, unprompted AI spend against its cap, and model call latency
+- **Alerts**, from M7, to Pratham's phone: errors climbing, a queue backing up, any dead-letter message, health sync silent for 24 hours, and AI spend near its cap. Thresholds are in [numbers.md](numbers.md).
+- **Tested:** from M1, a test scans telemetry and error reports from a run with seeded data and fails on any personal field.
 
 **What each module owns** (table columns and endpoints are left to the implementation plan):
 
@@ -335,8 +348,11 @@ The daily timeline is built at read time from the workouts, health and money mod
 
 ## 13. Scale and the load test
 
-**Two setups from the same Terraform definitions**
-- **Always-on:** small and running every day for Pratham's real use. Single-AZ, with point-in-time backups and one rehearsed restore. Deploys have no downtime, and errors and queue backlogs alert Pratham's phone. Sizes are in [numbers.md](numbers.md).
+**Where it runs**
+- **Development (M0 to M6):** Pratham's laptop with Docker Compose and Cloudflare Tunnel, at no cost. When the laptop is off, nothing is lost: bank sync catches up from its saved cursor, and the phone keeps its uploads queued.
+
+**Two AWS setups from the same Terraform definitions**
+- **Always-on:** from M7, small and running every day for Pratham's real use. Single-AZ, with point-in-time backups and one rehearsed restore. Deploys have no downtime, and errors and queue backlogs alert Pratham's phone. Sizes are in [numbers.md](numbers.md).
 - **Load-test:** created for each run and destroyed after it. A run is about 5 hours and about $14. It never holds real data. Plaid, the model and Apple's push service are replaced by mock services that record what they sent.
 
 **Traffic shape** (100k synthetic accounts, a year of history each; 60% with bank sync, 70% with a wearable):
@@ -369,23 +385,23 @@ The daily timeline is built at read time from the workouts, health and money mod
 
 ## 14. Milestones
 
-Each milestone ends with something usable on the phone and deployed to the always-on setup.
+Each milestone ends with something usable on the phone. M1 to M6 run on the laptop at no cost. The always-on AWS setup starts in M7, when the app has to be up every morning, so the 28 days of daily use are the first hosting bill. New-account AWS credits ($100, plus up to $100 more) should cover M7 and M8, so open the AWS account at the end of M6, not earlier.
 
 **Mockups first.** M1 sets the overall look. Each area milestone (M2 to M6) then starts with a mockup of that area's screens in that look, judged before building. Mockups judge layout and style only. Motion and touch feel are judged on a release build on a real iPhone.
 
 | # | Milestone | Done when |
 |---|---|---|
 | M0 | Device test | On a real iPhone, an EAS development build is granted Health access and registers an observer. The app is killed, a new Health sample is added, and the woken app uploads it. If SDK 58 fails, fall back to SDK 57 and repeat. |
-| M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI, Terraform for always-on, CI deploying main, OpenTelemetry reaching Grafana, sign-in, and one request from the phone through the api role to Postgres under row-level security. The first restore is rehearsed. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
+| M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI. Docker Compose runs the full local stack, with Cloudflare Tunnel giving it a public address. OpenTelemetry reaches the local Grafana with the starter dashboard, and Sentry receives a test crash from the phone. Sign-in works, and one request goes from the phone through the api role to Postgres under row-level security. The personal-data test passes. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
 | M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. |
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. The 14-morning sleep-arrival measurement starts. |
-| M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. |
-| M5 | AI | Section 10: tool module, in-app chat with write cards and the allowance, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only), and the AI changes list. |
-| M6 | Recovery notes and push | Section 7 and section 9. |
-| M7 | Daily use and measurement | Daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
+| M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Webhooks reach the laptop through the tunnel. |
+| M5 | AI | Section 10: tool module, in-app chat with write cards and the allowance, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |
+| M6 | Recovery notes and push | Section 7 and section 9. Then an AWS trial run: always-on is created from Terraform, one deploy and a sign-in work end to end, and it's torn down. That's a few hours of hosting, well under $1. |
+| M7 | AWS, daily use and measurement | First the always-on setup goes up: Terraform, CI deploying main with no downtime, telemetry to Grafana Cloud with alerts, the laptop's data moved into RDS (dump and restore), and the first restore rehearsed. Then daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
 | M8 | Load test | The first full run passes the pass bar and ramps to the breaking point. The part that failed first is fixed, a second run measures the fix, and the ClickHouse comparison runs on the same seeded data. |
 
-**Keeping recovery notes.** Over 14 mornings during M3 to M6, sleep must reach the server within 1 hour of waking on at least 10 mornings. If it doesn't, cut-list item 7 is pulled early, and recovery questions are answered only in chat.
+**Keeping recovery notes.** Over 14 mornings during M3 to M6, Apple Health must hand last night's sleep to the app within 1 hour of waking on at least 10 mornings. This is measured by the phone's own timestamp of when it read the data, sent with each upload, so a sleeping laptop doesn't skew it. If it doesn't, cut-list item 7 is pulled early, and recovery questions are answered only in chat.
 
 **Daily use** means 28 days in a row on which every workout is logged in Compound and no bug that loses or duplicates data is open.
 
@@ -426,6 +442,7 @@ If the build runs long, Pratham pulls the next item from this list, in order. Th
 - **"Always allow"** in an assistant removes the human check on writes, leaving Undo and strict inputs.
 - **Two-device edits** use last write wins.
 - **Single-AZ:** a zone outage means downtime until it recovers or a restore runs.
+- **During M1 to M6 the server is the laptop.** Recovery notes, pushes and syncs happen only while it's on and online. This is fine for building, and it's why always-on starts in M7.
 - **The pass bar's numbers** are educated guesses, and mocks can drift from the real services.
 
 ## 17. Not in the first version

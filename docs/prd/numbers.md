@@ -30,7 +30,7 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Sleep "has arrived" | no new sleep upload for 30 minutes | judgement | M3 to M6 arrival measurement |
 | Recovery sweep tick | every 15 minutes | decided | the M8 sleep-wave result |
 | Cutoff for the training-only check | 11:00 local | decided | M7 |
-| Recovery-note keep bar | sleep on the server within 1 hour of waking on ≥ 10 of 14 mornings | decided | not planned |
+| Recovery-note keep bar | Apple Health hands last night's sleep to the app within 1 hour of waking (by the phone's timestamp) on ≥ 10 of 14 mornings | decided | not planned |
 
 ## Notifications
 
@@ -89,7 +89,9 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Always-on Postgres | RDS db.t4g.micro (1 GB) plus 20 GB gp3, about $14 a month | decided (db.t4g.small, which the research called the safer minimum, costs about $12 a month more; a resize takes minutes and moves no data) | M7: move to db.t4g.small if memory or CPU runs short |
 | Always-on compute | one Fargate ARM task, 0.5 vCPU and 1 GB, running api and worker roles | decided | M7 |
 | Always-on cache | ElastiCache Serverless Valkey | decided | not planned |
-| Always-on monthly cost | about $56 to $61, mostly covered by new-account AWS credits ($100 plus up to $100 more) at first | arithmetic (the scaling record's breakdown) | the first month's bill |
+| Development hosting (M0 to M6) | $0: the laptop with Docker Compose and Cloudflare Tunnel's free tier | decided | not planned |
+| Always-on monthly cost (from M7) | about $56 to $61, mostly covered by new-account AWS credits ($100 plus up to $100 more) at first | arithmetic (the scaling record's breakdown) | the first month's bill |
+| AWS trial run (end of M6) | a few hours of always-on, under $1 | arithmetic | not planned |
 | Connection pool, api process | 10 | judgement (RDS allows about 100 connections on 1 GB) | M8 breaking point |
 | Connection pool, worker process | 5 | judgement | M8 |
 | Queues | 4 standard queues (`sync`, `ai`, `notify`, `maintenance`), each with a dead-letter queue | arithmetic (4 long-polled queues stay inside SQS's 1M free requests a month; 8 wouldn't) | M8 |
@@ -124,3 +126,16 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Webhook storm catch-up | every bank login within 15 minutes, with exact match | decided | not planned |
 | Chat overspend | under 1% per allowance | decided | not planned |
 | CI smoke test | about 5 virtual users for about 1 minute; errors under 1%; all four verifiers pass; no latency gate | decided | not planned |
+
+## Observability
+
+| Setting | Starting value | Basis | Replaced by |
+|---|---|---|---|
+| Telemetry destination, M1 to M6 | local `grafana/otel-lgtm` container | decided | not planned |
+| Telemetry destination, from M7 | Grafana Cloud free tier | decided | the tier's limits, if a load-test run exceeds them |
+| Phone crash and error reports | Sentry free plan; request bodies, screenshots, session replay and personal breadcrumbs off | decided | not planned |
+| Alert: errors | over 1% of requests for 5 minutes | judgement | M7 |
+| Alert: queue backlog | over 1,000 messages for 10 minutes, or outbox lag over 60 seconds | judgement | M7 |
+| Alert: dead-letter queue | any message | decided | not planned |
+| Alert: health sync silent | no Health data for 24 hours | judgement | M7 |
+| Alert: AI spend | chat or unprompted AI spend at 80% of its cap | judgement | M7 |
