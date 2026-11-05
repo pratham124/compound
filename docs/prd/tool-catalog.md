@@ -155,7 +155,7 @@ One row per day joining recovery, training and spending, for crossover questions
 |---|---|---|
 | `from`, `to` | date | required; up to 90 days |
 
-Returns `days[]`: `date`, `sleep_asleep_min`, `hrv_sdnn_ms`, `resting_hr_bpm`, `steps`, `training_volume`, `workout_count`, `deload_message` (true or false), `spending` (an object keyed by spending category, with Income and Transfers left out, and only categories with spending that day). Sleep on a row is the sleep night ending that morning. Spending is by authorized date and includes pending charges.
+Returns `days[]`: `date`, `sleep_asleep_min`, `hrv_sdnn_ms`, `resting_hr_bpm`, `steps`, `training_volume`, `workout_count`, `recovery_note` (true or false), `spending` (an object keyed by spending category, with Income and Transfers left out, and only categories with spending that day). Sleep on a row is the sleep night ending that morning. Spending is by authorized date and includes pending charges.
 
 ## Write tools
 

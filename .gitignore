@@ -8,3 +8,4 @@ __pycache__/
 docs/tradeoffs.md
 docs/vision-decisions.md
 docs/brainstorm.md
+.claude/settings.local.json

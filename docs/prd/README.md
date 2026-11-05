@@ -21,7 +21,7 @@ The PRD is this file plus four appendices:
 4. [How the app is laid out](#4-how-the-app-is-laid-out)
 5. [Workouts](#5-workouts)
 6. [Passive health data](#6-passive-health-data)
-7. [Deload messages](#7-deload-messages)
+7. [Recovery notes](#7-recovery-notes)
 8. [Money](#8-money)
 9. [Notifications](#9-notifications)
 10. [In-app chat and assistants](#10-in-app-chat-and-assistants)
@@ -61,8 +61,8 @@ Two things are still built as if other people were coming, because they're the s
 - **Health sync**: the phone sending new Apple Health data to the server whenever Apple Health saves it while the phone is unlocked.
 - **Daily summary**: one person's numbers for one day, built on the server from stored samples.
 - **Sleep night**: the sleep that counts as "last night" for a day (section 7).
-- **Baseline**: a person's own recent average for one measure, which a deload check compares against.
-- **Deload message**: an AI-written note suggesting a lighter workout or rest day, sent without being asked.
+- **Baseline**: a person's own recent average for one measure, which a recovery check compares against.
+- **Recovery note**: an AI-written note suggesting a lighter workout or rest day, sent without being asked.
 - **Bank login**: one sign-in at one bank through Plaid, which can cover several accounts.
 - **Spending**: money going out to merchants, not counting transfers between your own accounts or credit card and loan payments.
 - **Category**: one of Compound's 14 spending groups ([categories.md](categories.md)).
@@ -81,10 +81,10 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 
 | Tab | What's on it |
 |---|---|
-| Today | The deload card when there's a message, the Today card (last night's sleep, steps, resting heart rate, HRV, when health sync last ran), a Start workout button, and a profile button that opens Settings |
+| Today | The recovery card when there's a message, the Today card (last night's sleep, steps, resting heart rate, HRV, when health sync last ran), a Start workout button, and a profile button that opens Settings |
 | Train | Start a routine or an empty workout, the logger, past workouts, PRs, routines, the exercise list |
 | Money | The this month view, the transaction list, budgets and subscriptions (list and calendar) as sections. Without a bank login, one screen explaining what linking adds, with a Link bank button |
-| Trends | 30 days of sleep, resting heart rate and HRV next to training volume, deload messages marked, and daily Eating out spending as bars when a bank is linked |
+| Trends | 30 days of sleep, resting heart rate and HRV next to training volume, recovery notes marked, and daily Eating out spending as bars when a bank is linked |
 | Chat | Past conversations and full-screen chat |
 
 **Chat button.** On the other four tabs, a chat button with its own character sits at a screen edge.
@@ -132,7 +132,7 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 - **Missing data** shows as missing, never as zero. If no data of a type has ever arrived, the Today card says so and links to the Health permission settings, since an app can't tell "denied" from "no data".
 - **Trends** draws empty days as gaps and works offline from the last saved data.
 
-## 7. Deload messages
+## 7. Recovery notes
 
 The one feature where AI runs without being asked.
 
@@ -159,14 +159,14 @@ The one feature where AI runs without being asked.
 | Training jump | the last 7 days' volume is 30% or more above the weekly average of the 3 weeks before |
 | No rest | 6 or more days in a row with a workout |
 
-**When a message is sent:** two or more flags at once, in any mix. After a message there's a 3-day quiet period with no new deload message. All thresholds are starting values ([numbers.md](numbers.md)).
+**When a message is sent:** two or more flags at once, in any mix. After a message there's a 3-day quiet period with no new recovery note. All thresholds are starting values ([numbers.md](numbers.md)).
 
 **How the message is written**
 - The AI sees only the check results (for example "sleep 18% below your 2-week average for 3 nights; training volume up 34%"), never the person's health history.
 - It writes a short, plain message within general wellness: no diagnosis, no treatment, nothing that sounds medical.
 - It's generated as a background job, stored on the server, shown as a card on Today, and sent as a push (section 9).
 - **Spending cap:** unprompted AI spend has a global cap of $5 a month. Past it, a fixed template that lists the flags is sent instead ([wording.md](wording.md)).
-- If deload messages are switched off, no check result goes to AI and nothing is spent.
+- If recovery notes are switched off, no check result goes to AI and nothing is spent.
 - If Health sharing with AI is off, the AI sees only the training flags. If both are off, the template is used.
 
 ## 8. Money
@@ -218,7 +218,7 @@ The one feature where AI runs without being asked.
 
 ## 9. Notifications
 
-Two kinds of push: **deload messages** and **budget alerts**.
+Two kinds of push: **recovery notes** and **budget alerts**.
 
 - **Permission** is requested the first time a kind becomes possible (a baseline is ready, or the first budget is saved), never at sign-up, behind a short explanation screen first ([wording.md](wording.md)).
 - **Switches:** one per kind on the Notifications screen, both on by default. The in-app card or the budget progress always appears either way.
@@ -253,7 +253,7 @@ Two kinds of push: **deload messages** and **budget alerts**.
 - Undoing `log_workout` deletes that workout. It's the only delete AI can cause.
 - Undoing a merchant rule removes the rule and restores only the transactions that still hold the rule's category.
 
-**AI sharing switches** (in-app chat and deload messages)
+**AI sharing switches** (in-app chat and recovery notes)
 - Three switches: Workouts, Health, Money. Each is off until turned on.
 - The first time chat needs a kind that's off, it shows a one-time prompt to turn it on. If declined, the tool returns "not shared with AI" and chat says what it can't see.
 - A single server flag can turn off all Apple Health-derived data for AI and assistants at once, in case Apple decides an AI provider doesn't count as a health or fitness service.
@@ -273,7 +273,7 @@ Two kinds of push: **deload messages** and **budget alerts**.
   - Before a call, the worst-case cost is reserved. After it, the real cost is settled.
   - It shows as a bar with no numbers. A heads-up appears at 80%.
   - At 100%, chat pauses until local midnight and suggests connecting an assistant.
-  - Deload messages don't count against it.
+  - Recovery notes don't count against it.
 - **Topics:** the person's own data plus general training, recovery and money-habit questions. Anything else gets a short, polite decline. Chat says it's AI in every conversation.
 - **History:** conversations are kept on the server for 90 days, listed in the Chat tab, and can be deleted one at a time. There's no memory across conversations, but three seams make it addable later:
   - one context builder feeds every model request;
@@ -326,7 +326,7 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 | workouts | exercise list and custom exercises, routines, workouts and sets, PRs, Apple Health workouts, per-day training totals |
 | health | health samples in day buckets, daily summaries and the rebuild list, health sync status |
 | money | bank logins and cursors, accounts, transactions and raw payloads, merchant rules, budgets and alert state, subscriptions, per-day spending totals |
-| coaching | deload checks, per-day claims and deload messages |
+| coaching | recovery checks, per-day claims and recovery notes |
 | assistant | the tool module, MCP adapter and OAuth clients and tokens, AI sharing switches, chat conversations and parts, the chat meter, the AI changes list and before-states, the MCP rate limiter |
 | notifications | device tokens, per-kind switches, quiet hours, held pushes, push sending |
 
@@ -340,14 +340,14 @@ The daily timeline is built at read time from the workouts, health and money mod
 
 **Traffic shape** (100k synthetic accounts, a year of history each; 60% with bank sync, 70% with a wearable):
 - **Everyday:** 40k active a day, each opening the app about 6 times and logging a workout about every other day.
-- **Morning sleep wave:** uploads and per-person deload checks across US and Canadian time zones over about 3 hours.
+- **Morning sleep wave:** uploads and per-person recovery checks across US and Canadian time zones over about 3 hours.
 - **Webhook storm:** every bank login gets a Plaid update within about 10 minutes (60k signed webhooks, then 60k cursor pulls).
 - **Offline sync bursts:** phones replay queued sets after the gym, with deliberate duplicates.
 - **Evening chat peak:** load on the rate limiter and the chat meter, against the mock model.
 
 **Pass bar**
 - **Everyday:** reads p95 under 300 ms and p99 under 1 s, writes p95 under 500 ms, errors under 0.1%.
-- **Sleep wave:** 99% of deload checks finish within 15 minutes of that person's sleep arriving.
+- **Sleep wave:** 99% of recovery checks finish within 15 minutes of that person's sleep arriving.
 - **Webhook storm:** every bank login caught up within 15 minutes, with stored transactions exactly matching what mock Plaid sent.
 - **Offline sync:** zero duplicate sets.
 - **Chat peak:** everyone over the limit gets "try again in N seconds", and no allowance is overspent by more than 1%.
@@ -358,7 +358,7 @@ The daily timeline is built at read time from the workouts, health and money mod
 **Tools:** k6 with arrival-rate executors, run from AWS machines. A seed generator bulk-loads synthetic data. Verifiers compare the database with what the mocks recorded.
 
 **CI smoke test**, on every merge, against Docker Compose (server, Postgres, Valkey, an SQS emulator and the three mocks):
-- about 5 virtual users for about 1 minute, covering: a sleep upload then its deload check; a burst of 50 Plaid webhooks; an offline sync replay with repeated idempotency keys; and a chat turn on the mock model;
+- about 5 virtual users for about 1 minute, covering: a sleep upload then its recovery check; a burst of 50 Plaid webhooks; an offline sync replay with repeated idempotency keys; and a chat turn on the mock model;
 - passes when all four correctness verifiers pass (no duplicates, nothing missed, no overspend, no cross-person reads) and errors stay under 1%;
 - has no latency gate.
 
@@ -378,19 +378,19 @@ Each milestone ends with something usable on the phone and deployed to the alway
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. The 14-morning sleep-arrival measurement starts. |
 | M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. |
 | M5 | AI | Section 10: tool module, in-app chat with write cards and the allowance, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only), and the AI changes list. |
-| M6 | Deload messages and push | Section 7 and section 9. |
+| M6 | Recovery notes and push | Section 7 and section 9. |
 | M7 | Daily use and measurement | Daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
 | M8 | Load test | The first full run passes the pass bar and ramps to the breaking point. The part that failed first is fixed, a second run measures the fix, and the ClickHouse comparison runs on the same seeded data. |
 
-**Keeping deload messages.** Over 14 mornings during M3 to M6, sleep must reach the server within 1 hour of waking on at least 10 mornings. If it doesn't, cut-list item 7 is pulled early, and deload questions are answered only in chat.
+**Keeping recovery notes.** Over 14 mornings during M3 to M6, sleep must reach the server within 1 hour of waking on at least 10 mornings. If it doesn't, cut-list item 7 is pulled early, and recovery questions are answered only in chat.
 
 **Daily use** means 28 days in a row on which every workout is logged in Compound and no bug that loses or duplicates data is open.
 
 **Measured in M7:**
 - **Model:** an eval of 30 real crossover questions, comparing `claude-haiku-5-5` with `claude-sonnet-5-5`. The cheaper model stays unless its answers are clearly worse.
 - **Chat allowance:** set from the real cost per question in Pratham's use.
-- **Deload thresholds:** tuned against the 4 weeks of real messages, including ones Pratham found wrong or annoying.
-- **Unprompted AI cap:** set from the real cost per deload message.
+- **Recovery-check thresholds:** tuned against the 4 weeks of real messages, including ones Pratham found wrong or annoying.
+- **Unprompted AI cap:** set from the real cost per recovery note.
 - **Traffic shape:** refined from Pratham's real usage before the first run.
 
 **The first version is done** when daily use is met and M8's pass-bar run has passed.
@@ -405,7 +405,7 @@ If the build runs long, Pratham pulls the next item from this list, in order. Th
 4. Budget alerts
 5. The second run's ramp past the fix
 6. Budgets
-7. Deload messages (chat still answers the question)
+7. Recovery notes (chat still answers the question)
 8. The Trends screen
 
 **Never cut:** the offline logger, health sync, bank sync, the tool module with in-app chat and MCP, account deletion and tenant isolation, and the pass-bar run.
@@ -414,7 +414,7 @@ If the build runs long, Pratham pulls the next item from this list, in order. Th
 
 - **Health sync timing is up to Apple.** Data arrives only after the phone unlocks. A force-quit can stop background delivery, and the "last synced" line is the only signal.
 - **Night-shift sleepers** get odd sleep nights, because the 6 pm to noon window assumes night sleep.
-- **People without a wearable** get steps only, so their deload checks are training-only.
+- **People without a wearable** get steps only, so their recovery checks are training-only.
 - **Annual subscriptions** are found only when marked by hand, until someone has a year of history.
 - **Pending charges** can trigger or skip a budget alert when a hold never posts or a tip is added later.
 - **Cash spending** is invisible to budgets and Eating out bars.

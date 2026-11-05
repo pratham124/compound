@@ -6,12 +6,12 @@ An appendix of the [PRD](README.md). This is the exact text for screens that mak
 
 On Settings → AI and assistants. All three are off until turned on.
 
-**Header:** Compound's AI can read your data to answer questions in chat and to write deload messages. Choose what it can see. You can change this any time.
+**Header:** Compound's AI can read your data to answer questions in chat and to write recovery notes. Choose what it can see. You can change this any time.
 
 | Switch | Text under it |
 |---|---|
 | **Workouts** | Chat can read your workouts, PRs and routines. |
-| **Health** | Chat and deload messages can read your daily sleep, steps, resting heart rate and HRV. Daily totals only, never minute-by-minute data. |
+| **Health** | Chat and recovery notes can read your daily sleep, steps, resting heart rate and HRV. Daily totals only, never minute-by-minute data. |
 | **Money** | Chat can read your transactions (merchant, amount, date and category), budgets and subscriptions. Never your account numbers or account names. |
 
 **Footer:** What you share is sent to Anthropic, the company that makes the AI model, only to write the answer. Anthropic doesn't train its models on it. Connected assistants, like Claude, have their own permissions, which you set when you connect them.
@@ -82,7 +82,7 @@ Undo asks first: "Undo this change? {summary in reverse}" [Undo] [Keep].
 - **Off-topic decline:** "I can only help with your Compound data and general training, recovery and money-habit questions."
 - **MCP rate limit (tool result):** "Too many requests. Try again in {n} seconds."
 
-## Deload messages
+## Recovery notes
 
 **AI instructions (the fixed part of the prompt):** Write 2 to 4 short sentences to someone who trains, based only on these check results. Suggest a lighter workout or a rest day, and say which numbers led to it. Use plain words. Don't diagnose, don't mention illness or treatment, and don't tell them to see a doctor unless they asked. If sleep data was missing, say so. End with: "Your call: you know how you feel."
 
@@ -101,21 +101,21 @@ Flag phrases:
 | No rest | you've trained {n} days in a row |
 | No sleep data (training-only check) | (appended) Sleep data wasn't available this morning. |
 
-**Today card:** the message, the numbers behind it, and a link: "Turn off deload messages".
+**Today card:** the message, the numbers behind it, and a link: "Turn off recovery notes".
 
 ## Push notifications
 
 **Before asking for iOS permission** (first time a kind becomes possible):
 
 > **Get a heads-up from Compound?**
-> {Deload: "On mornings when your recovery and training suggest an easier day, Compound can send you a note."} {Budget: "Compound can tell you when a category reaches 80% and 100% of its budget."} Nothing is sent during your quiet hours ({10 pm to 7 am}).
+> {Recovery note: "On mornings when your recovery and training suggest an easier day, Compound can send you a note."} {Budget: "Compound can tell you when a category reaches 80% and 100% of its budget."} Nothing is sent during your quiet hours ({10 pm to 7 am}).
 > [Allow notifications] [Not now]
 
 **Lock-screen text.** It's generic, and never shows numbers, merchants or health details:
 
 | Kind | Title | Body |
 |---|---|---|
-| Deload message | Compound | Your training note for today is ready. |
+| Recovery note | Compound | Your recovery note for today is ready. |
 | Budget alert | Compound | One of your budgets needs a look. |
 
 **In-app budget alert** (on the this month view): "{category}: {spent} of {budget} spent ({80 or 100}%)."

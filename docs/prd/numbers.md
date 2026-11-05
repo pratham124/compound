@@ -10,7 +10,7 @@ An appendix of the [PRD](README.md). Every number the app or its infrastructure 
 
 Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 
-## Deload checks
+## Recovery checks
 
 | Setting | Starting value | Basis | Replaced by |
 |---|---|---|---|
@@ -28,9 +28,9 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Sleep night window | sleep ending 6 pm to noon local, credited to the morning it ends | decided | not planned |
 | Nap rule | under 3 hours and ending after noon | decided | not planned |
 | Sleep "has arrived" | no new sleep upload for 30 minutes | judgement | M3 to M6 arrival measurement |
-| Deload sweep tick | every 15 minutes | decided | the M8 sleep-wave result |
+| Recovery sweep tick | every 15 minutes | decided | the M8 sleep-wave result |
 | Cutoff for the training-only check | 11:00 local | decided | M7 |
-| Deload-keep bar | sleep on the server within 1 hour of waking on ≥ 10 of 14 mornings | decided | not planned |
+| Recovery-note keep bar | sleep on the server within 1 hour of waking on ≥ 10 of 14 mornings | decided | not planned |
 
 ## Notifications
 
@@ -74,7 +74,7 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Chat allowance | $0.10 per person per day, which is about 30 crossover questions at roughly $0.003 each | arithmetic | M7: real cost per question |
 | Allowance heads-up | at 80% | decided | not planned |
 | Allowance reset | local midnight | decided | not planned |
-| Unprompted AI cap (deload messages) | $5 a month across everyone; template message past it | decided | M7: real cost per message |
+| Unprompted AI cap (recovery notes) | $5 a month across everyone; template message past it | decided | M7: real cost per message |
 | MCP rate limit | 60 calls a minute and 2,000 a day per person, shared by all their assistants | judgement | M7 and the M8 chat-peak result |
 | Chat history kept | 90 days | decided | not planned |
 | AI changes list kept | 90 days | decided | not planned |
