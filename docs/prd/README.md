@@ -309,6 +309,7 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 - **Server:** Node 24 and TypeScript, Fastify 5, Kysely with hand-written SQL migrations, and better-auth. Uses the official `plaid` client (pinned), `jose` for webhooks, and `ioredis` for Valkey.
 - **AWS:** ALB, Fargate ARM, RDS Postgres, ElastiCache Serverless Valkey, SQS and EventBridge Scheduler.
 - **Ops:** Terraform for both setups, GitHub Actions for CI and deploys, and OpenTelemetry to Grafana Cloud.
+- **Lint:** the anti-slop Oxlint rules across every package (`apps/mobile`, `apps/server`, `packages/contracts`, `mocks/`, `loadtest/`), run in CI on every merge alongside the smoke test. Findings are fixed, never silenced by weakening or suppressing a rule. Two rules need a policy for Expo, decided when lint is installed: `no-module-mocking` (Expo tests often mock native modules) and `no-array-filter-map` (iterator helpers must be supported on Hermes).
 
 **Shape**
 - A **modular monolith** of seven modules. Each is a Fastify plugin with its own tables, one data-access place and a small public interface. No module reads another module's tables.
@@ -370,10 +371,12 @@ The daily timeline is built at read time from the workouts, health and money mod
 
 Each milestone ends with something usable on the phone and deployed to the always-on setup.
 
+**Mockups first.** M1 sets the overall look. Each area milestone (M2 to M6) then starts with a mockup of that area's screens in that look, judged before building. Mockups judge layout and style only. Motion and touch feel are judged on a release build on a real iPhone.
+
 | # | Milestone | Done when |
 |---|---|---|
 | M0 | Device test | On a real iPhone, an EAS development build is granted Health access and registers an observer. The app is killed, a new Health sample is added, and the woken app uploads it. If SDK 58 fails, fall back to SDK 57 and repeat. |
-| M1 | Walking skeleton | The monorepo, Terraform for always-on, CI deploying main, OpenTelemetry reaching Grafana, sign-in, and one request from the phone through the api role to Postgres under row-level security. The first restore is rehearsed. |
+| M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI, Terraform for always-on, CI deploying main, OpenTelemetry reaching Grafana, sign-in, and one request from the phone through the api role to Postgres under row-level security. The first restore is rehearsed. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
 | M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. |
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. The 14-morning sleep-arrival measurement starts. |
 | M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. |
