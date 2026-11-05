@@ -131,9 +131,9 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 
 | Setting | Starting value | Basis | Replaced by |
 |---|---|---|---|
-| Telemetry destination, M1 to M6 | local `grafana/otel-lgtm` container | decided | not planned |
+| Telemetry before M7 | structured console logs only, with no personal data | decided | not planned |
 | Telemetry destination, from M7 | Grafana Cloud free tier | decided | the tier's limits, if a load-test run exceeds them |
-| Phone crash and error reports | Sentry free plan; request bodies, screenshots, session replay and personal breadcrumbs off | decided | not planned |
+| Phone crash and error reports (from M3) | Sentry free plan; request bodies, screenshots, session replay and personal breadcrumbs off | decided | not planned |
 | Alert: errors | over 1% of requests for 5 minutes | judgement | M7 |
 | Alert: queue backlog | over 1,000 messages for 10 minutes, or outbox lag over 60 seconds | judgement | M7 |
 | Alert: dead-letter queue | any message | decided | not planned |

@@ -308,7 +308,7 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 - **Phone:** Expo SDK 58, `@kingstinct/react-native-healthkit` 16.x, `expo-sqlite` for the logger, and TanStack Query with a saved cache for other screens.
 - **Server:** Node 24 and TypeScript, Fastify 5, Kysely with hand-written SQL migrations, and better-auth. Uses the official `plaid` client (pinned), `jose` for webhooks, and `ioredis` for Valkey.
 - **AWS:** ALB, Fargate ARM, RDS Postgres, ElastiCache Serverless Valkey, SQS and EventBridge Scheduler.
-- **Local:** Docker Compose runs Postgres, Valkey, an SQS emulator and a small tick sender (standing in for EventBridge Scheduler) on the laptop. It's the same stack CI uses. Cloudflare Tunnel gives the laptop a public HTTPS address for Plaid's webhooks, Claude's MCP connector, and the phone away from home Wi-Fi.
+- **Local:** Docker Compose runs Postgres, Valkey, an SQS emulator and a small tick sender (standing in for EventBridge Scheduler) on the laptop. It's the same stack CI uses. From M4, Cloudflare Tunnel gives the laptop a public HTTPS address for Plaid's webhooks, Claude's MCP connector, and the phone away from home Wi-Fi.
 - **Ops:** Terraform for the always-on and load-test setups, GitHub Actions for CI and deploys, OpenTelemetry for the server, and Sentry for the phone.
 - **Lint:** the anti-slop Oxlint rules across every package (`apps/mobile`, `apps/server`, `packages/contracts`, `mocks/`, `loadtest/`), run in CI on every merge alongside the smoke test. Findings are fixed, never silenced by weakening or suppressing a rule. Two rules need a policy for Expo, decided when lint is installed: `no-module-mocking` (Expo tests often mock native modules) and `no-array-filter-map` (iterator helpers must be supported on Hermes).
 
@@ -321,16 +321,16 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 - **Keys:** every large table's key starts with `user_id`, and new ids are UUIDv7. Hot and cold data sit in separate tables (raw Plaid payloads, raw health arrays, chat parts and undo before-states are cold).
 
 **Observability**
-- **Server:** OpenTelemetry sends traces, metrics and logs. During M1 to M6 they go to Grafana's all-in-one container (`grafana/otel-lgtm`) in Docker Compose, so nothing leaves the laptop. From M7 they go to Grafana Cloud's free tier. Only the endpoint setting changes.
-- **Phone:** Sentry's React Native SDK, on its free plan, reports crashes and errors with the stack trace, app version and device. Request bodies, screenshots, session replay and breadcrumbs that could hold personal data are turned off.
-- **Starter dashboard**, from M1:
+- **Server:** from M7, OpenTelemetry sends traces, metrics and logs to Grafana Cloud's free tier. Before then, the server writes structured logs to the console, with no personal data. Watching a running app only matters once it's running every day.
+- **Phone:** from M3, Sentry's React Native SDK, on its free plan, reports crashes and errors with the stack trace, app version and device. Request bodies, screenshots, session replay and breadcrumbs that could hold personal data are turned off.
+- **Starter dashboard**, from M7:
   - requests: rate, errors and p95 response time per route
   - background work: outbox lag, queue depth and dead-letter count
   - health sync: when each data type last arrived, and how long last night's sleep took to reach the app after waking
   - bank sync: how far behind each bank login is
   - AI: chat spend per day against the allowance, unprompted AI spend against its cap, and model call latency
 - **Alerts**, from M7, to Pratham's phone: errors climbing, a queue backing up, any dead-letter message, health sync silent for 24 hours, and AI spend near its cap. Thresholds are in [numbers.md](numbers.md).
-- **Tested:** from M1, a test scans telemetry and error reports from a run with seeded data and fails on any personal field.
+- **Tested:** a test scans error reports (from M3) and telemetry (from M7) from a run with seeded data, and fails on any personal field.
 
 **What each module owns** (table columns and endpoints are left to the implementation plan):
 
@@ -392,13 +392,13 @@ Each milestone ends with something usable on the phone. M1 to M6 run on the lapt
 | # | Milestone | Done when |
 |---|---|---|
 | M0 | Device test | On a real iPhone, an EAS development build is granted Health access and registers an observer. The app is killed, a new Health sample is added, and the woken app uploads it. If SDK 58 fails, fall back to SDK 57 and repeat. |
-| M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI. Docker Compose runs the full local stack, with Cloudflare Tunnel giving it a public address. OpenTelemetry reaches the local Grafana with the starter dashboard, and Sentry receives a test crash from the phone. Sign-in works, and one request goes from the phone through the api role to Postgres under row-level security. The personal-data test passes. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
+| M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI. Docker Compose runs the full local stack. Sign-in works, and one request goes from the phone through the api role to Postgres under row-level security. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
 | M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. |
-| M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. The 14-morning sleep-arrival measurement starts. |
-| M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Webhooks reach the laptop through the tunnel. |
+| M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. Sentry reports phone crashes, including ones during background health sync, which nothing else would show. The 14-morning sleep-arrival measurement starts. |
+| M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Cloudflare Tunnel is set up here, so Plaid's webhooks reach the laptop. |
 | M5 | AI | Section 10: tool module, in-app chat with write cards and the allowance, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |
 | M6 | Recovery notes and push | Section 7 and section 9. Then an AWS trial run: always-on is created from Terraform, one deploy and a sign-in work end to end, and it's torn down. That's a few hours of hosting, well under $1. |
-| M7 | AWS, daily use and measurement | First the always-on setup goes up: Terraform, CI deploying main with no downtime, telemetry to Grafana Cloud with alerts, the laptop's data moved into RDS (dump and restore), and the first restore rehearsed. Then daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
+| M7 | AWS, daily use and measurement | First the always-on setup goes up: Terraform, CI deploying main with no downtime, OpenTelemetry to Grafana Cloud with the starter dashboard, alerts and the personal-data test, the laptop's data moved into RDS (dump and restore), and the first restore rehearsed. Then daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
 | M8 | Load test | The first full run passes the pass bar and ramps to the breaking point. The part that failed first is fixed, a second run measures the fix, and the ClickHouse comparison runs on the same seeded data. |
 
 **Keeping recovery notes.** Over 14 mornings during M3 to M6, Apple Health must hand last night's sleep to the app within 1 hour of waking on at least 10 mornings. This is measured by the phone's own timestamp of when it read the data, sent with each upload, so a sleeping laptop doesn't skew it. If it doesn't, cut-list item 7 is pulled early, and recovery questions are answered only in chat.
