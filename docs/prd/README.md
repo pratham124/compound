@@ -471,24 +471,30 @@ Also out: account balances, per-category charts over time, savings goals, typing
 The full AWS setup is built and run through M8, because learning it is the point. After M8, once the load-test results are in, the app may serve only Pratham and a few invited people, so always-on moves to one small EC2 server. The Terraform for the full and load-test setups stays in the repo, so a load-test run can still rebuild them (about $14 a run). From then on, always-on no longer matches the load-test setup.
 
 **The one-server setup:**
-- **Server:** one EC2 t4g.small (2 vCPU burstable, 2 GB) with a fixed Elastic IP, running the same Docker Compose stack as the laptop: the server in api and worker roles, Postgres, Valkey, and Caddy serving HTTPS with a Let's Encrypt certificate. Because the IP stays fixed, chat still streams with no load balancer.
+- **Server:** one EC2 t4g.micro (2 vCPU burstable, 1 GB) with a fixed Elastic IP, running the same Docker Compose stack as the laptop: the server in api and worker roles, Postgres, Valkey, and Caddy serving HTTPS with a Let's Encrypt certificate. Because the IP stays fixed, chat still streams with no load balancer.
 - **Still on AWS:** SQS and EventBridge Scheduler (about $0 at this size) in place of ElasticMQ and the tick sender. The server gets credentials from its instance role, so there are no long-lived keys. KMS encrypts Plaid and OAuth tokens, Parameter Store holds secrets, and the disk is an encrypted EBS volume.
 - **Backups:** scheduled EBS snapshots kept for 35 days, plus a nightly `pg_dump` to S3. Point-in-time recovery is gone. A bad day can lose up to a day of data.
 - **On Pratham:** OS patches (Plaid's Developer Policy requires them), Postgres upgrades, and restore drills. Patches and deploys mean a few minutes of downtime, and deploys don't drain connections.
 
 | Piece | About a month |
 |---|---|
-| t4g.small | $12 |
+| t4g.micro | $6 |
 | 30 GB encrypted gp3 | $2.40 |
 | Elastic IP | $3.65 |
 | Snapshots and S3 dumps | $1 to $2 |
 | KMS key | $1 |
 | SQS, EventBridge Scheduler, Parameter Store, logs | about $1 |
-| **Total** | **about $20 to $22** |
+| **Total** | **about $15 to $16** |
 
-A one-year Savings Plan on the instance would take a few dollars more off. A t4g.micro (1 GB) saves about $6, but Postgres, Node and Valkey would be tight in 1 GB.
+**Fitting in 1 GB.** The OS, Docker, Caddy and Valkey take about 250 MB, Postgres tuned small (`shared_buffers` 128 MB) about 300 MB, and the one server process running both roles about 250 MB. That's about 800 MB, so:
+- Each container has a memory limit, and Node's heap is capped, so a runaway sync or summary rebuild is killed instead of the out-of-memory killer taking Postgres.
+- A 1 GB swap file absorbs short spikes.
+- Images are built in CI and pulled, never built on the server.
+- **Move to a t4g.small** (2 GB, about $6 a month more) if memory stays above about 85%, swap is used steadily, or CPU credits keep running out. It's a stop, a type change and a start, about two minutes of downtime with nothing moved.
 
-**Rough capacity** (a guess, not measured): several hundred people comfortably, maybe 1,000 to 2,000. Postgres, the api and the worker share about 0.4 vCPU of sustained CPU, so CPU during the morning sync wave and webhook bursts runs out first. Memory (about 1.2 GB used of 2) and disk aren't the limits. Plaid's Trial cap and the chat allowance are reached long before the server's limits. A k6 run from the laptop against the server would replace this guess.
+A one-year Savings Plan on the instance would take a couple of dollars more off.
+
+**Rough capacity** (a guess, not measured): a couple of hundred people comfortably, maybe 500 to 1,000, and about double on a t4g.small. A t4g.micro sustains about 0.2 vCPU and saves up credits to burst to 2 vCPU. With a few people it's idle most of the day, so credits build up for the morning sync wave and webhook bursts. Steady load gives out first, then memory. Disk isn't a limit. Plaid's Trial cap and the chat allowance are reached long before the server's limits. A k6 run from the laptop against the server would replace this guess.
 
 Inviting anyone still needs the invite-only stage gate in [privacy-security-design.md](../privacy-security-design.md) first.
 
@@ -504,7 +510,7 @@ With all three, always-on is about $25 to $30 a month, and chat loses streaming.
 
 **Rough capacity of the Fargate setups** (a guess, not measured; the bottleneck is CPU on the 0.5 vCPU task and the db.t4g.micro database):
 - **Always-on as specified:** about 1,000 to 5,000 people comfortably, and perhaps up to 10,000 before it needs the larger setup the load test uses. The 20 GB of storage holds about 20,000 person-years of data.
-- **Trimmed:** roughly half that, about the same as the one-server setup.
+- **Trimmed:** roughly half that, about the same as the one-server setup on a t4g.small.
 - **The real limits** come before the servers: Plaid's Trial allows 10 bank logins in total, and the chat allowance can cost up to about $3 per person a month.
 
 A k6 run against a load-test setup at always-on size would replace this guess for a dollar or two.
