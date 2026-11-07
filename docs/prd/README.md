@@ -387,7 +387,7 @@ The daily timeline is built at read time from the workouts, health and money mod
 
 Each milestone ends with something usable on the phone. M1 to M6 run on the laptop at no cost. The always-on AWS setup starts in M7, when the app has to be up every morning, so the 28 days of daily use are the first hosting bill. New-account AWS credits ($100, plus up to $100 more) should cover M7 and M8, so open the AWS account at the end of M6, not earlier.
 
-**Mockups first.** M1 sets the overall look. Each area milestone (M2 to M6) then starts with a mockup of that area's screens in that look, judged before building. Mockups judge layout and style only. Motion and touch feel are judged on a release build on a real iPhone.
+**Mockups first.** M1 sets the overall look. Each area milestone (M2 to M6) then starts with a mockup of that area's screens in that look, judged before building. Mockups judge layout and style only. Motion and touch feel are judged on a release build on a real iPhone, in the ticket that builds the screen, before it's closed. Development builds run extra debug code and feel slower, so they can't be used for this.
 
 | # | Milestone | Done when |
 |---|---|---|
