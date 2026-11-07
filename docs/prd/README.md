@@ -274,6 +274,12 @@ Two kinds of push: **recovery notes** and **budget alerts**.
   - It shows as a bar with no numbers. A heads-up appears at 80%.
   - At 100%, chat pauses until local midnight and suggests connecting an assistant.
   - Recovery notes don't count against it.
+- **Prompt caching:** every chat request is ordered so its unchanging start is cached, because cached input costs about a tenth of the normal price.
+  - The tool definitions and system prompt are identical for every person and every request: no date, name or sharing-switch state in them. The context builder puts anything per-person or per-request after them.
+  - Two cache breakpoints: one after the system prompt, shared by everyone, and one on the latest message, so each turn reads the conversation so far from the cache.
+  - Caching uses the default 5-minute lifetime. Turns in one conversation are usually minutes apart. With only a few people, the shared start often goes cold between conversations, so most of the saving comes from long conversations.
+  - The meter prices cache writes and cache reads at their own rates, not as normal input ([numbers.md](numbers.md)).
+  - A test checks that a second turn reports cache-read tokens, so a stray timestamp can't silently break caching.
 - **Topics:** the person's own data plus general training, recovery and money-habit questions. Anything else gets a short, polite decline. Chat says it's AI in every conversation.
 - **History:** conversations are kept on the server for 90 days, listed in the Chat tab, and can be deleted one at a time. There's no memory across conversations, but three seams make it addable later:
   - one context builder feeds every model request;
@@ -317,7 +323,7 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 - **One build, two process roles.** The api role serves HTTP. The worker role runs the outbox relay, queue consumers and tick handlers. The laptop and always-on run both in one process; the load test runs them as separate services.
 - **Background work:** the app writes an outbox row in the same commit as the change. A relay deletes it, sends it to SQS and commits. SQS standard queues have dead-letter queues. Recurring EventBridge Scheduler ticks wake workers to find due rows.
 - **Seams:** every read goes through a module's data-access place, so a cache or replica plugs in there. Nothing beyond the required parts is built until a run proves it's needed.
-- **Fast-counter seam:** phone sessions, the MCP rate limiter and the chat meter all go through one small storage interface. Only the Valkey version is built in the first version. A Postgres version can be added later without changing any caller ([section 17](#a-cheaper-just-me-setup-later)).
+- **Fast-counter seam:** phone sessions, the MCP rate limiter and the chat meter all go through one small storage interface. Only the Valkey version is built in the first version. A Postgres version can be added later without changing any caller ([section 17](#a-cheaper-setup-for-a-few-people-after-m8)).
 - **Keys:** every large table's key starts with `user_id`, and new ids are UUIDv7. Hot and cold data sit in separate tables (raw Plaid payloads, raw health arrays, chat parts and undo before-states are cold).
 
 **Observability**
@@ -396,7 +402,7 @@ Each milestone ends with something usable on the phone. M1 to M6 run on the lapt
 | M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. |
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. Sentry reports phone crashes, including ones during background health sync, which nothing else would show. The 14-morning sleep-arrival measurement starts. |
 | M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Cloudflare Tunnel is set up here, so Plaid's webhooks reach the laptop. |
-| M5 | AI | Section 10: tool module, in-app chat with write cards and the allowance, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |
+| M5 | AI | Section 10: tool module, in-app chat with write cards, the allowance and prompt caching, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |
 | M6 | Recovery notes and push | Section 7 and section 9. Then an AWS trial run: always-on is created from Terraform, one deploy and a sign-in work end to end, and it's torn down. That's a few hours of hosting, well under $1. |
 | M7 | AWS, daily use and measurement | First the always-on setup goes up: Terraform, CI deploying main with no downtime, OpenTelemetry to Grafana Cloud with the starter dashboard, alerts and the personal-data test, the laptop's data moved into RDS (dump and restore), and the first restore rehearsed. Then daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
 | M8 | Load test | The first full run passes the pass bar and ramps to the breaking point. The part that failed first is fixed, a second run measures the fix, and the ClickHouse comparison runs on the same seeded data. |
@@ -407,7 +413,7 @@ Each milestone ends with something usable on the phone. M1 to M6 run on the lapt
 
 **Measured in M7:**
 - **Model:** an eval of 30 real crossover questions, comparing `claude-haiku-5-5` with `claude-sonnet-5-5`. The cheaper model stays unless its answers are clearly worse.
-- **Chat allowance:** set from the real cost per question in Pratham's use.
+- **Chat allowance:** set from the real cost per question in Pratham's use, with caching on. The cache hit rate (cache-read tokens against all input tokens) is recorded alongside it.
 - **Recovery-check thresholds:** tuned against the 4 weeks of real messages, including ones Pratham found wrong or annoying.
 - **Unprompted AI cap:** set from the real cost per recovery note.
 - **Traffic shape:** refined from Pratham's real usage before the first run.
@@ -460,9 +466,39 @@ The later list, roughly in order:
 
 Also out: account balances, per-category charts over time, savings goals, typing in cash purchases, receipt scanning, renewal reminders, calendar export, Plaid's paid refresh and Recurring Transactions add-on, direct Garmin, Whoop and Strava connections, editing or deleting past workouts through AI, and self-serve data export. The invite-only and public stages, with their gates, billing and company, are optional later work.
 
-### A cheaper just-me setup, later
+### A cheaper setup for a few people, after M8
 
-After M8, once the load-test results are in, the always-on setup can be trimmed if the bill matters more than matching the load-test setup. There are three cuts, and each can be taken on its own:
+The full AWS setup is built and run through M8, because learning it is the point. After M8, once the load-test results are in, the app may serve only Pratham and a few invited people, so always-on moves to one small EC2 server. The Terraform for the full and load-test setups stays in the repo, so a load-test run can still rebuild them (about $14 a run). From then on, always-on no longer matches the load-test setup.
+
+**The one-server setup:**
+- **Server:** one EC2 t4g.micro (2 vCPU burstable, 1 GB) with a fixed Elastic IP, running the same Docker Compose stack as the laptop: the server in api and worker roles, Postgres, Valkey, and Caddy serving HTTPS with a Let's Encrypt certificate. Because the IP stays fixed, chat still streams with no load balancer.
+- **Still on AWS:** SQS and EventBridge Scheduler (about $0 at this size) in place of ElasticMQ and the tick sender. The server gets credentials from its instance role, so there are no long-lived keys. KMS encrypts Plaid and OAuth tokens, Parameter Store holds secrets, and the disk is an encrypted EBS volume.
+- **Backups:** scheduled EBS snapshots kept for 35 days, plus a nightly `pg_dump` to S3. Point-in-time recovery is gone. A bad day can lose up to a day of data.
+- **On Pratham:** OS patches (Plaid's Developer Policy requires them), Postgres upgrades, and restore drills. Patches and deploys mean a few minutes of downtime, and deploys don't drain connections.
+
+| Piece | About a month |
+|---|---|
+| t4g.micro | $6 |
+| 30 GB encrypted gp3 | $2.40 |
+| Elastic IP | $3.65 |
+| Snapshots and S3 dumps | $1 to $2 |
+| KMS key | $1 |
+| SQS, EventBridge Scheduler, Parameter Store, logs | about $1 |
+| **Total** | **about $15 to $16** |
+
+**Fitting in 1 GB.** The OS, Docker, Caddy and Valkey take about 250 MB, Postgres tuned small (`shared_buffers` 128 MB) about 300 MB, and the one server process running both roles about 250 MB. That's about 800 MB, so:
+- Each container has a memory limit, and Node's heap is capped, so a runaway sync or summary rebuild is killed instead of the out-of-memory killer taking Postgres.
+- A 1 GB swap file absorbs short spikes.
+- Images are built in CI and pulled, never built on the server.
+- **Move to a t4g.small** (2 GB, about $6 a month more) if memory stays above about 85%, swap is used steadily, or CPU credits keep running out. It's a stop, a type change and a start, about two minutes of downtime with nothing moved.
+
+A one-year Savings Plan on the instance would take a couple of dollars more off.
+
+**Rough capacity** (a guess, not measured): a couple of hundred people comfortably, maybe 500 to 1,000, and about double on a t4g.small. A t4g.micro sustains about 0.2 vCPU and saves up credits to burst to 2 vCPU. With a few people it's idle most of the day, so credits build up for the morning sync wave and webhook bursts. Steady load gives out first, then memory. Disk isn't a limit. Plaid's Trial cap and the chat allowance are reached long before the server's limits. A k6 run from the laptop against the server would replace this guess.
+
+Inviting anyone still needs the invite-only stage gate in [privacy-security-design.md](../privacy-security-design.md) first.
+
+**Fallback: trimming the Fargate setup instead.** If running a server by hand turns out to be a chore, the Fargate setup can be trimmed. There are three cuts, and each can be taken on its own:
 
 | Cut | Saves a month | How | Trade-off |
 |---|---|---|---|
@@ -470,11 +506,11 @@ After M8, once the load-test results are in, the always-on setup can be trimmed 
 | Valkey to Postgres | about $6 | Add the Postgres version behind the fast-counter seam (section 12) and remove Valkey | Every session check and meter update becomes a database query, and the always-on setup stops matching the load-test setup |
 | No load balancer | about $22 | Put API Gateway's HTTP API in front of the task, through a VPC link and Cloud Map | Chat replies can't stream word by word and requests are cut off at 30 seconds. Chat would then show whole replies, or move to queued turns the app polls. Deploys don't drain connections ([research](https://github.com/pratham124/compound/issues/18)) |
 
-With all three, always-on is about $25 to $30 a month. A task serving HTTPS itself, with no load balancer, isn't a cheaper alternative: a Fargate task gets a new public IP on every restart and can't keep a fixed one, so every deploy would mean a DNS change and an outage.
+With all three, always-on is about $25 to $30 a month, and chat loses streaming. A Fargate task serving HTTPS itself, with no load balancer, isn't a cheaper alternative: it gets a new public IP on every restart and can't keep a fixed one, so every deploy would mean a DNS change and an outage. The one-server setup avoids this with an Elastic IP.
 
-**Rough capacity** (a guess, not measured; the bottleneck is CPU on the 0.5 vCPU task and the db.t4g.micro database):
+**Rough capacity of the Fargate setups** (a guess, not measured; the bottleneck is CPU on the 0.5 vCPU task and the db.t4g.micro database):
 - **Always-on as specified:** about 1,000 to 5,000 people comfortably, and perhaps up to 10,000 before it needs the larger setup the load test uses. The 20 GB of storage holds about 20,000 person-years of data.
-- **Trimmed:** roughly half that.
+- **Trimmed:** roughly half that, about the same as the one-server setup on a t4g.small.
 - **The real limits** come before the servers: Plaid's Trial allows 10 bank logins in total, and the chat allowance can cost up to about $3 per person a month.
 
 A k6 run against a load-test setup at always-on size would replace this guess for a dollar or two.
