@@ -70,7 +70,9 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Setting | Starting value | Basis | Replaced by |
 |---|---|---|---|
 | In-app chat model | `claude-haiku-5-5`, low effort | decided | M7: eval of 30 real crossover questions against `claude-sonnet-5-5` |
-| Model prices used for the meter | Haiku 5.5: $0.10 in / $0.50 out per million tokens; Sonnet 5.5: $2 / $10 | researched (Anthropic's price list, Nov 2026) | whenever prices change |
+| Model prices used for the meter | Haiku 5.5: $0.10 in / $0.50 out per million tokens ($0.50 / $2.50 on prompts over 100K tokens); Sonnet 5.5: $2 / $10 | researched (Anthropic's price list, Nov 2026) | whenever prices change |
+| Cache prices used for the meter | writes 1.25× normal input (5-minute lifetime), reads 0.1×: Haiku 5.5 about $0.125 and $0.01 per million tokens, Sonnet 5.5 $2.50 and $0.20 | researched (Anthropic's prompt caching docs, Nov 2026) | whenever prices change |
+| Smallest cacheable start | 512 tokens on Haiku 5.5 and Sonnet 5.5; shorter starts silently don't cache | researched | whenever the model changes |
 | Chat allowance | $0.10 per person per day, which is about 30 crossover questions at roughly $0.003 each | arithmetic | M7: real cost per question |
 | Allowance heads-up | at 80% | decided | not planned |
 | Allowance reset | local midnight | decided | not planned |
@@ -91,6 +93,7 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Always-on cache | ElastiCache Serverless Valkey | decided | not planned |
 | Development hosting (M0 to M6) | $0: the laptop with Docker Compose and Cloudflare Tunnel's free tier | decided | not planned |
 | Always-on monthly cost (from M7) | about $56 to $61, mostly covered by new-account AWS credits ($100 plus up to $100 more) at first | arithmetic (the scaling record's breakdown) | the first month's bill |
+| Always-on after M8 | one EC2 t4g.small running the Compose stack, about $20 to $22 a month ([PRD section 17](README.md#a-cheaper-setup-for-a-few-people-after-m8)) | arithmetic | the first month's bill on it |
 | AWS trial run (end of M6) | a few hours of always-on, under $1 | arithmetic | not planned |
 | Connection pool, api process | 10 | judgement (RDS allows about 100 connections on 1 GB) | M8 breaking point |
 | Connection pool, worker process | 5 | judgement | M8 |
