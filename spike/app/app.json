@@ -22,6 +22,11 @@
           "background": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "df551cae-468d-4c74-96cb-cb16380dd651"
+      }
+    }
   }
 }
