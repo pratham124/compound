@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Compound M0",
+    "slug": "compound-m0-spike",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "com.pratham124.compoundm0",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "plugins": [
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "Compound M0 test reads sleep, steps, resting heart rate and HRV to check background delivery.",
+          "NSHealthUpdateUsageDescription": false,
+          "background": true
+        }
+      ]
+    ]
+  }
+}

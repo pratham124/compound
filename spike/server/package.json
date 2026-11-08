@@ -1,0 +1,5 @@
+{
+  "name": "compound-m0-server",
+  "private": true,
+  "scripts": { "start": "node server.js" }
+}
