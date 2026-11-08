@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compound: Budget options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..800,0..100,0..1&display=swap" rel="stylesheet">
+<style>
+/* ---------- Page chrome (px, so Larger text only affects the components) ---------- */
+*{box-sizing:border-box}
+html{font-size:17px}
+html.larger{font-size:22.1px}
+body{margin:0;background:#D9DBDF;color:#1B2230;font:16px/1.45 Nunito,system-ui,sans-serif}
+.page{padding:32px;max-width:1360px;margin:0 auto}
+.page-h h1{margin:0 0 6px;font-size:30px;line-height:1.2;font-weight:700;letter-spacing:-.02em}
+.page-h p{margin:0 0 18px;font-size:16px;color:#3C4452}
+.controls{margin-bottom:28px}
+.tog{font:inherit;font-size:14px;font-weight:600;border:0;background:#C6C9CF;color:#1B2230;padding:9px 18px;border-radius:999px;cursor:pointer;min-height:44px}
+.tog[aria-pressed="true"]{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.tog:focus-visible{outline:2px solid #1B2230;outline-offset:2px}
+.cols{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+.opt{flex:none;width:393px;margin:0;display:flex;flex-direction:column;gap:16px}
+.opt > h2{margin:0;font-size:18px;line-height:1.3;font-weight:700;color:#1B2230}
+.panel{width:393px;padding:16px;border-radius:24px;background:var(--bg)}
+
+/* ---------- Tokens (copied from index.html: Friendly) ---------- */
+.dir-friendly{--font:ui-rounded,"SF Pro Rounded",Nunito,system-ui,sans-serif;--display-font:Fraunces,Georgia,serif;--r-card:24px;--track:var(--accent-soft);
+  font-family:var(--font);font-size:1rem;line-height:1.2941;color:var(--label);-webkit-font-smoothing:antialiased}
+.dir-friendly.light{--bg:#EDF3F0;--card:#FFFFFF;--label:#1E2B27;--secondary:#566A62;--sep:#E1EAE6;--sep-strong:#C5D3CD;--accent:#276F5D;--on-accent:#FFFFFF;--accent-soft:#DDF0E9}
+.dir-friendly.dark{--bg:#191614;--card:#24201D;--label:#F5EFEA;--secondary:#B3A89F;--sep:#332D29;--sep-strong:#453D38;--accent:#8FD3BD;--on-accent:#10221C;--accent-soft:#24302B}
+.dir-friendly *{box-sizing:border-box}
+.t-head{font-size:1rem;line-height:1.2941rem;font-weight:600}
+.t-body{font-size:1rem;line-height:1.2941rem}
+.t-sub{font-size:.8824rem;line-height:1.1765rem}
+.t-foot{font-size:.7647rem;line-height:1.0588rem}
+.t-cap{font-size:.7059rem;line-height:.9412rem}
+.sec{color:var(--secondary)}
+.num{font-variant-numeric:tabular-nums}
+.display{font-family:var(--display-font);font-variation-settings:"SOFT" 100,"WONK" 0;font-optical-sizing:auto;font-weight:600;letter-spacing:-.01em}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button{font-family:inherit;color:inherit}
+.card{background:var(--card);border-radius:var(--r-card);padding:16px}
+.card h2{margin:0}
+.chead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;min-height:44px}
+.link{display:flex;align-items:center;min-height:44px;border:0;background:transparent;padding:0;color:var(--accent);font-size:.8824rem;font-weight:600;cursor:pointer}
+.seeall{width:auto;gap:2px;margin-right:-6px;padding:0 6px}
+.link svg.chev{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic{width:14px;height:14px;flex:none;margin-top:1px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.note{display:flex;align-items:flex-start;gap:6px;margin:8px 0 0;color:var(--secondary)}
+.foot{color:var(--secondary);margin:10px 0 0}
+.amt{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.amt b{font-weight:600;color:var(--label)}
+.hd{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:2px 10px}
+html.larger .hd,html.larger .amt{flex-direction:column;align-items:flex-start;gap:0}
+
+/* ---------- A: Days' worth ---------- */
+.a-row{padding:12px 0 10px}
+.a-row + .a-row{border-top:1px solid var(--sep)}
+.pills{display:flex;gap:2px;height:.5rem;margin:12px 3px 10px}
+.pills i{display:block;flex:1 1 0;min-width:0;border-radius:999px;background:var(--sep-strong)}
+.pills i.on{background:var(--accent)}
+.pills i.today{box-shadow:0 0 0 1.5px var(--card),0 0 0 3px var(--accent);margin:0 1.5px}
+.left{margin:0;color:var(--secondary)}
+.paid{display:flex;align-items:center;justify-content:center;height:.5rem;min-height:1.1rem;margin:10px 0;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700}
+.a-row .note.work{margin-top:0;color:var(--label)}
+
+/* ---------- B: Jars ---------- */
+.jars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+html.larger .jars{grid-template-columns:1fr}
+.jar{background:var(--bg);border-radius:18px;padding:12px;min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;align-content:start}
+.jar.wide{grid-column:1 / -1}
+.jar svg.j{width:48px;height:56px;display:block;overflow:visible}
+.jar .jt{display:flex;flex-direction:column;min-width:0;align-self:center}
+.jar .jt .n{color:var(--secondary)}
+.jar .jt .v{margin-top:1px}
+.jar .note,.jar .work{grid-column:1 / -1;margin-top:8px}
+.jar .work{color:var(--label);display:flex;align-items:flex-start;gap:6px}
+.jar .j-fill{fill:var(--accent)}
+.jar .j-wall{fill:none;stroke:var(--sep-strong);stroke-width:1.5}
+.jar .j-lid{fill:var(--accent)}
+.jar .j-tick{stroke:var(--label);stroke-opacity:.6;stroke-width:1.5;stroke-linecap:round}
+
+/* ---------- C: Today line ---------- */
+.tl{position:relative}
+.capw{position:relative;height:1.7rem;margin-top:2px}
+.cap{position:absolute;left:23.3333%;top:0;transform:translateX(-50%);white-space:nowrap;background:var(--accent-soft);color:var(--accent);font-weight:700;padding:.15rem .7rem;border-radius:999px}
+.tline{position:absolute;left:23.3333%;top:1.7rem;bottom:.35rem;width:1.5px;margin-left:-.75px;border-radius:1px;background:color-mix(in srgb,var(--label) 55%,transparent);box-shadow:0 0 0 1px var(--card);z-index:2;pointer-events:none}
+.c-row{padding:8px 0 10px;position:relative}
+.c-row:last-child{padding-bottom:.9rem}
+.tx{position:relative;z-index:3;background:var(--card);padding:0 3px;margin:0 -3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.cb{height:10px;margin-top:8px;border-radius:999px;background:var(--track);overflow:hidden}
+.cb i{display:block;height:100%;border-radius:999px;background:var(--accent)}
+.c-row .note{margin-top:8px}
+.c-gym{border-top:1px solid var(--sep);margin-top:6px;padding-top:10px}
+.c-gym .note.work{color:var(--label)}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="page-h">
+    <h1>Budget options</h1>
+    <p>Pick one. It replaces the budget bars on Money and All budgets.</p>
+  </header>
+  <div class="controls"><button class="tog" id="big" type="button" aria-pressed="false">Larger text</button></div>
+  <div class="cols">
+    <section class="opt" aria-labelledby="ta"><h2 id="ta">A: Days' worth</h2><div id="a-light"></div><div id="a-dark"></div></section>
+    <section class="opt" aria-labelledby="tb"><h2 id="tb">B: Jars</h2><div id="b-light"></div><div id="b-dark"></div></section>
+    <section class="opt" aria-labelledby="tc"><h2 id="tc">C: Today line</h2><div id="c-light"></div><div id="c-dark"></div></section>
+  </div>
+</div>
+
+<script>
+/* ---------- Data (identical in every variant) ---------- */
+const DAY = 7, DAYS = 30, PACE = DAY / DAYS * 100; // 23.3%
+const BUD = [
+  {k:'groceries', n:'Groceries', a:142, b:450},
+  {k:'eating', n:'Eating out', a:160, b:200, note:'80% spent, $40 left this month.'},
+  {k:'coffee', n:'Coffee', a:18, b:60},
+  {k:'transport', n:'Transport', a:31, b:150}
+];
+const GYM = {n:'Gym and fitness', b:59, note:'5 workouts so far, $11.80 a workout'};
+const I = {
+  info:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+  dumbbell:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg>',
+  chev:'<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
+};
+const left = x => x.b - x.a;
+const pct = x => Math.round(x.a / x.b * 100);
+const summary = x => `${x.n}: $${left(x)} left of $${x.b}, ${pct(x)}% spent; an even pace would be ${Math.round(PACE)}% by today`;
+const gymSummary = `${GYM.n}: paid for the month, $${GYM.b}. ${GYM.note}`;
+const noteHtml = x => x.note ? `<p class="note t-foot">${I.info}<span>${x.note}</span></p>` : '';
+const gymNote = `<p class="note work t-foot">${I.dumbbell}<span>${GYM.note}</span></p>`;
+const head = `<div class="chead"><h2 class="t-head display">Budgets</h2><button class="link seeall" type="button">See all ${I.chev}</button></div>`;
+const card = inner => `<section class="card" aria-label="Budgets">${head}${inner}</section>`;
+
+/* ---------- A ---------- */
+function varA() {
+  const rows = BUD.map(x => {
+    const on = Math.round(x.a / x.b * DAYS);
+    const days = Math.round(left(x) / (x.b / DAYS));
+    const pills = Array.from({length: DAYS}, (_, i) => `<i class="${i < on ? 'on' : ''}${i + 1 === DAY ? ' today' : ''}"></i>`).join('');
+    return `<div class="a-row"><div class="hd"><span class="t-body">${x.n}</span><span class="amt num"><b class="t-body">$${left(x)} left</b><span class="t-sub sec">of $${x.b}</span></span></div>
+      <div class="pills" role="img" aria-label="${summary(x)}. ${on} of ${DAYS} days' worth spent.">${pills}</div>
+      <p class="left t-foot">about ${days} days' worth left</p>${noteHtml(x)}</div>`;
+  }).join('');
+  const gym = `<div class="a-row"><div class="hd"><span class="t-body">${GYM.n}</span><span class="amt num"><b class="t-body">Paid for the month</b><span class="t-sub sec">$${GYM.b}</span></span></div>
+    <div class="paid t-foot" role="img" aria-label="${gymSummary}">Paid</div>${gymNote}</div>`;
+  return card(rows + gym + `<p class="foot t-foot">Each dot is a day's share of the budget. The outlined one is today.</p>`);
+}
+
+/* ---------- B ---------- */
+let jid = 0;
+function jar(level, paid) {
+  const id = 'jc' + (jid++);
+  // Vessel is drawn 44 wide, 3 to 53 tall, then shifted down 3 to leave room for a lid.
+  const vessel = 'M14 3H30Q32 3 32 5V8Q32 10 35 11.5Q41 13.5 41 19V46Q41 53 34 53H10Q3 53 3 46V19Q3 13.5 9 11.5Q12 10 12 8V5Q12 3 14 3Z';
+  const top = 53 - level * 41; // 0% at the base, 100% at the shoulder
+  const surf = paid ? '' : `<path class="j-fill" d="M0 ${top.toFixed(1)}Q22 ${(top - 2.2).toFixed(1)} 44 ${top.toFixed(1)}V60H0Z"/>`;
+  const full = paid ? '<rect class="j-fill" x="0" y="10" width="44" height="50"/>' : '';
+  const pace = 53 - (1 - PACE / 100) * 41;
+  const tick = paid ? '' : `<path class="j-tick" d="M41.5 ${pace.toFixed(1)}H46.5"/>`;
+  const lid = paid ? '<rect class="j-lid" x="10" y="0" width="24" height="5" rx="2.5"/>' : '';
+  return `<svg class="j" viewBox="-1 0 48 58" aria-hidden="true"><defs><clipPath id="${id}"><path transform="translate(0 3)" d="${vessel}"/></clipPath></defs>
+    <g clip-path="url(#${id})"><g transform="translate(0 3)">${surf}${full}</g></g>
+    <path class="j-wall" transform="translate(0 3)" d="${vessel}"/>${lid}<g transform="translate(0 3)">${tick}</g></svg>`;
+}
+function varB() {
+  const tiles = BUD.map(x => {
+    const lvl = left(x) / x.b;
+    return `<div class="jar" role="img" aria-label="${summary(x)}"><span aria-hidden="true" style="display:contents">${jar(lvl, false)}
+      <span class="jt"><span class="n t-sub">${x.n}</span><span class="v display num t-head">$${left(x)} left</span><span class="t-foot sec num">of $${x.b}</span></span>${noteHtml(x)}</span></div>`;
+  }).join('');
+  const gym = `<div class="jar wide" role="img" aria-label="${gymSummary}"><span aria-hidden="true" style="display:contents">${jar(1, true)}
+    <span class="jt"><span class="n t-sub">${GYM.n}</span><span class="v display t-head">Paid</span><span class="t-foot sec num">$${GYM.b} for the month</span></span>${gymNote}</span></div>`;
+  return card(`<div class="jars">${tiles}${gym}</div><p class="foot t-foot">Each jar shows what is left. The tick marks where an even pace would be today.</p>`);
+}
+
+/* ---------- C ---------- */
+function varC() {
+  const rows = BUD.map(x => {
+    const p = x.a / x.b * 100;
+    return `<div class="c-row"><div class="hd"><span class="t-body"><span class="tx">${x.n}</span></span><span class="amt num"><b class="t-body"><span class="tx">$${left(x)} left</span></b><span class="t-sub sec"><span class="tx">of $${x.b}</span></span></span></div>
+      <div class="cb" role="img" aria-label="${summary(x)}"><i style="width:${p.toFixed(2)}%"></i></div>${x.note ? `<p class="note t-foot">${I.info}<span><span class="tx">${x.note}</span></span></p>` : ''}</div>`;
+  }).join('');
+  const gym = `<div class="c-gym"><div class="hd"><span class="t-body">${GYM.n}</span><span class="amt num"><b class="t-body">Paid</b><span class="t-sub sec">$${GYM.b} for the month</span></span></div>
+    <div class="cb" role="img" aria-label="${gymSummary}"><i style="width:100%"></i></div>${gymNote}</div>`;
+  return card(`<div class="tl"><div class="capw"><span class="cap t-cap">Today, day ${DAY} of ${DAYS}</span></div><span class="tline" aria-hidden="true"></span>${rows}</div>${gym}<p class="foot t-foot">Bars past the line are ahead of an even pace.</p>`);
+}
+
+for (const [id, fn] of [['a', varA], ['b', varB], ['c', varC]])
+  for (const m of ['light', 'dark'])
+    document.getElementById(`${id}-${m}`).innerHTML = `<div class="panel dir-friendly ${m}">${fn()}</div>`;
+
+const big = document.getElementById('big');
+big.addEventListener('click', () => {
+  const on = document.documentElement.classList.toggle('larger');
+  big.setAttribute('aria-pressed', String(on));
+});
+</script>
+</body>
+</html>

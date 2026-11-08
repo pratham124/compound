@@ -70,7 +70,7 @@ Workouts in a date range, from the logger and Apple Health.
 | `from`, `to` | date | required; up to 90 days |
 | `exercise_id` | string | optional; only workouts containing this exercise |
 
-Returns `workouts[]`: `id`, `date`, `started_at`, `duration_min`, `source` (`logger` or `apple_health`), `routine_id` (or null), `exercises[]` (`exercise_id`, `sets[]` of `reps`, `weight`, `is_pr`), `apple_health` (`type`, `energy_kcal`, or null), `external` (`routine_name`, and `custom_exercise_names` keyed by id). Also `training_volume` per workout.
+Returns `workouts[]`: `id`, `date`, `started_at`, `duration_min`, `source` (`logger` or `apple_health`), `routine_id` and `day_id` (or null), `exercises[]` (`exercise_id`, `sets[]` of `reps`, `weight`, `is_pr`), `apple_health` (`type`, `energy_kcal`, or null), `external` (`routine_name`, `day_name`, and `custom_exercise_names` keyed by id). Also `training_volume` per workout.
 
 ### get_personal_records
 
@@ -84,9 +84,9 @@ Returns `records[]`: `exercise_id`, `best_by_reps[]` (`reps` 1 to 12, `weight`, 
 
 ### get_routines
 
-Saved routines.
+Saved routines and their days.
 
-No inputs. Returns `routines[]`: `id`, `exercises[]` (`exercise_id`, `target_sets`, `target_reps`, `target_weight` or null), `last_used` (date or null), `external.name`.
+No inputs. Returns `routines[]`: `id`, `is_current`, `next_day_id` (current routine only, else null), `days[]` in order (`id`, `exercises[]` of `exercise_id`, `target_sets`, `target_reps`, `target_weight` or null; `last_done` date or null; `external.name`), and `external.name`.
 
 ### search_exercises
 
@@ -159,20 +159,22 @@ Returns `days[]`: `date`, `sleep_asleep_min`, `hrv_sdnn_ms`, `resting_hr_bpm`, `
 
 ## Write tools
 
-Every write returns `change_id` (its entry in the AI changes list) and `summary`, one sentence saying what changed. In the in-app chat, a write card with Apply and Cancel appears before the write runs ([wording.md](wording.md)). Over MCP, the write runs when called, and the assistant's own approval prompt is the confirmation.
+Every write returns `change_id` (its entry in the AI changes list) and `summary`, one sentence saying what changed. In the in-app chat, confirm buttons appear under chat's message before the write runs, and the write runs only when the confirm button is tapped ([wording.md](wording.md)). Over MCP, the write runs when called, and the assistant's own approval prompt is the confirmation.
 
 ### save_routine
 
 | Input | Type | Rules |
 |---|---|---|
-| `name` | string | required; 1 to 60 characters |
-| `exercises` | array | 1 to 20 items |
-| `exercises[].exercise_id` | string | must exist (built-in or the person's custom) |
-| `exercises[].target_sets` | integer | 1 to 10 |
-| `exercises[].target_reps` | integer | 1 to 50 |
-| `exercises[].target_weight` | weight | optional; 0 to 1,000 |
+| `name` | string | required; 1 to 60 characters; the routine's name |
+| `days` | array | 1 to 7 items, in order |
+| `days[].name` | string | required; 1 to 60 characters |
+| `days[].exercises` | array | 1 to 20 items |
+| `days[].exercises[].exercise_id` | string | must exist (built-in or the person's custom) |
+| `days[].exercises[].target_sets` | integer | 1 to 10 |
+| `days[].exercises[].target_reps` | integer | 1 to 50 |
+| `days[].exercises[].target_weight` | weight | optional; 0 to 1,000 |
 
-Undo deletes the routine if it hasn't been edited since.
+Saves a new routine; it never changes or replaces the current one, and isn't made current. A one-day routine (like a single "Easy legs" session) has one day with the same name. Undo deletes the routine if it hasn't been edited since.
 
 ### log_workout
 
@@ -183,7 +185,7 @@ For a finished workout the person forgot to log or did elsewhere.
 | `date` | date | required; today or up to 7 days back |
 | `started_at` | time | optional |
 | `duration_min` | integer | 1 to 300 |
-| `routine_id` | string | optional; must exist |
+| `day_id` | string | optional; must exist. A logged day moves its routine's next day like a workout logged on the phone |
 | `exercises` | array | 1 to 20 items |
 | `exercises[].exercise_id` | string | must exist |
 | `exercises[].sets` | array | 1 to 20 items, each `reps` (1 to 100) and `weight` (optional, 0 to 1,000) |

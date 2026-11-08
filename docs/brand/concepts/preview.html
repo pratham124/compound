@@ -1,0 +1,29 @@
+<!doctype html>
+<html><body style="margin:0;padding:24px;background:#f4f4f4;font-family:system-ui">
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<symbol id="arm" viewBox="0 0 100 100"><g fill="currentColor"><path d="M56.8 72L72.8 72A32 32 0 1 1 38.4 26.5C52 24.1 67 19 72 31L68 13A5.6 5.6 0 0 1 79 10L88 38Q91 50 80 51L61.2 50A19 19 0 1 0 56.8 72Z"/><rect x="40.5" y="12" width="7" height="15"/><rect x="40.5" y="89" width="7" height="9"/></g></symbol>
+<symbol id="arm-s" viewBox="0 0 100 100"><g fill="currentColor" stroke="currentColor"><path d="M56.8 72L72.8 72A32 32 0 1 1 38.4 26.5C52 24.1 67 19 72 31L68 13A5.6 5.6 0 0 1 79 10L88 38Q91 50 80 51L61.2 50A19 19 0 1 0 56.8 72Z" stroke="none"/><rect x="40.5" y="12" width="7" height="15" stroke="none"/><rect x="40.5" y="89" width="7" height="9" stroke="none"/><path d="M48.5 52A5 5 0 1 0 44 57A5 5 0 1 1 39.5 62" fill="none" stroke-width="4"/></g></symbol>
+<mask id="cm" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><circle cx="50" cy="50" r="47" fill="#fff"/><g fill="#000" transform="translate(50 50) scale(.74) translate(-62 -52)"><path d="M56.8 72L72.8 72A32 32 0 1 1 38.4 26.5C52 24.1 67 19 72 31L68 13A5.6 5.6 0 0 1 79 10L88 38Q91 50 80 51L61.2 50A19 19 0 1 0 56.8 72Z"/><rect x="40.5" y="12" width="7" height="15"/><rect x="40.5" y="89" width="7" height="9"/></g></mask>
+<symbol id="coin" viewBox="0 0 100 100"><rect width="100" height="100" fill="currentColor" mask="url(#cm)"/></symbol>
+</defs>
+</svg>
+<div id="grid" style="display:flex;gap:32px;flex-wrap:wrap"></div>
+<script>
+const ids = ["arm","arm-s","coin"];
+const g = document.getElementById("grid");
+for (const id of ids) {
+  g.insertAdjacentHTML("beforeend", `
+  <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+    <div style="width:300px;height:300px;border-radius:68px;background:#0a0a0a;display:grid;place-items:center">
+      <svg width="220" height="220" style="color:#fafafa"><use href="#${id}"/></svg></div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <svg width="48" height="48" style="color:#0a0a0a"><use href="#${id}"/></svg>
+      <svg width="24" height="24" style="color:#0a0a0a"><use href="#${id}"/></svg>
+      <svg width="16" height="16" style="color:#0a0a0a"><use href="#${id}"/></svg>
+    </div>
+    <div>${id}</div>
+  </div>`);
+}
+</script>
+</body></html>
