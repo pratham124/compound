@@ -81,7 +81,7 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 
 | Tab | What's on it |
 |---|---|
-| Today | The recovery card when there's a message, the Today card (last night's sleep, steps, resting heart rate, HRV, when health sync last ran), a Start workout button, and a profile button that opens Settings |
+| Today | The recovery card when there's a message, the Today card (last night's sleep, steps, resting heart rate, HRV, when health sync last ran) and a profile button that opens Settings |
 | Train | Start a routine or an empty workout, the logger, past workouts, PRs, routines, the exercise list |
 | Money | The this month view, the transaction list, budgets and subscriptions (list and calendar) as sections. Without a bank login, one screen explaining what linking adds, with a Link bank button |
 | Trends | 30 days of sleep, resting heart rate and HRV next to training volume, recovery notes marked, and daily Eating out spending as bars when a bank is linked |
