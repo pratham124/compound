@@ -114,7 +114,11 @@ export const colors: { light: Palette; dark: Palette } = {
 export const fonts = {
   text: 'ui-rounded',
   display: 'Fraunces',
-  /** Pass as `fontVariationSettings` (React Native 0.88+) on every display-font Text. */
+  /**
+   * Axes shared by every display-font Text. Each display style in `type` adds its own `opsz`
+   * (optical size) on top, because React Native doesn't set optical size automatically once
+   * `fontVariationSettings` is given, and small Fraunces needs its sturdier small-size shapes.
+   */
   displayVariation: { SOFT: 100, WONK: 0 },
 } as const;
 
@@ -124,13 +128,20 @@ type TextStyle = {
   lineHeight: number;
   fontWeight: '400' | '500' | '600' | '700';
   letterSpacing?: number;
+  /** Display styles only. Pass straight to Text's `fontVariationSettings` (React Native 0.88+). */
+  fontVariationSettings?: { SOFT: number; WONK: number; opsz: number };
 };
+
+/** Display axes for one size: soft corners, and an optical size matched to the point size. */
+const display = (size: number) => ({ ...fonts.displayVariation, opsz: size });
 
 /**
  * Type scale, matching the iOS text styles at the default text size.
  * React Native scales these with Dynamic Type by default (`allowFontScaling`), so layouts must
  * wrap or stack at large sizes rather than clip. letterSpacing is in points: about -0.02em on large
- * titles and -0.01em on title2. Body sizes are left at 0.
+ * titles and -0.01em on title2. Body sizes are left at 0, because the iOS rounded system font
+ * applies its own size-specific tracking. Fraunces has no such tables, which is why it is only
+ * used at 17pt and up.
  */
 export const type: Record<
   | 'largeTitle'
@@ -144,11 +155,11 @@ export const type: Record<
   TextStyle
 > = {
   /** Screen titles: Today, Money, Trends, Settings. */
-  largeTitle: { fontFamily: fonts.display, fontSize: 34, lineHeight: 41, fontWeight: '600', letterSpacing: -0.68 },
+  largeTitle: { fontFamily: fonts.display, fontSize: 34, lineHeight: 41, fontWeight: '600', letterSpacing: -0.68, fontVariationSettings: display(34) },
   /** Big numbers on tiles: 5 h 48 min, 3,214, 58. */
-  title2: { fontFamily: fonts.display, fontSize: 22, lineHeight: 28, fontWeight: '600', letterSpacing: -0.22 },
+  title2: { fontFamily: fonts.display, fontSize: 22, lineHeight: 28, fontWeight: '600', letterSpacing: -0.22, fontVariationSettings: display(22) },
   /** Card titles and exercise names use the display font; row labels use the text font. */
-  headline: { fontFamily: fonts.display, fontSize: 17, lineHeight: 22, fontWeight: '600' },
+  headline: { fontFamily: fonts.display, fontSize: 17, lineHeight: 22, fontWeight: '600', fontVariationSettings: display(17) },
   body: { fontFamily: fonts.text, fontSize: 17, lineHeight: 22, fontWeight: '400' },
   callout: { fontFamily: fonts.text, fontSize: 16, lineHeight: 21, fontWeight: '400' },
   subheadline: { fontFamily: fonts.text, fontSize: 15, lineHeight: 20, fontWeight: '400' },
@@ -232,6 +243,25 @@ export const press = {
   durationMs: 160,
   /** cubic-bezier(0.23, 1, 0.32, 1): a strong ease-out. */
   easing: [0.23, 1, 0.32, 1] as const,
+} as const;
+
+/**
+ * Brand: the soft cent-and-arm mark. Artwork lives in docs/brand/ (see its README).
+ * The app icon is the mark as soft "clay" on a deep green field. These are the colours Expo's
+ * app.json needs for the splash screen and the Android adaptive icon background.
+ */
+export const brand = {
+  /** App icon field: a gentle top-to-bottom green. */
+  iconField: ['#2A7461', '#246A58'] as const,
+  /** The clay mark's fill, light to shade. */
+  iconMark: ['#F8FBF9', '#D9E8E1'] as const,
+  /** Launch screen: the app background, with the flat mark in the accent. */
+  splash: {
+    light: { background: '#EDF3F0', mark: '#276F5D' },
+    dark: { background: '#191614', mark: '#8FD3BD' },
+  },
+  /** Sign in: the soft mint field behind the icon tile. */
+  signInField: { light: '#DDF0E9', dark: '#191614' },
 } as const;
 
 /** The chat button (the mochi). Motion and drag feel are judged on the phone, not here. */

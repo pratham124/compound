@@ -6,25 +6,25 @@ An appendix of the [PRD](README.md). This is the exact text for screens that mak
 
 On Settings → AI and assistants. All three are off until turned on.
 
-**Header:** Compound's AI can read your data to answer questions in chat and to write recovery notes. Choose what it can see. You can change this any time.
+**Header:** Choose what Compound's AI can read to answer chat questions and write recovery notes.
 
 | Switch | Text under it |
 |---|---|
-| **Workouts** | Chat can read your workouts, PRs and routines. |
-| **Health** | Chat and recovery notes can read your daily sleep, steps, resting heart rate and HRV. Daily totals only, never minute-by-minute data. |
-| **Money** | Chat can read your transactions (merchant, amount, date and category), budgets and subscriptions. Never your account numbers or account names. |
+| **Workouts** | Chat reads your workouts, PRs and routines. |
+| **Health** | Chat and recovery notes read your daily sleep, steps, resting heart rate and HRV. Daily totals only. |
+| **Money** | Chat reads transactions (merchant, amount, date, category), budgets and subscriptions. Never account numbers or names. |
 
-**Footer:** What you share is sent to Anthropic, the company that makes the AI model, only to write the answer. Anthropic doesn't train its models on it. Connected assistants, like Claude, have their own permissions, which you set when you connect them.
+**Footer:** What you share goes to Anthropic, the AI model's maker, only to write the answer. Anthropic doesn't train on it. Connected assistants, like Claude, have their own permissions.
 
 ## First-need prompt
 
 Shown once in chat the first time a question needs a kind that's off.
 
 > **Let chat see your {health data}?**
-> To answer this, chat needs to read {your daily sleep, steps, resting heart rate and HRV}. It's sent to Anthropic only to write the answer.
+> To answer, chat needs {your daily sleep, steps, resting heart rate and HRV}. It's sent to Anthropic only to write the answer.
 > [Turn on] [Not now]
 
-After **Not now**, chat answers with what it can see and adds: "I can't see your {health data}. You can turn it on in Settings → AI and assistants."
+After **Not now**, chat answers with what it can see and adds: "I can't see your {health data}. Turn it on in Settings → AI and assistants."
 
 ## Assistant consent page (OAuth)
 
@@ -38,47 +38,47 @@ Shown on the web after sign-in, when an assistant connects.
 > ☐ Save routines and log workouts
 > ☐ Set budgets, relabel transactions and mark subscriptions
 >
-> Only what you tick is shared. {Claude} will ask you before each change, and every change it makes can be undone in Compound under Settings → AI and assistants. You can disconnect it there any time.
+> Only what you tick is shared. {Claude} asks before each change. Undo changes or disconnect it any time in Settings → AI and assistants.
 > [Allow] [Cancel]
 
 All boxes start unticked. Allow is disabled until at least one is ticked.
 
-## Write cards
+## Confirm buttons
 
-Shown in the in-app chat before each write. Buttons are always **[Apply] [Cancel]**.
+Shown in chat under a message that proposes a change. Chat explains the change in its own words. The server builds the buttons from the tool call, so the label always says what will run. There are two: the confirm label below, and **Not now**. Only tapping the confirm button runs the change. Typing "yes" doesn't.
 
-| Tool | Card text |
+| Tool | Confirm button |
 |---|---|
-| save_routine | **Save routine "{name}"**: {n} exercises, {total sets} sets. {first three exercise names}{", and more" if more} |
-| log_workout | **Log a workout on {weekday, date}**: {n} exercises, {total sets} sets, {duration} min. |
-| set_budget | **Set your {category} budget to {amount} a month** (now {current amount or "no budget"}). |
-| recategorize_transaction | **Relabel {merchant}, {amount} on {date}**, from {old category} to {new category}. |
-| recategorize_transaction with apply_to_merchant | **Relabel {merchant}, {amount} on {date}**, from {old category} to {new category}, **and every past and future {merchant} charge.** |
-| set_subscription_status (true) | **Mark {merchant} as a {interval} subscription** of about {amount}. |
-| set_subscription_status (false) | **Mark {merchant} as not a subscription.** Compound will stop suggesting it. |
+| save_routine | Save "{name}" |
+| log_workout | Log workout for {weekday} |
+| set_budget | Set {category} to {amount} a month |
+| recategorize_transaction | Move to {new category} |
+| recategorize_transaction with apply_to_merchant | Move every {merchant} charge to {new category} |
+| set_subscription_status (true) | Mark as {interval} subscription |
+| set_subscription_status (false) | Not a subscription |
 
-After Apply: "Done. You can undo this in Settings → AI and assistants." After Cancel: "Cancelled, nothing changed."
+After the confirm button: "Done. Undo in Settings → AI and assistants." After Not now: "Okay, nothing changed."
 
 ## AI changes list
 
-Each entry: **{summary}** · {source: "In-app chat" or the assistant's name} · {relative time} · {state}
+Each entry has **{summary}** on the first line, then "{source}, {relative time}" on a second line. {source} is "In-app chat" or the assistant's name. The {state} sits on the right.
 
 | State | Shown as |
 |---|---|
 | applied | an **Undo** button |
 | undone | "Undone {relative time}" |
-| changed since | "Changed since. Undo isn't available because this was edited after {source} changed it." |
+| changed since | "Edited after {source} changed it. Undo isn't available." |
 
 Undo asks first: "Undo this change? {summary in reverse}" [Undo] [Keep].
 
 ## Chat allowance
 
 - **Heads-up at 80%:** "You've used most of today's chat. It resets at midnight."
-- **Paused at 100%:** "That's today's chat used up. It resets at midnight. You can keep asking about your data by connecting Claude or another assistant in Settings → AI and assistants."
+- **Paused at 100%:** "Today's chat is used up. It resets at midnight. To keep asking about your data, connect Claude or another assistant in Settings → AI and assistants."
 
 ## Chat disclosure and limits
 
-- **First message of every conversation:** "I'm Compound's AI. I can read the data you've shared and answer questions about your training, recovery and spending. I can't give medical, treatment or investment advice."
+- **First message of every conversation:** "I'm Compound's AI. I can read the data you've shared and answer questions about training, recovery and spending. I can't give medical, treatment or investment advice."
 - **Off-topic decline:** "I can only help with your Compound data and general training, recovery and money-habit questions."
 - **MCP rate limit (tool result):** "Too many requests. Try again in {n} seconds."
 
@@ -101,14 +101,20 @@ Flag phrases:
 | No rest | you've trained {n} days in a row |
 | No sleep data (training-only check) | (appended) Sleep data wasn't available this morning. |
 
-**Today card:** the message, the numbers behind it, and a link: "Turn off recovery notes".
+**Today card:** in this order:
+1. A fixed headline: "Maybe take it easier today". Every note suggests a lighter workout or a rest day, so one headline fits all.
+2. The message: the AI-written note, or the template's sentences without its bold title.
+3. The numbers behind it, drawn rather than repeated as sentences. For example, last 3 nights' sleep against the usual as two bars, and days in a row as dots.
+4. A link: "Turn off recovery notes".
+
+There's no "Recovery note" label above it.
 
 ## Push notifications
 
 **Before asking for iOS permission** (first time a kind becomes possible):
 
 > **Get a heads-up from Compound?**
-> {Recovery note: "On mornings when your recovery and training suggest an easier day, Compound can send you a note."} {Budget: "Compound can tell you when a category reaches 80% and 100% of its budget."} Nothing is sent during your quiet hours ({10 pm to 7 am}).
+> {Recovery note: "A short note on mornings that call for an easier day."} {Budget: "A heads-up when a budget reaches 80% or 100%."} Never between {10 pm and 7 am}.
 > [Allow notifications] [Not now]
 
 **Lock-screen text.** It's generic, and never shows numbers, merchants or health details:
@@ -118,24 +124,26 @@ Flag phrases:
 | Recovery note | Compound | Your recovery note for today is ready. |
 | Budget alert | Compound | One of your budgets needs a look. |
 
-**In-app budget alert** (on the this month view): "{category}: {spent} of {budget} spent ({80 or 100}%)."
+**In-app budget alert** (one line under that budget's bar on the this month view, so it sits with the budget it's about):
+- At 80%: "80% spent, {left} left this month."
+- At 100%: "100% spent, nothing left this month." If spending is past the budget: "100% spent, {over} over this month."
 
 ## No bank linked
 
 On the Money tab:
 
 > **See your spending next to your training.**
-> Link a bank to see where your money goes by category, set budgets, catch subscriptions you forgot about, and see what your gym costs per workout. Compound can only read your transactions. It can never move money.
+> Link a bank to see spending by category, set budgets, find forgotten subscriptions and see what your gym costs per workout. Compound can only read your transactions. It can never move money.
 > [Link a bank]
 
 ## Health data missing
 
 On the Today card when no data of a type has ever arrived:
 
-> **No {sleep} data yet.** If you've recorded it, Compound may not have permission to read it. [Check Health permissions]
+> **No {sleep} data yet.** Compound may not have permission to read it. [Check Health permissions]
 
 ## Account deletion
 
 > **Delete your account?**
-> This erases everything Compound holds about you within 24 hours: workouts, health data, transactions, chats and settings. Your bank connections are removed and connected assistants are disconnected. Backups are gone within 35 days. This can't be undone.
+> Everything Compound holds about you is erased within 24 hours, and from backups within 35 days. Banks and assistants are disconnected. This can't be undone.
 > [Delete my account] [Cancel]

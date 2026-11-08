@@ -11,7 +11,7 @@ The PRD is this file plus four appendices:
 | [numbers.md](numbers.md) | Every number the app reads from config, with its starting value, where the value came from, and what replaces it |
 | [tool-catalog.md](tool-catalog.md) | The 15 tools the in-app chat and assistants call, with inputs, outputs and scopes |
 | [categories.md](categories.md) | Compound's 14 spending categories and the mapping from Plaid's detailed categories |
-| [wording.md](wording.md) | The exact text of consent screens, write cards, notifications and limit messages |
+| [wording.md](wording.md) | The exact text of consent screens, confirm buttons, notifications and limit messages |
 
 ## Contents
 
@@ -53,7 +53,8 @@ Two things are still built as if other people were coming, because they're the s
 ## 3. Terms
 
 - **Logger**: the screen where you record a workout's exercises, sets, reps and weight as you do it.
-- **Routine**: a saved workout you can start again, with exercises and target sets and reps.
+- **Routine**: a saved training plan made of days, for example "Upper/lower" with the days Upper A, Lower A, Upper B and Lower B. One routine is current; the others are saved.
+- **Day**: one workout within a routine: a list of exercises with target sets and reps, which you start from Train.
 - **Exercise list**: the named exercises people pick from, so the same lift always counts as the same lift.
 - **Training volume**: for one day, the sum of reps × weight over all logged sets. Sets with no weight count their reps × 0 and so add nothing; they still count as a workout day.
 - **PR (personal record)**: for one exercise, the heaviest weight lifted at each rep count from 1 to 12, plus the best estimated one-rep max (Epley: weight × (1 + reps / 30)).
@@ -69,7 +70,7 @@ Two things are still built as if other people were coming, because they're the s
 - **Merchant rule**: a person's choice that every transaction from one merchant gets a given category.
 - **Subscription**: a charge Compound found repeating from one merchant at a regular interval and similar amount, or one a person marked.
 - **Tool**: one named action the in-app chat or an assistant can call on Compound's server.
-- **Write card**: the in-app chat's preview of a change, with Apply and Cancel.
+- **Confirm buttons**: two reply buttons under a chat message that proposes a change, such as Save "Easy legs" and Not now. The change runs only when the confirm button is tapped.
 - **AI changes list**: every change made by the chat or an assistant, with Undo.
 - **Chat allowance**: how much in-app chat a person can use per day, measured by real model cost.
 - **Scope**: one permission a person grants an assistant on Compound's consent page.
@@ -82,8 +83,8 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 | Tab | What's on it |
 |---|---|
 | Today | The recovery card when there's a message, the Today card (last night's sleep, steps, resting heart rate, HRV, when health sync last ran) and a profile button that opens Settings |
-| Train | Start a routine or an empty workout, the logger, past workouts, PRs, routines, the exercise list |
-| Money | The this month view, the transaction list, budgets and subscriptions (list and calendar) as sections. Without a bank login, one screen explaining what linking adds, with a Link bank button |
+| Train | Start the next day of the current routine, another day or an empty workout, the logger, past workouts (a month calendar), PRs, routines, the exercise list |
+| Money | The this month view, transactions (a month calendar), budgets and subscriptions (a month calendar) as sections. Without a bank login, one screen explaining what linking adds, with a Link bank button |
 | Trends | 30 days of sleep, resting heart rate and HRV next to training volume, recovery notes marked, and daily Eating out spending as bars when a bank is linked |
 | Chat | Past conversations and full-screen chat |
 
@@ -99,20 +100,23 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 ## 5. Workouts
 
 **User stories**
-- As Pratham, I can start a saved routine or an empty workout and log sets, reps and weight with no signal at the gym, and it syncs later without ever saving a set twice.
+- As Pratham, I can start a day from my routine or an empty workout and log sets, reps and weight with no signal at the gym, and it syncs later without ever saving a set twice.
 - As Pratham, I see what I did last time for each exercise while I log.
 - As Pratham, I see my PRs per exercise, and the logger marks a set that beats one.
 - As Pratham, I can start a rest timer between sets.
-- As Pratham, I can save a workout as a routine, and build routines by hand.
+- As Pratham, I can build a routine of several days by hand, and save a finished workout as a day.
 - As Pratham, I can pick exercises from a large list with instructions and images, and add my own.
 - As Pratham, my Apple Health workouts (for example a run recorded by my watch) appear in past workouts.
 
 **Requirements**
-- **Offline first.** Starting a routine, logging, editing and finishing a workout all work with no connection. Logger data lives in a local database on the phone with a local upload outbox. Every upload carries an idempotency key, so a retry never creates a duplicate. When the same item is edited on two devices, the last write wins.
+- **Offline first.** Starting a day, logging, editing and finishing a workout all work with no connection. Logger data lives in a local database on the phone with a local upload outbox. Every upload carries an idempotency key, so a retry never creates a duplicate. When the same item is edited on two devices, the last write wins.
 - **Exercise list.** A copy of [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (Unlicense, 800+ exercises) is owned by Compound from then on. Text ships inside the app. Images download when first viewed and are then cached. Custom exercises have a name (up to 60 characters), a primary muscle and equipment.
 - **Units.** Weight is stored with its unit (kg or lb). Pratham picks a display unit in Settings.
 - **Apple Health workouts** are read in as past workouts with type, duration and energy. They count as workout days but add no training volume, since they have no sets.
-- **Routines** can be created by hand, saved from a finished workout, or saved by the chat or an assistant after confirmation (section 10).
+- **Past workouts** show as a month calendar with a dot on each workout day (logged workouts and Apple Health workouts told apart) and the month's workout count. The calendar can step back through earlier months, and tapping a day shows that day's workouts. Volume in kilograms isn't shown.
+- **Calories on logged workouts.** When an Apple Health workout covers at least half of a workout logged in Compound, it isn't listed separately: its energy is shown on the logged workout, which keeps its own sets and volume. A logged workout with no overlapping Apple Health workout shows no calories. Compound never estimates calories.
+- **Routines** are built by hand: name the routine, add days, and add exercises to each day. A finished workout can be saved as a new day in any routine, or as a new one-day routine. Chat or an assistant can save a routine after confirmation (section 10); it's saved, not made current.
+- **Current routine and next day.** One routine is current, and any saved routine can be made current. Its days have an order Pratham sets by dragging. Train shows the next day of the current routine first, with a Start button: the day after the one he finished most recently in that routine, wrapping back to the first. Days started from another routine, empty workouts and Apple Health workouts don't move it. A new day goes at the end of the order. With no day finished yet, next is the first day.
 - **Next-set help** is only last time's numbers. Overload advice comes from asking chat.
 
 ## 6. Passive health data
@@ -192,7 +196,7 @@ The one feature where AI runs without being asked.
 **Categories.** 14 categories mapped from Plaid's detailed category; full list and mapping in [categories.md](categories.md). The original Plaid category is always stored. A per-transaction edit or a merchant rule always beats the mapping.
 
 **Screens**
-- **Transaction list:** merchant, amount, date (the authorized date), category, a pending marker, search, and a category edit that offers "just this one" or "always for this merchant".
+- **Transactions:** a month calendar, each day showing what was spent that day (spending only, as defined in section 3). It steps back through earlier months, as far as the 180 days of history go. Tapping a day lists its transactions with merchant, amount, date (the authorized date), category and a pending marker. Search finds any transaction. Each transaction has a category edit that offers "just this one" or "always for this merchant".
 - **This month view:** spending by category for the current month, and month-to-date compared with the same point last month. Income and Transfers are not spending.
 
 **Budgets and budget alerts**
@@ -210,8 +214,7 @@ The one feature where AI runs without being asked.
 - **Edits:** "Not a subscription" stops detection for that merchant for good. "Mark as subscription" works on any charge and asks for the interval (weekly, monthly or annual). Annual subscriptions are found only this way until someone has a year of history.
 - A subscription becomes **inactive** after 1.5 intervals with no charge.
 - A **price-change flag** appears when a renewal is at least 5% and $0.50 higher than the one before.
-- **List:** merchant, amount, how often, next expected date, monthly cost, with the edits above.
-- **Calendar:** a month view of expected renewals, inside the app only.
+- **Subscriptions page:** a month calendar of expected renewals (inside the app only), with every active subscription listed under it, including ones that don't renew this month. Each shows merchant, amount, how often, next expected date and monthly cost, with the edits above.
 - **Cost per workout:** a subscription in the Gym and fitness category shows this month's charge divided by workouts logged this month.
 
 **Trends.** Daily Eating out spending as bars under the recovery lines, by authorized date.
@@ -244,7 +247,7 @@ Two kinds of push: **recovery notes** and **budget alerts**.
 - Tools return daily summaries, never raw samples, and never account numbers, names or emails.
 
 **Confirming writes**
-- **In-app chat:** a write card with Apply and Cancel appears before each write runs ([wording.md](wording.md)).
+- **In-app chat:** chat proposes the change in its own message, and confirm buttons appear under it ([wording.md](wording.md)). The write runs only when the confirm button is tapped. Typing "yes" doesn't run it. The confirm button's label is built by the server from the tool call, not written by the AI, so the button always says what will actually happen.
 - **Assistants:** the assistant's own approval prompt is the confirmation. Write tools are annotated `readOnlyHint: false`, `destructiveHint: false`; read tools `readOnlyHint: true`; all four hints are set explicitly.
 
 **AI changes list and Undo**
@@ -402,7 +405,7 @@ Each milestone ends with something usable on the phone. M1 to M6 run on the lapt
 | M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. |
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. Sentry reports phone crashes, including ones during background health sync, which nothing else would show. The 14-morning sleep-arrival measurement starts. |
 | M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Cloudflare Tunnel is set up here, so Plaid's webhooks reach the laptop. |
-| M5 | AI | Section 10: tool module, in-app chat with write cards, the allowance and prompt caching, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |
+| M5 | AI | Section 10: tool module, in-app chat with confirm buttons, the allowance and prompt caching, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |
 | M6 | Recovery notes and push | Section 7 and section 9. Then an AWS trial run: always-on is created from Terraform, one deploy and a sign-in work end to end, and it's torn down. That's a few hours of hosting, well under $1. |
 | M7 | AWS, daily use and measurement | First the always-on setup goes up: Terraform, CI deploying main with no downtime, OpenTelemetry to Grafana Cloud with the starter dashboard, alerts and the personal-data test, the laptop's data moved into RDS (dump and restore), and the first restore rehearsed. Then daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
 | M8 | Load test | The first full run passes the pass bar and ramps to the breaking point. The part that failed first is fixed, a second run measures the fix, and the ClickHouse comparison runs on the same seeded data. |
