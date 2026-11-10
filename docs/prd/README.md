@@ -128,7 +128,7 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 
 **Requirements**
 - **Data read:** sleep (time asleep and in bed, with stages when a wearable records them), daily steps, resting heart rate and HRV (SDNN). All-day heart rate samples are not read.
-- **Health sync** uses Apple Health observer queries with background delivery, registered natively at app launch through `@kingstinct/react-native-healthkit`. The completion handler is always called, so Apple doesn't stop delivery.
+- **Health sync** uses Apple Health observer queries with background delivery, registered natively at app launch through `@kingstinct/react-native-healthkit`. The completion handler is always called, so Apple doesn't stop delivery. A read can fail with "Protected health data is inaccessible" when a wake lands while the phone is locked. Apple doesn't retry it, so every wake and launch reads everything new since the last successful read, not only the type that changed. `isProtectedDataAvailable()` said true during that failure in M0, so the app handles the read error instead of trusting that check.
 - **What the phone sends:** sleep segments, resting heart rate and HRV readings as Apple Health stores them, with their source, plus deletions. Steps go up as hourly totals. Uploads can repeat without creating duplicates.
 - **What the server keeps:** every sample, stored in day buckets (one row per person, day and type). An upload marks that person and day as needing a rebuild, and a worker rebuilds daily summaries in batches.
 - **History on connect:** the last 90 days, or the shorter window the person grants. Older history is not imported.
@@ -400,7 +400,7 @@ Each milestone ends with something usable on the phone. M1 to M6 run on the lapt
 
 | # | Milestone | Done when |
 |---|---|---|
-| M0 | Device test | On a real iPhone, an EAS development build is granted Health access and registers an observer. The app is killed, a new Health sample is added, and the woken app uploads it. If SDK 58 fails, fall back to SDK 57 and repeat. |
+| M0 | Device test | On a real iPhone, an EAS development build is granted Health access and registers an observer. The app is killed, a new Health sample is added, and the woken app uploads it. If SDK 58 fails, fall back to SDK 57 and repeat. **Passed on SDK 58 with an internal Release build** (a development build loads its code from the laptop, so it can't be trusted on a background wake). Results in [#22](https://github.com/pratham124/compound/issues/22). |
 | M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI. Docker Compose runs the full local stack. Sign-in works, and one request goes from the phone through the api role to Postgres under row-level security. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
 | M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. |
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. Sentry reports phone crashes, including ones during background health sync, which nothing else would show. The 14-morning sleep-arrival measurement starts. |
@@ -440,7 +440,7 @@ If the build runs long, Pratham pulls the next item from this list, in order. Th
 
 ## 16. Known limits
 
-- **Health sync timing is up to Apple.** Data arrives only after the phone unlocks. A force-quit can stop background delivery, and the "last synced" line is the only signal.
+- **Health sync timing is up to Apple.** Data can be read only while the phone is unlocked, and a wake that lands while it's locked uploads nothing; that data comes in on the next wake. Step changes wake the app at most about once an hour; sleep wakes it within seconds. In M0 a force-quit app was still woken, but Apple doesn't promise it, and the "last synced" line is the only signal if delivery stops.
 - **Night-shift sleepers** get odd sleep nights, because the 6 pm to noon window assumes night sleep.
 - **People without a wearable** get steps only, so their recovery checks are training-only.
 - **Annual subscriptions** are found only when marked by hand, until someone has a year of history.
