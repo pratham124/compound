@@ -4,27 +4,37 @@
 
 Pstack's verification skills are marked so they can't be invoked as skills. Follow them by reading the skill file from the newest pstack version: `~/.claude/plugins/cache/*/pstack/<newest>/skills/<name>/SKILL.md`. The pstack adapter at `docs/harness/claude-code.md` explains how its Cursor names map to Claude Code.
 
-A hook, `.claude/hooks/check-verification.mjs`, blocks `gh pr create` when a PR breaks either rule below.
+### Shipping a PR
 
-### App verification (`.claude/skills/verify-*/`)
+Ship every PR through `/no-mistakes`. A hook, `.claude/hooks/require-no-mistakes.mjs`, blocks a bare `gh pr create`. To bypass it, put a line `Skipped no-mistakes: <reason>` in the PR body.
 
-Before opening a PR that changes what a user sees or does, follow `maintain-verification-skill`, scoped to the features this diff touches:
-- add a `features/<feature>.md` for each new feature;
-- fix the feature files this change made wrong;
-- drive each touched feature live, and put the evidence in the PR description.
+Before `axi run`:
+- Run `node scripts/verification/pipeline-skips.mjs`. If it prints `test`, the change is docs or tooling only, so pass `--skip test`.
+- For app changes, pass `--verification-plan` naming the features the change touches.
 
-Commit the feature-map changes in the same PR, so the map never lags the code.
+What the pipeline then does (`.no-mistakes.yaml`):
+- **Review** checks the diff.
+- **Document** creates or updates the feature-map files in `.claude/skills/verify-*/features/`.
+- **Test** drives each touched feature live with `verify-compound` and attaches the evidence.
+- **Gate `verification-sync`** fails if app code changed without a feature-map change, or a formal check's covered code changed without its skill changing.
+- **Gate `formal-checks`** runs each formal check whose covered code changed.
 
-If no `verify-*` skill exists yet, skip this rule. Create one with `/pstack:create-verification-skill` once there's an app to drive (end of M1).
+The `gates` and the Test and Document instructions in `.no-mistakes.yaml` only take effect from `main`, so a PR that changes them doesn't exercise them.
+
+Once an app exists, create `verify-compound` with `/pstack:create-verification-skill` (end of M1). Until then Test only runs the repo's tests.
 
 ### Formal verification (any skill with a `covers.txt`)
 
-Each formal verification skill lists the code it covers in `covers.txt`: one repo-relative path or directory prefix per line, with `#` for comments. The hook reads this file, because the skill's own coverage record is prose.
-- **Creating one with `create-formal-verification-skill`:** write `covers.txt` next to its `SKILL.md`.
-- **A PR that changes a covered path:** follow `maintain-formal-verification-skill` for that check before opening the PR. Update the model or harness and the sync commit, rerun it, and commit those changes in the same PR. If it finds a bug in the code, report it to Pratham instead of changing the property to match.
+Each formal verification skill has two small files next to its `SKILL.md`:
+- `covers.txt`: the code it covers, one repo-relative path or directory prefix per line, `#` for comments.
+- `check.txt`: one command that runs the check from the repo root (first non-comment line).
+
+Write both when you create one with `create-formal-verification-skill`.
+
+Keeping the model right is the author's job before the pipeline run. When a PR changes covered code, follow `maintain-formal-verification-skill` for that check: update the model or harness and the sync commit, rerun it, and commit those changes in the same PR. If it finds a bug in the code, report it to Pratham instead of changing the property to match.
 
 `maintain-formal-verification-skill` only updates checks that already exist. It never creates one, so new checks come from these two rules:
-- **A PR that implements a promise below** follows `create-formal-verification-skill` for it in the same PR, including its `covers.txt`. Run it once the code exists, because there's nothing to verify before then.
+- **A PR that implements a promise below** follows `create-formal-verification-skill` for it in the same PR, including `covers.txt` and `check.txt`. Run it once the code exists, because there's nothing to verify before then.
 - **A maintain run that reports uncovered code** (new code that should have its own check): tell Pratham in the PR description and in your reply. Don't create the check unasked, because choosing a promise to verify is his call.
 
 Promises to verify, in milestone order (these are the ones tests rarely reach):
@@ -33,6 +43,6 @@ Promises to verify, in milestone order (these are the ones tests rarely reach):
 - **M4:** a budget alert fires at most once per category per month.
 - **M5:** the chat allowance is never overspent by more than 1%.
 
-### When a PR really changes nothing a check describes
+### When a change really updates nothing a check describes
 
-Put a line starting `No verification update:` with the reason in the PR body, for example a refactor with identical behavior. The hook lets the PR through and the reason stays visible to reviewers.
+Put a line starting `No verification update:` with the reason in a commit message, for example a refactor with identical behavior. The gates can't see the PR body, so it has to be in a commit. The `verification-sync` gate then passes.
