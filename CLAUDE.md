@@ -23,7 +23,11 @@ Each formal verification skill lists the code it covers in `covers.txt`: one rep
 - **Creating one with `create-formal-verification-skill`:** write `covers.txt` next to its `SKILL.md`.
 - **A PR that changes a covered path:** follow `maintain-formal-verification-skill` for that check before opening the PR. Update the model or harness and the sync commit, rerun it, and commit those changes in the same PR. If it finds a bug in the code, report it to Pratham instead of changing the property to match.
 
-Candidates, in milestone order (these are the promises tests rarely reach):
+`maintain-formal-verification-skill` only updates checks that already exist. It never creates one, so new checks come from these two rules:
+- **A PR that implements a promise below** follows `create-formal-verification-skill` for it in the same PR, including its `covers.txt`. Run it once the code exists, because there's nothing to verify before then.
+- **A maintain run that reports uncovered code** (new code that should have its own check): tell Pratham in the PR description and in your reply. Don't create the check unasked, because choosing a promise to verify is his call.
+
+Promises to verify, in milestone order (these are the ones tests rarely reach):
 - **M2:** an offline replay never creates a duplicate set.
 - **M4:** bank sync never misses or doubles a transaction when webhooks overlap.
 - **M4:** a budget alert fires at most once per category per month.
