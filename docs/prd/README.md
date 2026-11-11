@@ -203,6 +203,7 @@ The one feature where AI runs without being asked.
 - A monthly budget per spending category, shown as progress on the this month view.
 - Setup suggests each category's average over the last 3 full months. Each suggestion can be accepted, edited or skipped.
 - Alerts fire at 80% and 100%, checked inside the bank sync that crosses the threshold, at most once per category per month. They're written from a template, not by AI.
+- **Paid for the month:** when every charge in a budget's category this month comes from active subscriptions and the total isn't over the budget, there's no 80% or 100% alert, and the budget shows "Paid for the month" instead of progress. This stops a fixed bill, like a gym membership that fills its budget on the 1st, from alerting every month. Any other charge in that category, or a price rise that goes over, brings the normal alerts back for that month. Until detection has seen 3 charges, marking the charge as a subscription turns this on.
 - Pending charges count toward budgets.
 
 **Subscriptions**

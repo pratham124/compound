@@ -128,6 +128,8 @@ There's no "Recovery note" label above it.
 - At 80%: "80% spent, {left} left this month."
 - At 100%: "100% spent, nothing left this month." If spending is past the budget: "100% spent, {over} over this month."
 
+**Paid for the month** (a budget whose spending this month is all from subscriptions, and not over; no alert, no line under it): the bar shows as full and reads "Paid for the month" with the amount, for example "Paid for the month, $59". Screen readers hear "{category}: paid for the month, {amount}."
+
 ## No bank linked
 
 On the Money tab:
