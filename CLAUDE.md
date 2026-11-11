@@ -1,5 +1,23 @@
 # Compound
 
+## Tests: no vacuous or redundant ones
+
+Every test must be able to fail when the behavior it names breaks, and no two tests should guard the same thing. A test that can't fail costs run time and upkeep while proving nothing, and duplicates make every behavior change edit several tests. This applies to the author and to the no-mistakes Review step: raise each vacuous or redundant test as a finding.
+
+**Vacuous: rewrite or delete it when:**
+- **It would still pass if the code were wrong.** For example, the code under test was deleted, returned a constant, or skipped its work. Before keeping a new test, break the behavior once (temporarily) and confirm the test fails. Say in the PR which break you tried.
+- **Its expected value comes from the code's own logic,** or it only checks its own mocks. The expected value must come from somewhere independent: the PRD, a worked example, or a known constant.
+- **It reads source text** (greps or regex-matches the implementation) instead of running the code.
+- **It only checks what the type checker or a schema already enforces.**
+
+**Redundant: delete it when:**
+- **Another test already fails for the same broken behavior,** meaning the same rule and the same branch. Keep the one that best names what broke.
+- **The behavior it checks was removed or changed on purpose.** Update or delete it in the same PR.
+
+**In every PR that changes behavior,** look at the existing tests for the code you touched and delete the ones the change made redundant, in that PR. Never park a test with `.skip`, `.todo` or a commented-out body. Delete it, and give the reason in the commit message.
+
+A formal check of a TLA+ model doesn't make tests of the real code redundant, because the model isn't the code. A test that repeats one interleaving the model already covers is still useful if it runs the real code.
+
 ## Keep verification in step with the code
 
 Pstack's verification skills are marked so they can't be invoked as skills. Follow them by reading the skill file from the newest pstack version: `~/.claude/plugins/cache/*/pstack/<newest>/skills/<name>/SKILL.md`. The pstack adapter at `docs/harness/claude-code.md` explains how its Cursor names map to Claude Code.
