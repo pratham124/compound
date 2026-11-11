@@ -33,8 +33,8 @@ Plaid tells Compound when there are new transactions. If it says so several time
 
 ![New bank transactions](docs/architecture/plaid-webhook-flow.svg)
 
-### From last night's sleep to a training note
+### From last night's sleep to a recovery note
 
-When your phone has new sleep data, it sends it to Compound. Compound waits a few minutes in case more data arrives, then checks your recovery once for the day. If you might need a lighter day, it writes a short note and sends you a notification.
+When your phone has new sleep data, it sends it to Compound. Once no new sleep has arrived for 30 minutes, Compound treats last night's sleep as complete. A check that runs every 15 minutes then looks at your recovery, once for the day. If your sleep and training together suggest a lighter day, it writes a short recovery note and sends you a notification.
 
-![Sleep to training note](docs/architecture/sleep-deload-flow.svg)
+![Sleep to recovery note](docs/architecture/sleep-recovery-note-flow.svg)

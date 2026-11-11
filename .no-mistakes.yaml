@@ -1,0 +1,48 @@
+# no-mistakes config. gates, test.instructions, document.instructions and auto_fix.gates
+# are read only from the default branch, so they take effect once this file is on main.
+
+document:
+  instructions: |
+    .claude/skills/verify-*/features/ owns how each user-facing feature is verified. When the
+    change adds or alters a user-facing feature, create or update that feature's file there.
+    Match the existing feature files' format, which is pstack's feature map: an H1 with the
+    feature name, then four H2 sections: Sub-features, How to get to it (user POV),
+    Driving it with <the verify skill's harness>, Gotchas. Add a new file to the map's
+    README.md index too.
+    Do not edit formal verification models or any covers.txt; flag drift instead.
+    docs/prd/ is the product spec. README.md is the introduction.
+    docs/architecture/*.svg are archify exports of the sources in docs/diagrams/ (see the
+    "Architecture diagrams" section of CLAUDE.md). If the change alters what one of those
+    diagrams shows and the diagram wasn't updated, raise a finding naming the diagram.
+    Never hand-edit the SVGs.
+
+test:
+  instructions: |
+    1. If every changed file is docs or tooling (under docs/, .claude/, .github/, spike/, or a
+       .md file), there is nothing to drive: report that and pass.
+    2. If .claude/skills/verify-compound/SKILL.md exists, follow its Launch, Doctor, Drive,
+       Evidence and Cleanup sections for each feature the change touches (use the run's
+       verification plan if one was given). Capture screenshots or recordings as evidence.
+    3. Otherwise run the repo's tests for the changed area and say live driving isn't set up
+       yet (the verify skill arrives at the end of M1).
+  evidence:
+    store_in_repo: false # keep binary evidence out of git history
+    attach_media: true
+    compact: true
+
+gates:
+  # Feature map and formal-check skills must change with the code they describe.
+  - name: verification-sync
+    after: document
+    command: node scripts/verification/check-sync.mjs
+  # Runs each formal check whose covered code changed (needs test's code to be final).
+  - name: formal-checks
+    after: test
+    command: node scripts/verification/run-formal.mjs
+
+auto_fix:
+  gates:
+    # 0 on purpose: a failing gate may be a real bug, so it parks for Pratham instead of
+    # letting an agent edit the check until it passes.
+    verification-sync: 0
+    formal-checks: 0
