@@ -1,5 +1,9 @@
 # Compound
 
+## TypeScript
+
+Before editing any `.ts` or `.tsx` file, read pstack's `typescript-best-practices` skill and follow it. That's `SKILL.md` plus `references/patterns.md`, under `~/.claude/plugins/cache/*/pstack/<newest>/skills/typescript-best-practices/`. Read the `principle-type-system-discipline` skill it names first. The skill is marked so it can't be invoked, and `/poteto-mode` doesn't load it, so without this line its rules (discriminated unions, branded IDs, no `as` casts, exhaustive `never` checks, parsing at boundaries) wouldn't apply. Read them once per session, not per file. When handing TypeScript work to a subagent, tell it to do the same.
+
 ## Tests: no vacuous or redundant ones
 
 Every test must be able to fail when the behavior it names breaks, and no two tests should guard the same thing. A test that can't fail costs run time and upkeep while proving nothing, and duplicates make every behavior change edit several tests. This applies to the author and to the no-mistakes Review step: raise each vacuous or redundant test as a finding.
