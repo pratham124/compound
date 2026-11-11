@@ -6,6 +6,8 @@ import { join } from 'node:path';
 const input = JSON.parse(readFileSync(0, 'utf8'));
 const command = input.tool_input?.command ?? '';
 if (!/\bgh\s+pr\s+create\b/.test(command)) process.exit(0);
+// Agents that no-mistakes runs inside a pipeline load this repo's hooks too; never block the pipeline itself.
+if (process.env.NO_MISTAKES_GATE) process.exit(0);
 
 const cwd = input.cwd || process.cwd();
 let body = command;

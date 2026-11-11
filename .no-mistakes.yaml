@@ -5,8 +5,10 @@ document:
   instructions: |
     .claude/skills/verify-*/features/ owns how each user-facing feature is verified. When the
     change adds or alters a user-facing feature, create or update that feature's file there.
-    Match the existing feature files' format; if none exist yet, use four H2 sections:
-    What it does, How to reach it, How to drive it, What proves it works.
+    Match the existing feature files' format, which is pstack's feature map: an H1 with the
+    feature name, then four H2 sections: Sub-features, How to get to it (user POV),
+    Driving it with <the verify skill's harness>, Gotchas. Add a new file to the map's
+    README.md index too.
     Do not edit formal verification models or any covers.txt; flag drift instead.
     docs/prd/ is the product spec. README.md is the introduction.
 

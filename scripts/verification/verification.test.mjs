@@ -181,8 +181,14 @@ describe('run-formal', () => {
 });
 
 describe('require-no-mistakes hook', () => {
-  const runHook = (command, cwd = here) =>
-    spawnSync('node', [hook], { input: JSON.stringify({ tool_input: { command }, cwd }), encoding: 'utf8' });
+  // Strip NO_MISTAKES_GATE so these tests behave the same inside a no-mistakes run.
+  const { NO_MISTAKES_GATE: _, ...cleanEnv } = process.env;
+  const runHook = (command, cwd = here, env = cleanEnv) =>
+    spawnSync('node', [hook], { input: JSON.stringify({ tool_input: { command }, cwd }), encoding: 'utf8', env });
+
+  test('never blocks agents running inside a no-mistakes pipeline', () => {
+    assert.equal(runHook('gh pr create --title t --body b', here, { ...cleanEnv, NO_MISTAKES_GATE: '1' }).status, 0);
+  });
 
   test('blocks gh pr create', () => {
     const result = runHook('gh pr create --title t --body b');
