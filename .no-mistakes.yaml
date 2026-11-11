@@ -11,6 +11,10 @@ document:
     README.md index too.
     Do not edit formal verification models or any covers.txt; flag drift instead.
     docs/prd/ is the product spec. README.md is the introduction.
+    docs/architecture/*.svg are archify exports of the sources in docs/diagrams/ (see the
+    "Architecture diagrams" section of CLAUDE.md). If the change alters what one of those
+    diagrams shows and the diagram wasn't updated, raise a finding naming the diagram.
+    Never hand-edit the SVGs.
 
 test:
   instructions: |

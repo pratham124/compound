@@ -4,6 +4,23 @@
 
 Before editing any `.ts` or `.tsx` file, read pstack's `typescript-best-practices` skill and follow it. That's `SKILL.md` plus `references/patterns.md`, under `~/.claude/plugins/cache/*/pstack/<newest>/skills/typescript-best-practices/`. Read the `principle-type-system-discipline` skill it names first. The skill is marked so it can't be invoked, and `/poteto-mode` doesn't load it, so without this line its rules (discriminated unions, branded IDs, no `as` casts, exhaustive `never` checks, parsing at boundaries) wouldn't apply. Read them once per session, not per file. When handing TypeScript work to a subagent, tell it to do the same.
 
+## Architecture diagrams
+
+The README shows four diagrams, exported from archify sources:
+
+| Diagram (`docs/architecture/`) | Source (`docs/diagrams/`) | Shows |
+|---|---|---|
+| `deployment.svg` | `architecture-deployment-*` | what runs where: phone, server roles, AWS and outside services |
+| `modules.svg` | `architecture-modules-*` | the server's modules and what each owns |
+| `plaid-webhook-flow.svg` | `sequence-plaid-webhook-*` | a Plaid webhook through to stored transactions |
+| `sleep-deload-flow.svg` | `sequence-sleep-deload-*` | sleep arriving through to a recovery note |
+
+A PR that changes something a diagram shows updates that diagram in the same PR, using the archify skill. That includes PRD-only PRs, which is where architecture usually changes first. Examples: adding a module or service, moving a responsibility between modules, or adding or reordering a step in either flow.
+- **Edit the source, not the SVG.** Start archify from the existing `candidate.json`, so the layout and style carry over, then regenerate and re-export.
+- **Keep the SVG's path.** Write the SVG back to the same `docs/architecture/` file, because the README links to those paths.
+- **Same folder, no new timestamp.** Update the source folder where it is.
+- **Say so in the PR.** Name the diagram you updated in the PR description, or say why no diagram changed.
+
 ## Tests: no vacuous or redundant ones
 
 Every test must be able to fail when the behavior it names breaks, and no two tests should guard the same thing. A test that can't fail costs run time and upkeep while proving nothing, and duplicates make every behavior change edit several tests. This applies to the author and to the no-mistakes Review step: raise each vacuous or redundant test as a finding.
