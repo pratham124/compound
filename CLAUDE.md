@@ -13,11 +13,12 @@ The README shows four diagrams, exported from archify sources:
 | `deployment.svg` | `architecture-deployment-*` | what runs where: phone, server roles, AWS and outside services |
 | `modules.svg` | `architecture-modules-*` | the server's modules and what each owns |
 | `plaid-webhook-flow.svg` | `sequence-plaid-webhook-*` | a Plaid webhook through to stored transactions |
-| `sleep-deload-flow.svg` | `sequence-sleep-deload-*` | sleep arriving through to a recovery note |
+| `sleep-recovery-note-flow.svg` | `sequence-sleep-recovery-note-*` | sleep arriving through to a recovery note |
 
 A PR that changes something a diagram shows updates that diagram in the same PR, using the archify skill. That includes PRD-only PRs, which is where architecture usually changes first. Examples: adding a module or service, moving a responsibility between modules, or adding or reordering a step in either flow.
-- **Edit the source, not the SVG.** Start archify from the existing `candidate.json`, so the layout and style carry over, then regenerate and re-export.
-- **Keep the SVG's path.** Write the SVG back to the same `docs/architecture/` file, because the README links to those paths.
+- **The sources aren't in git.** `docs/diagrams/` is listed in `.git/info/exclude`, so the sources exist only in Pratham's main checkout. In a worktree, copy the source folder in first. Copy it back to the main checkout when you're done, because the main checkout is their only home. no-mistakes runs don't have them, so the Document step can only flag a stale diagram, not redraw it.
+- **Edit the source, not the SVG.** Start archify from the existing `candidate.json`, so the layout and style carry over, then run `finalize`. If that HTML already has browser-check results, pass `--out-dir <folder>/review-<n>`.
+- **Export from the viewer.** Open the HTML and use its export menu's SVG item. The CLI has no SVG export, and the current SVGs came from that menu. Write the SVG back to the same `docs/architecture/` file, because the README links to those paths.
 - **Same folder, no new timestamp.** Update the source folder where it is.
 - **Say so in the PR.** Name the diagram you updated in the PR description, or say why no diagram changed.
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 1180 512" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="--flow-cycle: 4.753s; width: 1180px; height: 512px; min-width: 0px;" width="1180" height="512" xmlns="http://www.w3.org/2000/svg"><style>
+<svg viewBox="0 0 1180 512" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="--flow-cycle: 5.218s; width: 1180px; height: 512px; min-width: 0px;" width="1180" height="512" xmlns="http://www.w3.org/2000/svg"><style>
 /*
 JetBrains Mono variable WOFF2 subsets from Google Fonts service revision v24.
 These fixed bytes are shared by the viewer and its SVG/raster exports.
@@ -399,182 +399,182 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 }
 @keyframes archify-relay-ripple { 
   0% { r: 2px; opacity: var(--flow-peak, 0.6); }
-  15.78%, 100% { r: 20px; opacity: 0; }
+  14.372%, 100% { r: 20px; opacity: 0; }
 }
 @keyframes archify-relay-comet-0 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.767% { opacity: var(--flow-peak, 0.9); }
-  8.837% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  12.203%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  1.61% { opacity: var(--flow-peak, 0.9); }
+  8.049% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  11.115%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-0 { 
-  0%, 2.651% { opacity: 0; }
-  8.837% { opacity: var(--flow-peak, 0.3); }
-  27.773%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 2.415% { opacity: 0; }
+  8.049% { opacity: var(--flow-peak, 0.3); }
+  25.296%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-1 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  2.525% { opacity: var(--flow-peak, 0.9); }
-  18.784% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  22.15%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  2.3% { opacity: var(--flow-peak, 0.9); }
+  17.108% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  20.174%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-1 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  18.784% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  37.72%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  17.108% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  34.355%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-2 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.767% { opacity: var(--flow-peak, 0.9); }
-  8.837% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  12.203%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  1.61% { opacity: var(--flow-peak, 0.9); }
+  8.049% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  11.115%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-2 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  8.837% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  27.773%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  8.049% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  25.296%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-3 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  2.525% { opacity: var(--flow-peak, 0.9); }
-  17.658% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  21.024%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  2.3% { opacity: var(--flow-peak, 0.9); }
+  16.082% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  19.149%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-3 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  17.658% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  36.594%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  16.082% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  33.329%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-4 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.767% { opacity: var(--flow-peak, 0.9); }
-  8.837% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  12.203%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  1.61% { opacity: var(--flow-peak, 0.9); }
+  8.049% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  11.115%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-4 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  8.837% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  27.773%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  8.049% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  25.296%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-5 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  2.525% { opacity: var(--flow-peak, 0.9); }
-  18.784% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  22.15%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  2.3% { opacity: var(--flow-peak, 0.9); }
+  17.108% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  20.174%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-5 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  18.784% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  37.72%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  17.108% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  34.355%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-6 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.767% { opacity: var(--flow-peak, 0.9); }
-  8.837% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  12.203%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  2.3% { opacity: var(--flow-peak, 0.9); }
+  16.97% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  20.036%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-6 { 
-  0%, 2.651% { opacity: 0; }
-  8.837% { opacity: var(--flow-peak, 0.3); }
-  27.773%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 5.091% { opacity: 0; }
+  16.97% { opacity: var(--flow-peak, 0.3); }
+  34.217%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-7 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  2.525% { opacity: var(--flow-peak, 0.9); }
-  22.918% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  26.284%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  2.3% { opacity: var(--flow-peak, 0.9); }
+  16.082% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  19.149%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-7 { 
-  0%, 6.875% { opacity: 0; }
-  22.918% { opacity: var(--flow-peak, 0.3); }
-  41.854%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 4.825% { opacity: 0; }
+  16.082% { opacity: var(--flow-peak, 0.3); }
+  33.329%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-8 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.767% { opacity: var(--flow-peak, 0.9); }
-  8.837% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  12.203%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  1.61% { opacity: var(--flow-peak, 0.9); }
+  8.049% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  11.115%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-8 { 
-  0%, 2.651% { opacity: 0; }
-  8.837% { opacity: var(--flow-peak, 0.3); }
-  27.773%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 2.415% { opacity: 0; }
+  8.049% { opacity: var(--flow-peak, 0.3); }
+  25.296%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-9 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.767% { opacity: var(--flow-peak, 0.9); }
-  8.837% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  12.203%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  1.61% { opacity: var(--flow-peak, 0.9); }
+  8.049% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  11.115%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-9 { 
-  0%, 2.651% { opacity: 0; }
-  8.837% { opacity: var(--flow-peak, 0.3); }
-  27.773%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 2.415% { opacity: 0; }
+  8.049% { opacity: var(--flow-peak, 0.3); }
+  25.296%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-10 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.767% { opacity: var(--flow-peak, 0.9); }
-  8.837% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  12.203%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  1.61% { opacity: var(--flow-peak, 0.9); }
+  8.049% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  11.115%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-10 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  8.837% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  27.773%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  8.049% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  25.296%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-node-0 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
   0% { filter: var(--ambient-node-base-filter, none); }
-  2.525%, 8.837% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  25.249% { filter: var(--ambient-node-base-filter, none); }
+  2.3%, 8.049% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  22.996% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-1 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  8.837% { filter: var(--ambient-node-base-filter, none); }
-  11.362%, 17.674% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  34.085% { filter: var(--ambient-node-base-filter, none); }
+  8.049% { filter: var(--ambient-node-base-filter, none); }
+  10.348%, 16.097% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  31.044% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-2 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  18.784% { filter: var(--ambient-node-base-filter, none); }
-  21.309%, 27.621% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  44.032% { filter: var(--ambient-node-base-filter, none); }
+  17.108% { filter: var(--ambient-node-base-filter, none); }
+  19.408%, 25.157% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  40.104% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-3 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  8.837% { filter: var(--ambient-node-base-filter, none); }
-  11.362%, 17.674% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  34.085% { filter: var(--ambient-node-base-filter, none); }
+  8.049% { filter: var(--ambient-node-base-filter, none); }
+  10.348%, 16.097% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  31.044% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-4 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  17.658% { filter: var(--ambient-node-base-filter, none); }
-  20.183%, 26.495% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  42.906% { filter: var(--ambient-node-base-filter, none); }
+  16.082% { filter: var(--ambient-node-base-filter, none); }
+  18.382%, 24.131% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  39.078% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-5 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  19.778% { filter: var(--ambient-node-base-filter, none); }
-  22.303%, 28.615% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  45.027% { filter: var(--ambient-node-base-filter, none); }
+  26.935% { filter: var(--ambient-node-base-filter, none); }
+  29.235%, 34.984% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  49.931% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-6 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  30.719% { filter: var(--ambient-node-base-filter, none); }
-  33.244%, 39.556% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  55.968% { filter: var(--ambient-node-base-filter, none); }
+  36.9% { filter: var(--ambient-node-base-filter, none); }
+  39.2%, 44.949% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  59.896% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-7 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  30.719% { filter: var(--ambient-node-base-filter, none); }
-  33.244%, 39.556% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  55.968% { filter: var(--ambient-node-base-filter, none); }
+  36.9% { filter: var(--ambient-node-base-filter, none); }
+  39.2%, 44.949% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  59.896% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-8 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  41.66% { filter: var(--ambient-node-base-filter, none); }
-  44.185%, 50.497% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  66.909% { filter: var(--ambient-node-base-filter, none); }
+  46.865% { filter: var(--ambient-node-base-filter, none); }
+  49.165%, 54.914% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  69.861% { filter: var(--ambient-node-base-filter, none); }
 }
 svg[data-node-ui] [data-node-id] &gt; rect:not(.c-mask) { stroke-width: 1.25px; }
 :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-frontend { fill: color-mix(in srgb, var(--frontend-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--frontend-stroke) 72%, var(--mask)); }
@@ -1009,16 +1009,16 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           <path data-edge-from="coaching" data-edge-to="health" data-edge-label="summaries" data-edge-key="5" data-edge-id="coaching-health" data-composition-points="520,79;470,79;470,235;420,235" data-composition-crossover="halo" data-composition-independent="true" d="M 520 79 L 478 79 Q 470 79 470 87 L 470 227 Q 470 235 462 235 L 420 235" class="a-default" data-animate="edge" style="--step: 5;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:6">
-          <path data-graph-role="automatic-crossover-underlay" d="M 420 249 L 520 249" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="health" data-edge-to="queue" data-edge-label="new sleep" data-edge-key="6" data-edge-id="health-queue" data-composition-points="420,249;520,249" data-composition-crossover="halo" data-composition-independent="true" d="M 420 249 L 520 249" class="a-dashed" data-animate="edge" style="--step: 6;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 350 274 L 350 290 Q 350 298 358 298 L 488 298 Q 496 298 496 290 L 496 243 Q 496 235 504 235 L 520 235" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="health" data-edge-to="queue" data-edge-label="new sleep" data-edge-key="6" data-edge-id="health-queue" data-composition-points="350,274;350,298;496,298;496,235;520,235" data-composition-crossover="halo" data-composition-independent="true" d="M 350 274 L 350 290 Q 350 298 358 298 L 488 298 Q 496 298 496 290 L 496 243 Q 496 235 504 235 L 520 235" class="a-dashed" data-animate="edge" style="--step: 6;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:7">
-          <path data-graph-role="automatic-crossover-underlay" d="M 420 412 L 582 412 Q 590 412 590 404 L 590 274" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="money" data-edge-to="queue" data-edge-label="txns synced" data-edge-key="7" data-edge-id="money-queue" data-composition-points="420,412;590,412;590,274" data-composition-crossover="halo" data-composition-independent="true" d="M 420 412 L 582 412 Q 590 412 590 404 L 590 274" class="a-dashed" data-animate="edge" style="--step: 7;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 420 396 L 528 396 Q 536 396 536 388 L 536 274" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="money" data-edge-to="queue" data-edge-label="txns synced" data-edge-key="7" data-edge-id="money-queue" data-composition-points="420,396;536,396;536,274" data-composition-crossover="halo" data-composition-independent="true" d="M 420 396 L 528 396 Q 536 396 536 388 L 536 274" class="a-dashed" data-animate="edge" style="--step: 7;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:8">
           <path data-graph-role="automatic-crossover-underlay" d="M 590 210 L 590 104" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="queue" data-edge-to="coaching" data-edge-label="deload job" data-edge-key="8" data-edge-id="queue-coaching" data-composition-points="590,210;590,104" data-composition-crossover="halo" data-composition-independent="true" d="M 590 210 L 590 104" class="a-dashed" data-animate="edge" style="--step: 8;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-edge-from="queue" data-edge-to="coaching" data-edge-label="recovery-check job" data-edge-key="8" data-edge-id="queue-coaching" data-composition-points="590,210;590,104" data-composition-crossover="halo" data-composition-independent="true" d="M 590 210 L 590 104" class="a-dashed" data-animate="edge" style="--step: 8;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:9">
           <path data-graph-role="automatic-crossover-underlay" d="M 660 242 L 760 242" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -1087,15 +1087,15 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="350" y="426" class="t-muted" font-size="9" text-anchor="middle">Plaid · budgets</text>
         </g>
 
-        <g id="node-coaching" data-node-id="coaching" data-node-label="coaching" tabindex="0" role="button" aria-label="Focus coaching, deload checks, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="deload checks" data-node-context="Architecture component">
-          <title>coaching · deload checks · Architecture component</title>
+        <g id="node-coaching" data-node-id="coaching" data-node-label="coaching" tabindex="0" role="button" aria-label="Focus coaching, recovery checks, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="recovery checks" data-node-context="Architecture component">
+          <title>coaching · recovery checks · Architecture component</title>
           <rect x="520" y="40" width="140" height="64" rx="8" class="c-mask"/>
           <rect x="520" y="40" width="140" height="64" rx="8" class="c-backend" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-6;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(526 46) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="590" y="70" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">coaching</text>
-        <text x="590" y="86" class="t-muted" font-size="9" text-anchor="middle">deload checks</text>
+        <text x="590" y="86" class="t-muted" font-size="9" text-anchor="middle">recovery checks</text>
         </g>
 
         <g id="node-queue" data-node-id="queue" data-node-label="outbox → SQS" tabindex="0" role="button" aria-label="Focus outbox → SQS, durable jobs, Architecture component" aria-pressed="false" data-node-kind="messagebus" data-node-sublabel="durable jobs" data-node-context="Architecture component">
@@ -1161,16 +1161,16 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           <text x="470" y="147" class="t-edge-default" font-size="8" text-anchor="middle">summaries</text>
         </g>
         <g data-edge-from="health" data-edge-to="queue" data-edge-label="new sleep" data-edge-key="6" data-edge-id="health-queue">
-          <rect x="443.4" y="259" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="470" y="269" class="t-edge-dashed" font-size="8" text-anchor="middle">new sleep</text>
+          <rect x="396.4" y="278" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="423" y="288" class="t-edge-dashed" font-size="8" text-anchor="middle">new sleep</text>
         </g>
         <g data-edge-from="money" data-edge-to="queue" data-edge-label="txns synced" data-edge-key="7" data-edge-id="money-queue">
-          <rect x="558.6" y="323" width="62.8" height="14" rx="3" class="c-mask"/>
-          <text x="590" y="333" class="t-edge-dashed" font-size="8" text-anchor="middle">txns synced</text>
+          <rect x="504.6" y="315" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="536" y="325" class="t-edge-dashed" font-size="8" text-anchor="middle">txns synced</text>
         </g>
-        <g data-edge-from="queue" data-edge-to="coaching" data-edge-label="deload job" data-edge-key="8" data-edge-id="queue-coaching">
-          <rect x="561" y="190" width="58" height="14" rx="3" class="c-mask"/>
-          <text x="590" y="200" class="t-edge-dashed" font-size="8" text-anchor="middle">deload job</text>
+        <g data-edge-from="queue" data-edge-to="coaching" data-edge-label="recovery-check job" data-edge-key="8" data-edge-id="queue-coaching">
+          <rect x="541.8" y="190" width="96.39999999999999" height="14" rx="3" class="c-mask"/>
+          <text x="590" y="200" class="t-edge-dashed" font-size="8" text-anchor="middle">recovery-check job</text>
         </g>
         <g data-edge-from="queue" data-edge-to="notifications" data-edge-label="push jobs" data-edge-key="9" data-edge-id="queue-notifications">
           <rect x="683.4" y="222" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
