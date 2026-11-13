@@ -2,7 +2,7 @@
 
 One place for your workouts, health and spending, so your AI assistant can see all three and answer questions that need them together. For example: "Do I order more takeout after a bad night's sleep?" or "Is my gym membership worth it, given how often I actually went?"
 
-Compound is still being planned, and nothing is built yet. To see what it will do and why, start with the [vision](docs/vision.md).
+Compound is early in its first milestone: only the project skeleton is built so far. To see what it will do and why, start with the [vision](docs/vision.md).
 
 ## How it will work
 

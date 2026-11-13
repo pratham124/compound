@@ -32,13 +32,9 @@ The clay icon is the soft mark (the original geometry with a 2.6 round-join stro
 
 The PNGs are rendered from the SVGs at exact pixel size with no scaling. The transparent ones keep their alpha.
 
-## Expo wiring (for reference)
+## Expo wiring
 
-- `icon`: `app-icon/icon.png`
-- `ios.icon`: `{ light: icon.png, dark: icon-dark.png, tinted: icon-tinted.png }`
-- `expo-splash-screen` plugin: `image` `splash-icon.png`, `backgroundColor` `#EDF3F0`, and `dark` `{ image: splash-icon-dark.png, backgroundColor: #191614 }`
-- `android.adaptiveIcon`: `foregroundImage`, `backgroundImage` and `monochromeImage` from the three `android-icon-*` PNGs
-- `web.favicon`: `favicon.png`
+`apps/mobile/app.json` points at the PNGs in `app-icon/` where they are, without copying them, as the table above shows. Renaming or moving one breaks the app build.
 
 ## iOS 26 and Icon Composer
 
