@@ -16,5 +16,5 @@ The only automatic mocking is the jest-expo preset's own setup. That lives in `n
 
 Both forms below replace `.filter(...).map(...)` so the array is walked once.
 
-- **Server (`apps/server`, `packages/contracts`, `scripts/`):** Node 24 has iterator helpers. Write `.values().filter(...).map(...).toArray()`.
-- **Mobile (`apps/mobile`):** use a single `flatMap` or a local reducer that pushes into a fresh array. Hermes support for iterator helpers has not been checked on the phone yet, and a missing helper crashes at runtime rather than at build time. Revisit once iterator helpers are confirmed on a device. Then mobile can use the same form as the server.
+- **Server (`apps/server`, `scripts/`):** Node 24 has iterator helpers. Write `.values().filter(...).map(...).toArray()`.
+- **Mobile (`apps/mobile`, `packages/contracts`):** use a single `flatMap` or a local reducer that pushes into a fresh array. Contracts goes here because the app bundles it and runs it on Hermes. Hermes support for iterator helpers has not been checked on the phone yet, and a missing helper crashes at runtime rather than at build time. Revisit once iterator helpers are confirmed on a device. Then mobile can use the same form as the server.

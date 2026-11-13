@@ -46,11 +46,6 @@
       ]
     ],
     "extra": {
-      "router": {
-        "asyncRoutes": {
-          "web": true
-        }
-      },
       "eas": {
         "projectId": "6d7f289b-e229-41c0-997d-711091d7da7c"
       }
