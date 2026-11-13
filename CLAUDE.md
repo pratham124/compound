@@ -46,7 +46,7 @@ A formal check of a TLA+ model doesn't make tests of the real code redundant, be
 
 ## Starting a ticket
 
-Start each `ready-for-agent` issue with `/ticket <n>`, a user skill in `~/.claude/skills/ticket/`. It claims the issue and opens its own worktree. A builder agent then builds it test-first, one acceptance criterion at a time, and a separate reviewer agent reviews it with Addy Osmani's skills, at most twice. It stops for you to review the branch before `/no-mistakes`. For parallel tickets, use one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files such as `docs/tradeoffs.md` are still editable there.
+Start each `ready-for-agent` issue from a session on `main` with `/worktree <n>`, which opens the issue's worktree and moves the session into it. Then run `/ticket <n>` there. It claims the issue, then a builder agent builds it test-first, one acceptance criterion at a time, and a separate reviewer agent reviews it with Addy Osmani's skills, at most twice. It stops for you to review the branch before `/no-mistakes`. Both are user skills in `~/.claude/skills/`. For parallel tickets, use one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files such as `docs/tradeoffs.md` are still editable there.
 
 ## Keep verification in step with the code
 
