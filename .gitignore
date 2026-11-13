@@ -3,6 +3,19 @@
 *.pem
 *.key
 node_modules/
+
+# Expo / React Native: native folders are generated (CNG), never committed
+apps/mobile/ios/
+apps/mobile/android/
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+
 __pycache__/
 .venv/
 docs/tradeoffs.md

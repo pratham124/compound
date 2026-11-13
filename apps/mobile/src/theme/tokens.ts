@@ -2,11 +2,10 @@
  * Compound design tokens: the "Friendly" look, picked on 7 November 2026 (issue #27).
  *
  * Source of truth for colours, type, spacing, radii and press feedback in the Expo app.
- * The mockups in ../mockups/index.html were built from these values. If the two disagree,
+ * The mockups in docs/design/mockups/index.html were built from these values. If the two disagree,
  * this file wins, and the mockup should be updated to match.
  *
- * Plain TypeScript with no imports, so the Expo app can copy or import it as is.
- * Units are iOS points, which are React Native's units.
+ * Plain TypeScript with no imports. Units are iOS points, which are React Native units.
  */
 
 /** Colours for one appearance. Every text colour passes 4.5:1 on bg, card, accentSoft and charTint. */
@@ -55,7 +54,10 @@ export type Palette = {
   glassLine: string;
 };
 
-export const colors: { light: Palette; dark: Palette } = {
+/** Both appearances, picked with `useColorScheme()`. */
+export type ColorSchemes = { light: Palette; dark: Palette };
+
+export const colors: ColorSchemes = {
   light: {
     bg: '#EDF3F0',
     card: '#FFFFFF',

@@ -1,0 +1,13 @@
+import { HealthResponse } from '@compound/contracts';
+
+export type FetchHealthOptions = {
+  baseUrl: string;
+  fetch: typeof globalThis.fetch;
+};
+
+export async function fetchHealth({ baseUrl, fetch }: FetchHealthOptions): Promise<HealthResponse> {
+  const response = await fetch(`${baseUrl.replace(/\/$/, '')}/health`);
+  const body: unknown = await response.json();
+
+  return HealthResponse.parse(body);
+}

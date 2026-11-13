@@ -4,6 +4,10 @@
 
 Before editing any `.ts` or `.tsx` file, read pstack's `typescript-best-practices` skill and follow it. That's `SKILL.md` plus `references/patterns.md`, under `~/.claude/plugins/cache/*/pstack/<newest>/skills/typescript-best-practices/`. Read the `principle-type-system-discipline` skill it names first. The skill is marked so it can't be invoked, and `/poteto-mode` doesn't load it, so without this line its rules (discriminated unions, branded IDs, no `as` casts, exhaustive `never` checks, parsing at boundaries) wouldn't apply. Read them once per session, not per file. When handing TypeScript work to a subagent, tell it to do the same.
 
+## Code comments
+
+Don't write a comment that restates what the code already says, such as explaining what `SplashScreen.setOptions({ fade: true, duration: 200 })` does or why 200ms was picked. Comment only what a reader couldn't get from the code: a hidden constraint, a workaround, or a choice someone would otherwise "fix". The reasoning behind a choice goes in the PR description or `docs/tradeoffs.md`. When handing work to a subagent, tell it the same.
+
 ## Architecture diagrams
 
 The README shows four diagrams, exported from archify sources:
@@ -42,7 +46,7 @@ A formal check of a TLA+ model doesn't make tests of the real code redundant, be
 
 ## Starting a ticket
 
-Start each `ready-for-agent` issue with `/ticket <n>`, a user skill in `~/.claude/skills/ticket/`. It claims the issue, opens its own worktree and builds it the `/implement` way, then stops for you to review before `/no-mistakes`. For parallel tickets, run it in one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files such as `docs/tradeoffs.md` are still editable there.
+Start each `ready-for-agent` issue from a session on `main` with `/worktree <n>`, which opens the issue's worktree and moves the session into it. Then run `/ticket <n>` there. It claims the issue, then a builder agent builds it test-first, one acceptance criterion at a time, and a separate reviewer agent reviews it with Addy Osmani's skills, at most twice. It stops for you to review the branch before `/no-mistakes`. Both are user skills in `~/.claude/skills/`. For parallel tickets, use one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files such as `docs/tradeoffs.md` are still editable there.
 
 ## Keep verification in step with the code
 

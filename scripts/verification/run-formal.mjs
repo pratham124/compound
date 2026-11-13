@@ -8,6 +8,7 @@ import { report } from './report.mjs';
 
 const cwd = process.cwd();
 const changed = changedFiles(cwd);
+
 if (changed === null) {
   report([{ id: 'no-base', severity: 'warning', description: 'No main branch found to compare against, so formal checks were not run.' }]);
   process.exit(0);
@@ -19,12 +20,15 @@ const findings = [];
 
 for (const skill of existsSync(skillsDir) ? readdirSync(skillsDir) : []) {
   const coversPath = join(skillsDir, skill, 'covers.txt');
+
   if (!existsSync(coversPath)) continue;
   const covers = lines(coversPath);
+
   if (!changed.some((f) => covers.some((c) => f === c || f.startsWith(c.endsWith('/') ? c : `${c}/`)))) continue;
 
   const checkPath = join(skillsDir, skill, 'check.txt');
   const command = existsSync(checkPath) ? lines(checkPath)[0] : undefined;
+
   if (!command) {
     findings.push({
       id: `formal-no-check-${skill}`,
@@ -34,7 +38,9 @@ for (const skill of existsSync(skillsDir) ? readdirSync(skillsDir) : []) {
     });
     continue;
   }
+
   const run = spawnSync(command, { cwd, shell: true, encoding: 'utf8' });
+
   if (run.status !== 0) {
     const tail = `${run.stdout ?? ''}${run.stderr ?? ''}`.trimEnd().split('\n').slice(-40).join('\n');
     findings.push({
@@ -45,4 +51,5 @@ for (const skill of existsSync(skillsDir) ? readdirSync(skillsDir) : []) {
     });
   }
 }
+
 report(findings);

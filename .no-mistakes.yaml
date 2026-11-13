@@ -1,5 +1,13 @@
-# no-mistakes config. gates, test.instructions, document.instructions and auto_fix.gates
+# no-mistakes config. gates, test.instructions, document.instructions, auto_fix.gates and pr
 # are read only from the default branch, so they take effect once this file is on main.
+
+pr:
+  # Matt Pocock's PR format (Summary, Evidence, Merge danger) on top; no-mistakes' own
+  # Risk, Testing and Pipeline evidence folded into one closed block underneath.
+  template: .github/pull_request_template.md
+  appendix: collapsed
+  # The Summary already says what and why; intent still feeds the review step.
+  publish_intent: false
 
 document:
   instructions: |
