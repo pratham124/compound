@@ -40,6 +40,10 @@ Every test must be able to fail when the behavior it names breaks, and no two te
 
 A formal check of a TLA+ model doesn't make tests of the real code redundant, because the model isn't the code. A test that repeats one interleaving the model already covers is still useful if it runs the real code.
 
+## Starting a ticket
+
+Start each `ready-for-agent` issue with `/ticket <n>`. It claims the issue, opens its own worktree and builds it the `/implement` way, then stops for you to review before `/no-mistakes`. For parallel tickets, run it in one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files such as `docs/tradeoffs.md` are still editable there.
+
 ## Keep verification in step with the code
 
 Pstack's verification skills are marked so they can't be invoked as skills. Follow them by reading the skill file from the newest pstack version: `~/.claude/plugins/cache/*/pstack/<newest>/skills/<name>/SKILL.md`. The pstack adapter at `docs/harness/claude-code.md` explains how its Cursor names map to Claude Code.
