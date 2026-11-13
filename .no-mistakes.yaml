@@ -1,5 +1,11 @@
-# no-mistakes config. gates, test.instructions, document.instructions, auto_fix.gates and pr
-# are read only from the default branch, so they take effect once this file is on main.
+# no-mistakes config. commands, gates, test.instructions, document.instructions, auto_fix.gates
+# and pr are read only from the default branch, so they take effect once this file is on main.
+
+commands:
+  # Run worktrees start with tracked files only; this installs node_modules once, before lint.
+  prepare: pnpm install --frozen-lockfile --prefer-offline
+  # The exact command CI runs, so the pipeline and CI agree on lint.
+  lint: pnpm lint
 
 pr:
   # Matt Pocock's PR format (Summary, Evidence, Merge danger) on top; no-mistakes' own
