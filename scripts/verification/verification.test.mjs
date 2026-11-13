@@ -11,6 +11,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const script = (name) => join(here, name);
 const hook = resolve(here, '..', '..', '.claude', 'hooks', 'require-no-mistakes.mjs');
 const dirs = [];
+
 after(() => dirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
 
 const git = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
@@ -39,6 +40,7 @@ function makeRepo({ withMain = true, files = {} } = {}) {
   git(repo, 'config', 'core.autocrlf', 'false');
   commit(repo, { 'README.md': 'x', ...files }, 'base');
   git(repo, 'checkout', '-b', 'feature');
+
   return repo;
 }
 
@@ -46,12 +48,15 @@ function run(name, repo) {
   const findingsFile = join(repo, '..', `findings-${Math.random().toString(36).slice(2)}.json`);
   writeFileSync(findingsFile, '');
   dirs.push(findingsFile);
+
   const result = spawnSync('node', [script(name)], {
     cwd: repo,
     encoding: 'utf8',
     env: { ...process.env, NO_MISTAKES_FINDINGS_FILE: findingsFile },
   });
+
   const text = readFileSync(findingsFile, 'utf8');
+
   return { ...result, findings: text ? JSON.parse(text).findings : [] };
 }
 
@@ -142,10 +147,15 @@ describe('check-sync', () => {
 });
 
 describe('run-formal', () => {
-  const formal = (check) => ({
-    '.claude/skills/formal-sync/covers.txt': 'src/sync\n',
-    ...(check === undefined ? {} : { '.claude/skills/formal-sync/check.txt': `# runs the model\n${check}\n` }),
-  });
+  const formal = (check) => {
+    const files = { '.claude/skills/formal-sync/covers.txt': 'src/sync\n' };
+
+    if (check !== undefined) {
+      files['.claude/skills/formal-sync/check.txt'] = `# runs the model\n${check}\n`;
+    }
+
+    return files;
+  };
 
   test('failing check is an error naming the skill', () => {
     const repo = makeRepo({ files: formal('node -e "console.log(\'boom\'); process.exit(1)"') });
@@ -183,6 +193,7 @@ describe('run-formal', () => {
 describe('require-no-mistakes hook', () => {
   // Strip NO_MISTAKES_GATE so these tests behave the same inside a no-mistakes run.
   const { NO_MISTAKES_GATE: _, ...cleanEnv } = process.env;
+
   const runHook = (command, cwd = here, env = cleanEnv) =>
     spawnSync('node', [hook], { input: JSON.stringify({ tool_input: { command }, cwd }), encoding: 'utf8', env });
 

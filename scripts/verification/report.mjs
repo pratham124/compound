@@ -5,9 +5,12 @@ import { writeFileSync } from 'node:fs';
 export function report(findings) {
   if (findings.length === 0) return;
   const file = process.env.NO_MISTAKES_FINDINGS_FILE;
+
   if (!file) {
     console.error(findings.map((f) => `${f.severity}: ${f.description}`).join('\n'));
+
     return;
   }
+
   writeFileSync(file, JSON.stringify({ findings }));
 }

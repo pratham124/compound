@@ -20,7 +20,7 @@ The mark is a cent sign whose top bar is a flexed arm. The app icon is the same 
 
 ## Colours
 
-These are the app's own tokens (`docs/design/tokens/tokens.ts`).
+These are the app's own tokens (`apps/mobile/src/theme/tokens.ts`).
 
 - Green `#276F5D` (accent), mist `#EDF3F0` (light background), Cocoa `#191614` (dark background), mint `#8FD3BD` (dark accent), label `#1E2B27`.
 - Icon field: a vertical gradient from `#2A7461` to `#246A58`. Dark icon field: `#1C1816` to `#161210`.

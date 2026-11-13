@@ -8,6 +8,7 @@ import { report } from './report.mjs';
 
 const cwd = process.cwd();
 const changed = changedFiles(cwd);
+
 if (changed === null) {
   report([{ id: 'no-base', severity: 'warning', description: 'No main branch found to compare against, so verification sync was not checked.' }]);
   process.exit(0);
@@ -15,6 +16,7 @@ if (changed === null) {
 
 // The PR body isn't visible to a gate, so the escape lives in a commit message.
 const messages = execFileSync('git', ['log', `${mergeBase(cwd)}..HEAD`, '--format=%B'], { cwd, encoding: 'utf8' });
+
 if (/^No verification update:\s*\S/m.test(messages)) process.exit(0);
 
 const skillsDir = join(cwd, '.claude', 'skills');
@@ -24,6 +26,7 @@ const findings = [];
 
 const verifySkills = skills.filter((s) => s.startsWith('verify-'));
 const appFiles = changed.filter(isApp);
+
 if (appFiles.length && verifySkills.length && !verifySkills.some(touched)) {
   findings.push({
     id: 'app-map-stale',
@@ -38,9 +41,11 @@ if (appFiles.length && verifySkills.length && !verifySkills.some(touched)) {
 
 for (const skill of skills) {
   const coversPath = join(skillsDir, skill, 'covers.txt');
+
   if (!existsSync(coversPath)) continue;
   const covers = readFileSync(coversPath, 'utf8').split('\n').map((l) => l.replace(/#.*/, '').trim()).filter(Boolean);
   const hits = changed.filter((f) => covers.some((c) => f === c || f.startsWith(c.endsWith('/') ? c : `${c}/`)));
+
   if (hits.length && !touched(skill)) {
     findings.push({
       id: `formal-stale-${skill}`,
@@ -54,4 +59,5 @@ for (const skill of skills) {
     });
   }
 }
+
 report(findings);
