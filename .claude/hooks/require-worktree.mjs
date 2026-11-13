@@ -39,7 +39,7 @@ if (git(dir, 'check-ignore', '-q', file).status === 0) process.exit(0); // gitig
 
 console.error(
   `Edit blocked: ${file} is in the main checkout, which stays on main so other sessions' files don't change under them.\n` +
-    'Start a worktree first: /ticket <n> for an issue, or the feature-worktree skill for other work. Then edit the copy of this file inside the worktree.\n' +
+    'Start a worktree first: /worktree <n> for an issue, or the feature-worktree skill for other work. Then edit the copy of this file inside the worktree.\n' +
     'Gitignored files (docs/tradeoffs.md, docs/diagrams/) are allowed in the main checkout.',
 );
 process.exit(2);
