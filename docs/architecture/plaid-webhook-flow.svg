@@ -1118,14 +1118,14 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           <text x="129.5" y="122" class="t-muted" font-size="7" text-anchor="middle">webhooks + API</text>
         </g>
 
-        <g id="node-api" data-node-id="api" data-node-label="api role" tabindex="0" role="button" aria-label="Focus api role, money module, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="money module" data-node-context="Sequence participant">
-          <title>api role · money module · Sequence participant</title>
+        <g id="node-api" data-node-id="api" data-node-label="API server" tabindex="0" role="button" aria-label="Focus API server, money module, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="money module" data-node-context="Sequence participant">
+          <title>API server · money module · Sequence participant</title>
           <rect x="232.75" y="72" width="135" height="60" rx="6" class="c-mask"/>
           <rect x="232.75" y="72" width="135" height="60" rx="6" class="c-backend" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-1;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(238.75 78) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" x="300.25" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">api role</text>
+          <text data-node-label="" x="300.25" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">API server</text>
           <text x="300.25" y="122" class="t-muted" font-size="7" text-anchor="middle">money module</text>
         </g>
 
@@ -1141,14 +1141,14 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           <text x="471" y="122" class="t-muted" font-size="7" text-anchor="middle">RLS · outbox</text>
         </g>
 
-        <g id="node-worker" data-node-id="worker" data-node-label="worker role" tabindex="0" role="button" aria-label="Focus worker role, relay + consumer, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="relay + consumer" data-node-context="Sequence participant">
-          <title>worker role · relay + consumer · Sequence participant</title>
+        <g id="node-worker" data-node-id="worker" data-node-label="background worker" tabindex="0" role="button" aria-label="Focus background worker, relay + consumer, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="relay + consumer" data-node-context="Sequence participant">
+          <title>background worker · relay + consumer · Sequence participant</title>
           <rect x="574.25" y="72" width="135" height="60" rx="6" class="c-mask"/>
           <rect x="574.25" y="72" width="135" height="60" rx="6" class="c-backend" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(580.25 78) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" x="641.75" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">worker role</text>
+          <text data-node-label="" x="641.75" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">background worker</text>
           <text x="641.75" y="122" class="t-muted" font-size="7" text-anchor="middle">relay + consumer</text>
         </g>
 
