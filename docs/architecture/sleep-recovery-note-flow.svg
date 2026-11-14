@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 1038 1056" data-sequence-column-fit="spread" data-reader-fit="width-first" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-motion-choreography="sequence" style="--flow-cycle: 11.300s; width: 1038px; height: 1056px; min-width: 0px;" width="1038" height="1056" xmlns="http://www.w3.org/2000/svg"><style>
+<svg viewBox="0 0 1038 1334" data-sequence-column-fit="spread" data-reader-fit="width-first" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-motion-choreography="sequence" style="--flow-cycle: 11.300s; width: 1038px; height: 1334px; min-width: 0px;" width="1038" height="1334" xmlns="http://www.w3.org/2000/svg"><style>
 /*
 JetBrains Mono variable WOFF2 subsets from Google Fonts service revision v24.
 These fixed bytes are shared by the viewer and its SVG/raster exports.
@@ -403,224 +403,302 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 }
 @keyframes archify-relay-comet-0 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  0.585% { opacity: var(--flow-peak, 0.9); }
-  2.923% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  4.339%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-0 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  2.923% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  10.888%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  2.125% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-1 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  0.585% { opacity: var(--flow-peak, 0.9); }
-  2.923% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  4.339%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-1 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  2.923% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  10.888%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  2.125% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-2 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  0.585% { opacity: var(--flow-peak, 0.9); }
-  2.923% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  4.339%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-2 { 
-  0%, 0.877% { opacity: 0; }
-  2.923% { opacity: var(--flow-peak, 0.3); }
-  10.888%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 0.637% { opacity: 0; }
+  2.125% { opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-3 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  5.66% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  7.076%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-3 { 
-  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  5.66% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  13.624%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 1.234% { opacity: 0; }
+  4.114% { opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-4 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  0.585% { opacity: var(--flow-peak, 0.9); }
-  2.923% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  4.339%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-4 { 
-  0%, 0.877% { opacity: 0; }
-  2.923% { opacity: var(--flow-peak, 0.3); }
-  10.888%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 0.637% { opacity: 0; }
+  2.125% { opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-5 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  5.66% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  7.076%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-5 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  5.66% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  13.624%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  4.114% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-6 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  0.585% { opacity: var(--flow-peak, 0.9); }
-  2.923% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  4.339%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-6 { 
-  0%, 0.877% { opacity: 0; }
-  2.923% { opacity: var(--flow-peak, 0.3); }
-  10.888%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 1.234% { opacity: 0; }
+  4.114% { opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-7 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  0.585% { opacity: var(--flow-peak, 0.9); }
-  2.923% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  4.339%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-7 { 
-  0%, 0.877% { opacity: 0; }
-  2.923% { opacity: var(--flow-peak, 0.3); }
-  10.888%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 0.637% { opacity: 0; }
+  2.125% { opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-8 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  5.66% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  7.076%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-8 { 
-  0%, 1.698% { opacity: 0; }
-  5.66% { opacity: var(--flow-peak, 0.3); }
-  13.624%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  4.114% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-9 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  5.66% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  7.076%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-9 { 
-  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  5.66% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  13.624%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 0.637% { opacity: 0; }
+  2.125% { opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-10 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  5.66% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  7.076%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-10 { 
-  0%, 1.698% { opacity: 0; }
-  5.66% { opacity: var(--flow-peak, 0.3); }
-  13.624%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 0.637% { opacity: 0; }
+  2.125% { opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-11 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  5.66% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  7.076%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-11 { 
-  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  5.66% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  13.624%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 1.234% { opacity: 0; }
+  4.114% { opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-12 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  8.664% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  10.08%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-12 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  8.664% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  16.628%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  4.114% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-13 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  1.062% { opacity: var(--flow-peak, 0.9); }
-  10.439% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  11.855%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-13 { 
+  0%, 1.234% { opacity: 0; }
+  4.114% { opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-14 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-14 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  10.439% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  18.404%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  4.114% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-15 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  0.823% { opacity: var(--flow-peak, 0.9); }
+  4.114% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  5.53%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-15 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  4.114% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  12.079%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-16 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-16 { 
+  0%, 0.637% { opacity: 0; }
+  2.125% { opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-17 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  0.425% { opacity: var(--flow-peak, 0.9); }
+  2.125% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  3.541%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-17 { 
+  0%, 0.637% { opacity: 0; }
+  2.125% { opacity: var(--flow-peak, 0.3); }
+  10.089%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-18 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  1.062% { opacity: var(--flow-peak, 0.9); }
+  6.298% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  7.714%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-18 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  6.298% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  14.262%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-19 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  1.062% { opacity: var(--flow-peak, 0.9); }
+  7.588% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  9.004%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-19 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  7.588% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  15.553%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-node-0 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
   0% { filter: var(--ambient-node-base-filter, none); }
-  1.062%, 13.877% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  20.78% { filter: var(--ambient-node-base-filter, none); }
+  1.062%, 11.103% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  18.005% { filter: var(--ambient-node-base-filter, none); }
   79.646% { filter: var(--ambient-node-base-filter, none); }
   80.708%, 83.363% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
   90.265% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-1 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  2.923% { filter: var(--ambient-node-base-filter, none); }
-  3.985%, 10.955% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  17.857% { filter: var(--ambient-node-base-filter, none); }
+  2.125% { filter: var(--ambient-node-base-filter, none); }
+  3.187%, 8.978% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  15.881% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-2 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  6.542% { filter: var(--ambient-node-base-filter, none); }
-  7.604%, 30.208% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  37.11% { filter: var(--ambient-node-base-filter, none); }
-  40.084% { filter: var(--ambient-node-base-filter, none); }
-  41.146%, 43.801% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  50.704% { filter: var(--ambient-node-base-filter, none); }
-  59.151% { filter: var(--ambient-node-base-filter, none); }
-  60.213%, 62.868% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  69.771% { filter: var(--ambient-node-base-filter, none); }
+  4.755% { filter: var(--ambient-node-base-filter, none); }
+  5.817%, 8.472% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  15.375% { filter: var(--ambient-node-base-filter, none); }
+  19.256% { filter: var(--ambient-node-base-filter, none); }
+  20.318%, 22.973% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  29.876% { filter: var(--ambient-node-base-filter, none); }
+  31.127% { filter: var(--ambient-node-base-filter, none); }
+  32.189%, 44.724% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  51.627% { filter: var(--ambient-node-base-filter, none); }
+  54.868% { filter: var(--ambient-node-base-filter, none); }
+  55.93%, 63.204% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  70.107% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-3 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  10.857% { filter: var(--ambient-node-base-filter, none); }
-  11.919%, 44.497% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  51.4% { filter: var(--ambient-node-base-filter, none); }
-  52.796% { filter: var(--ambient-node-base-filter, none); }
-  53.858%, 63.564% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  70.467% { filter: var(--ambient-node-base-filter, none); }
+  7.892% { filter: var(--ambient-node-base-filter, none); }
+  8.954%, 11.608% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  18.511% { filter: var(--ambient-node-base-filter, none); }
+  19.762% { filter: var(--ambient-node-base-filter, none); }
+  20.824%, 23.479% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  30.382% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-4 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  17.212% { filter: var(--ambient-node-base-filter, none); }
-  18.274%, 20.929% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  27.832% { filter: var(--ambient-node-base-filter, none); }
+  12.006% { filter: var(--ambient-node-base-filter, none); }
+  13.068%, 16.228% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  23.131% { filter: var(--ambient-node-base-filter, none); }
+  23.876% { filter: var(--ambient-node-base-filter, none); }
+  24.938%, 37.98% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  44.883% { filter: var(--ambient-node-base-filter, none); }
+  62.118% { filter: var(--ambient-node-base-filter, none); }
+  63.18%, 66.341% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  73.243% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-5 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  30.11% { filter: var(--ambient-node-base-filter, none); }
-  31.172%, 34.523% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  41.425% { filter: var(--ambient-node-base-filter, none); }
+  14.636% { filter: var(--ambient-node-base-filter, none); }
+  15.698%, 18.859% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  25.762% { filter: var(--ambient-node-base-filter, none); }
+  26.507% { filter: var(--ambient-node-base-filter, none); }
+  27.569%, 68.971% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  75.874% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-6 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  46.44% { filter: var(--ambient-node-base-filter, none); }
-  47.502%, 50.853% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  57.755% { filter: var(--ambient-node-base-filter, none); }
+  45.628% { filter: var(--ambient-node-base-filter, none); }
+  46.69%, 49.85% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  56.753% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-7 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  68.511% { filter: var(--ambient-node-base-filter, none); }
-  69.573%, 72.924% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  79.826% { filter: var(--ambient-node-base-filter, none); }
+  71.552% { filter: var(--ambient-node-base-filter, none); }
+  72.614%, 75.775% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  82.677% { filter: var(--ambient-node-base-filter, none); }
 }
 :root, svg { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #94a3b8; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 @media (prefers-color-scheme: light) { :root, svg { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #e2e7ec; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #64748b; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; } }
 svg[data-theme="light"] { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #e2e7ec; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #64748b; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 svg[data-theme="dark"] { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #94a3b8; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 rect.c-bg-rect { fill: var(--bg); }
-</style><rect x="0" y="0" width="1038" height="1056" class="c-bg-rect"/><metadata id="archify-software-notices">NOTICE
+</style><rect x="0" y="0" width="1038" height="1334" class="c-bg-rect"/><metadata id="archify-software-notices">NOTICE
 Archify
 Copyright (c) 2026 tt-a1i (Archify)
 Copyright (c) 2025 Cocoon AI
@@ -982,35 +1060,37 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <!-- Time Segments -->
         <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="0" x="48" y="160" width="942" height="174" rx="10" class="c-lane" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="1" x="48" y="342" width="942" height="70" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="1" x="48" y="342" width="942" height="158" rx="10" class="c-lane" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="2" x="48" y="420" width="942" height="192" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="2" x="48" y="508" width="942" height="236" rx="10" class="c-lane" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="3" x="48" y="620" width="942" height="222" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="3" x="48" y="752" width="942" height="260" rx="10" class="c-lane" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="4" x="48" y="850" width="942" height="108" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="4" x="48" y="1020" width="942" height="216" rx="10" class="c-lane" stroke-width="1"/>
 
         <!-- Lifelines -->
-        <path d="M 107 142 L 107 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
-        <path d="M 227.85714285714286 142 L 227.85714285714286 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
-        <path d="M 348.7142857142857 142 L 348.7142857142857 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
-        <path d="M 469.57142857142856 142 L 469.57142857142856 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
-        <path d="M 590.4285714285714 142 L 590.4285714285714 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
-        <path d="M 711.2857142857143 142 L 711.2857142857143 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
-        <path d="M 832.1428571428571 142 L 832.1428571428571 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
-        <path d="M 953 142 L 953 960" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 107 142 L 107 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 227.85714285714286 142 L 227.85714285714286 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 348.7142857142857 142 L 348.7142857142857 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 469.57142857142856 142 L 469.57142857142856 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 590.4285714285714 142 L 590.4285714285714 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 711.2857142857143 142 L 711.2857142857143 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 832.1428571428571 142 L 832.1428571428571 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
+        <path d="M 953 142 L 953 1238" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>
 
         <!-- Activations -->
         <rect x="222.85714285714286" y="172" width="10" height="150" rx="3" class="c-mask"/>
         <rect x="222.85714285714286" y="172" width="10" height="150" rx="3" class="c-backend" stroke-width="1"/>
-        <rect x="585.4285714285714" y="354" width="10" height="26" rx="3" class="c-mask"/>
-        <rect x="585.4285714285714" y="354" width="10" height="26" rx="3" class="c-backend" stroke-width="1"/>
-        <rect x="585.4285714285714" y="432" width="10" height="116" rx="3" class="c-mask"/>
-        <rect x="585.4285714285714" y="432" width="10" height="116" rx="3" class="c-backend" stroke-width="1"/>
-        <rect x="585.4285714285714" y="600" width="10" height="268" rx="3" class="c-mask"/>
-        <rect x="585.4285714285714" y="600" width="10" height="268" rx="3" class="c-backend" stroke-width="1"/>
-        <rect x="827.1428571428571" y="706" width="10" height="74" rx="3" class="c-mask"/>
-        <rect x="827.1428571428571" y="706" width="10" height="74" rx="3" class="c-external" stroke-width="1"/>
+        <rect x="585.4285714285714" y="386" width="10" height="64" rx="3" class="c-mask"/>
+        <rect x="585.4285714285714" y="386" width="10" height="64" rx="3" class="c-backend" stroke-width="1"/>
+        <rect x="585.4285714285714" y="552" width="10" height="120" rx="3" class="c-mask"/>
+        <rect x="585.4285714285714" y="552" width="10" height="120" rx="3" class="c-backend" stroke-width="1"/>
+        <rect x="585.4285714285714" y="764" width="10" height="202" rx="3" class="c-mask"/>
+        <rect x="585.4285714285714" y="764" width="10" height="202" rx="3" class="c-backend" stroke-width="1"/>
+        <rect x="827.1428571428571" y="854" width="10" height="74" rx="3" class="c-mask"/>
+        <rect x="827.1428571428571" y="854" width="10" height="74" rx="3" class="c-external" stroke-width="1"/>
+        <rect x="585.4285714285714" y="1032" width="10" height="128" rx="3" class="c-mask"/>
+        <rect x="585.4285714285714" y="1032" width="10" height="128" rx="3" class="c-backend" stroke-width="1"/>
 
         <!-- Messages -->
         <g data-edge-from="phone" data-edge-to="api" data-edge-label="POST new samples + Idempotency-Key" data-edge-key="0" data-edge-id="upload">
@@ -1039,97 +1119,147 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         </g>
         </g>
 
-        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="rebuild marked days in batches" data-edge-key="3" data-edge-id="rebuild">
-          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="rebuild" data-composition-points="583.4285714285714,354;355.7142857142857,354" d="M 583.4285714285714 354 L 355.7142857142857 354" class="a-default" data-animate="edge" style="--step: 3;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g data-edge-from="tick" data-edge-to="sqs" data-edge-label="rebuild tick" data-edge-key="3" data-edge-id="rebuild-tick">
+          <path data-composition-edge-from="tick" data-composition-edge-to="sqs" data-composition-edge-id="rebuild-tick" data-composition-points="476.57142857142856,354;704.2857142857143,354" d="M 476.57142857142856 354 L 704.2857142857143 354" class="a-dashed" data-animate="edge" style="--step: 3;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <g>
-          <rect x="364.57142857142856" y="334" width="210" height="18" rx="3" class="c-mask"/>
-          <text x="469.57142857142856" y="344" class="t-muted" font-size="11" text-anchor="middle">rebuild marked days in batches</text>
-        </g>
-        <text x="367.7142857142857" y="372" class="t-muted" font-size="7"><tspan x="367.7142857142857" dy="0">daily summaries; off</tspan><tspan x="367.7142857142857" dy="11">the request path</tspan></text>
-        </g>
-
-        <g data-edge-from="tick" data-edge-to="worker" data-edge-label="15-minute tick" data-edge-key="4" data-edge-id="tick-fires">
-          <path data-composition-edge-from="tick" data-composition-edge-to="worker" data-composition-edge-id="tick-fires" data-composition-points="476.57142857142856,432;583.4285714285714,432" d="M 476.57142857142856 432 L 583.4285714285714 432" class="a-dashed" data-animate="edge" style="--step: 4;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-        <g>
-          <rect x="477.8" y="412" width="104.39999999999999" height="18" rx="3" class="c-mask"/>
-          <text x="530" y="422" class="t-edge-dashed" font-size="11" text-anchor="middle">15-minute tick</text>
+          <rect x="544.8285714285714" y="334" width="91.19999999999999" height="18" rx="3" class="c-mask"/>
+          <text x="590.4285714285714" y="344" class="t-edge-dashed" font-size="11" text-anchor="middle">rebuild tick</text>
         </g>
         </g>
 
-        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="find people whose sleep has arrived" data-edge-key="5" data-edge-id="find-due">
-          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="find-due" data-composition-points="583.4285714285714,464;355.7142857142857,464" d="M 583.4285714285714 464 L 355.7142857142857 464" class="a-default" data-animate="edge" style="--step: 5;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g data-edge-from="sqs" data-edge-to="worker" data-edge-label="tick message" data-edge-key="4" data-edge-id="rebuild-deliver">
+          <path data-composition-edge-from="sqs" data-composition-edge-to="worker" data-composition-edge-id="rebuild-deliver" data-composition-points="704.2857142857143,386;597.4285714285714,386" d="M 704.2857142857143 386 L 597.4285714285714 386" class="a-dashed" data-animate="edge" style="--step: 4;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <g>
-          <rect x="348.07142857142856" y="444" width="243" height="18" rx="3" class="c-mask"/>
-          <text x="469.57142857142856" y="454" class="t-muted" font-size="11" text-anchor="middle">find people whose sleep has arrived</text>
-        </g>
-        <text x="367.7142857142857" y="482" class="t-muted" font-size="7"><tspan x="367.7142857142857" dy="0">no new sleep for 30</tspan><tspan x="367.7142857142857" dy="11">min · active in 7</tspan><tspan x="367.7142857142857" dy="11">days · not checked</tspan><tspan x="367.7142857142857" dy="11">today</tspan></text>
-        </g>
-
-        <g data-edge-from="worker" data-edge-to="sqs" data-edge-label="one recovery-check job each" data-edge-key="6" data-edge-id="enqueue">
-          <path data-composition-edge-from="worker" data-composition-edge-to="sqs" data-composition-edge-id="enqueue" data-composition-points="597.4285714285714,540;704.2857142857143,540" d="M 597.4285714285714 540 L 704.2857142857143 540" class="a-dashed" data-animate="edge" style="--step: 6;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-        <g>
-          <rect x="555.7571428571429" y="520" width="190.2" height="18" rx="3" class="c-mask"/>
-          <text x="650.8571428571429" y="530" class="t-edge-dashed" font-size="11" text-anchor="middle">one recovery-check job each</text>
-        </g>
-        <text x="609.4285714285714" y="558" class="t-muted" font-size="7"><tspan x="609.4285714285714" dy="0">via the outbox; at</tspan><tspan x="609.4285714285714" dy="11">11:00 a training-only</tspan><tspan x="609.4285714285714" dy="11">check runs instead</tspan></text>
-        </g>
-
-        <g data-edge-from="sqs" data-edge-to="worker" data-edge-label="job" data-edge-key="7" data-edge-id="deliver">
-          <path data-composition-edge-from="sqs" data-composition-edge-to="worker" data-composition-edge-id="deliver" data-composition-points="704.2857142857143,606;597.4285714285714,606" d="M 704.2857142857143 606 L 597.4285714285714 606" class="a-dashed" data-animate="edge" style="--step: 7;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-        <g>
-          <rect x="633.8571428571429" y="586" width="34" height="18" rx="3" class="c-mask"/>
-          <text x="650.8571428571429" y="596" class="t-edge-dashed" font-size="11" text-anchor="middle">job</text>
+          <rect x="605.2571428571429" y="366" width="91.19999999999999" height="18" rx="3" class="c-mask"/>
+          <text x="650.8571428571429" y="376" class="t-edge-dashed" font-size="11" text-anchor="middle">tick message</text>
         </g>
         </g>
 
-        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="claim day · rebuild if waiting · read baselines" data-edge-key="8" data-edge-id="claim">
-          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="claim" data-composition-points="583.4285714285714,648;355.7142857142857,648" d="M 583.4285714285714 648 L 355.7142857142857 648" class="a-security" data-animate="edge" style="--step: 8;" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="rebuild marked days in batches" data-edge-key="5" data-edge-id="rebuild">
+          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="rebuild" data-composition-points="583.4285714285714,418;355.7142857142857,418" d="M 583.4285714285714 418 L 355.7142857142857 418" class="a-default" data-animate="edge" style="--step: 5;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <g>
-          <rect x="308.47142857142853" y="628" width="322.2" height="18" rx="3" class="c-mask"/>
-          <text x="469.57142857142856" y="638" class="t-edge-security" font-size="11" text-anchor="middle">claim day · rebuild if waiting · read baselines</text>
+          <rect x="364.57142857142856" y="398" width="210" height="18" rx="3" class="c-mask"/>
+          <text x="469.57142857142856" y="408" class="t-muted" font-size="11" text-anchor="middle">rebuild marked days in batches</text>
         </g>
-        <text x="367.7142857142857" y="666" class="t-muted" font-size="7"><tspan x="367.7142857142857" dy="0">claimed resumes, done</tspan><tspan x="367.7142857142857" dy="11">exits</tspan></text>
+        <text x="367.7142857142857" y="436" class="t-muted" font-size="7"><tspan x="367.7142857142857" dy="0">per day, one</tspan><tspan x="367.7142857142857" dy="11">transaction: save the</tspan><tspan x="367.7142857142857" dy="11">summary and clear its</tspan><tspan x="367.7142857142857" dy="11">mark, unless a newer</tspan><tspan x="367.7142857142857" dy="11">upload re-marked it</tspan></text>
         </g>
 
-        <g data-edge-from="worker" data-edge-to="model" data-edge-label="write note from check results" data-edge-key="9" data-edge-id="write">
-          <path data-composition-edge-from="worker" data-composition-edge-to="model" data-composition-edge-id="write" data-composition-points="597.4285714285714,706;825.1428571428571,706" d="M 597.4285714285714 706 L 825.1428571428571 706" class="a-default" data-animate="edge" style="--step: 9;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g data-edge-from="tick" data-edge-to="sqs" data-edge-label="15-minute tick" data-edge-key="6" data-edge-id="tick-fires">
+          <path data-composition-edge-from="tick" data-composition-edge-to="sqs" data-composition-edge-id="tick-fires" data-composition-points="476.57142857142856,520;704.2857142857143,520" d="M 476.57142857142856 520 L 704.2857142857143 520" class="a-dashed" data-animate="edge" style="--step: 6;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <g>
-          <rect x="609.5857142857142" y="686" width="203.39999999999998" height="18" rx="3" class="c-mask"/>
-          <text x="711.2857142857142" y="696" class="t-muted" font-size="11" text-anchor="middle">write note from check results</text>
-        </g>
-        <text x="609.4285714285714" y="724" class="t-muted" font-size="7"><tspan x="609.4285714285714" dy="0">2+ flags, none in 3</tspan><tspan x="609.4285714285714" dy="11">days; template past</tspan><tspan x="609.4285714285714" dy="11">the $5 cap</tspan></text>
-        </g>
-
-        <g data-edge-from="model" data-edge-to="worker" data-edge-label="note text" data-edge-key="10" data-edge-id="text">
-          <path data-composition-edge-from="model" data-composition-edge-to="worker" data-composition-edge-id="text" data-composition-points="825.1428571428571,780;597.4285714285714,780" d="M 825.1428571428571 780 L 597.4285714285714 780" class="a-default" data-animate="edge" style="--step: 10;" stroke-width="1.4" stroke-dasharray="3,5" marker-end="url(#arrowhead)"/>
-        <g>
-          <rect x="675.5857142857142" y="760" width="71.4" height="18" rx="3" class="c-mask"/>
-          <text x="711.2857142857142" y="770" class="t-muted" font-size="11" text-anchor="middle">note text</text>
+          <rect x="538.2285714285714" y="500" width="104.39999999999999" height="18" rx="3" class="c-mask"/>
+          <text x="590.4285714285714" y="510" class="t-edge-dashed" font-size="11" text-anchor="middle">15-minute tick</text>
         </g>
         </g>
 
-        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="store note · mark done · outbox push" data-edge-key="11" data-edge-id="save">
-          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="save" data-composition-points="583.4285714285714,812;355.7142857142857,812" d="M 583.4285714285714 812 L 355.7142857142857 812" class="a-default" data-animate="edge" style="--step: 11;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g data-edge-from="sqs" data-edge-to="worker" data-edge-label="tick message" data-edge-key="7" data-edge-id="tick-deliver">
+          <path data-composition-edge-from="sqs" data-composition-edge-to="worker" data-composition-edge-id="tick-deliver" data-composition-points="704.2857142857143,552;597.4285714285714,552" d="M 704.2857142857143 552 L 597.4285714285714 552" class="a-dashed" data-animate="edge" style="--step: 7;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <g>
-          <rect x="344.77142857142854" y="792" width="249.6" height="18" rx="3" class="c-mask"/>
-          <text x="469.57142857142856" y="802" class="t-muted" font-size="11" text-anchor="middle">store note · mark done · outbox push</text>
+          <rect x="605.2571428571429" y="532" width="91.19999999999999" height="18" rx="3" class="c-mask"/>
+          <text x="650.8571428571429" y="542" class="t-edge-dashed" font-size="11" text-anchor="middle">tick message</text>
         </g>
         </g>
 
-        <g data-edge-from="worker" data-edge-to="apns" data-edge-label="push: recovery note ready" data-edge-key="12" data-edge-id="push">
-          <path data-composition-edge-from="worker" data-composition-edge-to="apns" data-composition-edge-id="push" data-composition-points="597.4285714285714,862;946,862" d="M 597.4285714285714 862 L 946 862" class="a-emphasis" data-animate="edge" style="--step: 12;" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="find people whose sleep has arrived" data-edge-key="8" data-edge-id="find-due">
+          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="find-due" data-composition-points="583.4285714285714,584;355.7142857142857,584" d="M 583.4285714285714 584 L 355.7142857142857 584" class="a-default" data-animate="edge" style="--step: 8;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <g>
-          <rect x="683.2142857142858" y="842" width="177" height="18" rx="3" class="c-mask"/>
-          <text x="771.7142857142858" y="852" class="t-edge-emphasis" font-size="11" text-anchor="middle">push: recovery note ready</text>
+          <rect x="348.07142857142856" y="564" width="243" height="18" rx="3" class="c-mask"/>
+          <text x="469.57142857142856" y="574" class="t-muted" font-size="11" text-anchor="middle">find people whose sleep has arrived</text>
         </g>
-        <text x="609.4285714285714" y="880" class="t-muted" font-size="7"><tspan x="609.4285714285714" dy="0">generic text; held in</tspan><tspan x="609.4285714285714" dy="11">quiet hours</tspan></text>
+        <text x="367.7142857142857" y="602" class="t-muted" font-size="7"><tspan x="367.7142857142857" dy="0">no new sleep for 30</tspan><tspan x="367.7142857142857" dy="11">min · active in 7</tspan><tspan x="367.7142857142857" dy="11">days · not checked</tspan><tspan x="367.7142857142857" dy="11">today</tspan></text>
         </g>
 
-        <g data-edge-from="apns" data-edge-to="phone" data-edge-label="notification" data-edge-key="13" data-edge-id="notify">
-          <path data-composition-edge-from="apns" data-composition-edge-to="phone" data-composition-edge-id="notify" data-composition-points="946,942;114,942" d="M 946 942 L 114 942" class="a-default" data-animate="edge" style="--step: 12;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g data-edge-from="worker" data-edge-to="sqs" data-edge-label="one recovery-check job each" data-edge-key="9" data-edge-id="enqueue">
+          <path data-composition-edge-from="worker" data-composition-edge-to="sqs" data-composition-edge-id="enqueue" data-composition-points="597.4285714285714,664;704.2857142857143,664" d="M 597.4285714285714 664 L 704.2857142857143 664" class="a-dashed" data-animate="edge" style="--step: 9;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <g>
-          <rect x="484.4" y="922" width="91.19999999999999" height="18" rx="3" class="c-mask"/>
-          <text x="530" y="932" class="t-muted" font-size="11" text-anchor="middle">notification</text>
+          <rect x="555.7571428571429" y="644" width="190.2" height="18" rx="3" class="c-mask"/>
+          <text x="650.8571428571429" y="654" class="t-edge-dashed" font-size="11" text-anchor="middle">one recovery-check job each</text>
+        </g>
+        <text x="609.4285714285714" y="682" class="t-muted" font-size="7"><tspan x="609.4285714285714" dy="0">via the outbox and</tspan><tspan x="609.4285714285714" dy="11">relay; at 11:00 a</tspan><tspan x="609.4285714285714" dy="11">training-only check</tspan><tspan x="609.4285714285714" dy="11">runs instead</tspan></text>
+        </g>
+
+        <g data-edge-from="sqs" data-edge-to="worker" data-edge-label="job" data-edge-key="10" data-edge-id="deliver">
+          <path data-composition-edge-from="sqs" data-composition-edge-to="worker" data-composition-edge-id="deliver" data-composition-points="704.2857142857143,764;597.4285714285714,764" d="M 704.2857142857143 764 L 597.4285714285714 764" class="a-dashed" data-animate="edge" style="--step: 10;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <g>
+          <rect x="633.8571428571429" y="744" width="34" height="18" rx="3" class="c-mask"/>
+          <text x="650.8571428571429" y="754" class="t-edge-dashed" font-size="11" text-anchor="middle">job</text>
+        </g>
+        </g>
+
+        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="claim day · rebuild if waiting · read baselines" data-edge-key="11" data-edge-id="claim">
+          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="claim" data-composition-points="583.4285714285714,796;355.7142857142857,796" d="M 583.4285714285714 796 L 355.7142857142857 796" class="a-security" data-animate="edge" style="--step: 11;" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+        <g>
+          <rect x="308.47142857142853" y="776" width="322.2" height="18" rx="3" class="c-mask"/>
+          <text x="469.57142857142856" y="786" class="t-edge-security" font-size="11" text-anchor="middle">claim day · rebuild if waiting · read baselines</text>
+        </g>
+        <text x="367.7142857142857" y="814" class="t-muted" font-size="7"><tspan x="367.7142857142857" dy="0">claimed resumes, done</tspan><tspan x="367.7142857142857" dy="11">exits</tspan></text>
+        </g>
+
+        <g data-edge-from="worker" data-edge-to="model" data-edge-label="write note from check results" data-edge-key="12" data-edge-id="write">
+          <path data-composition-edge-from="worker" data-composition-edge-to="model" data-composition-edge-id="write" data-composition-points="597.4285714285714,854;825.1428571428571,854" d="M 597.4285714285714 854 L 825.1428571428571 854" class="a-default" data-animate="edge" style="--step: 12;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g>
+          <rect x="609.5857142857142" y="834" width="203.39999999999998" height="18" rx="3" class="c-mask"/>
+          <text x="711.2857142857142" y="844" class="t-muted" font-size="11" text-anchor="middle">write note from check results</text>
+        </g>
+        <text x="609.4285714285714" y="872" class="t-muted" font-size="7"><tspan x="609.4285714285714" dy="0">2+ flags, none in 3</tspan><tspan x="609.4285714285714" dy="11">days; template past</tspan><tspan x="609.4285714285714" dy="11">the $5 cap</tspan></text>
+        </g>
+
+        <g data-edge-from="model" data-edge-to="worker" data-edge-label="note text" data-edge-key="13" data-edge-id="text">
+          <path data-composition-edge-from="model" data-composition-edge-to="worker" data-composition-edge-id="text" data-composition-points="825.1428571428571,928;597.4285714285714,928" d="M 825.1428571428571 928 L 597.4285714285714 928" class="a-default" data-animate="edge" style="--step: 12;" stroke-width="1.4" stroke-dasharray="3,5" marker-end="url(#arrowhead)"/>
+        <g>
+          <rect x="675.5857142857142" y="908" width="71.4" height="18" rx="3" class="c-mask"/>
+          <text x="711.2857142857142" y="918" class="t-muted" font-size="11" text-anchor="middle">note text</text>
+        </g>
+        </g>
+
+        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="store note · mark done · outbox row for the push" data-edge-key="14" data-edge-id="save">
+          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="save" data-composition-points="583.4285714285714,960;355.7142857142857,960" d="M 583.4285714285714 960 L 355.7142857142857 960" class="a-default" data-animate="edge" style="--step: 12;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g>
+          <rect x="305.1714285714286" y="940" width="328.79999999999995" height="18" rx="3" class="c-mask"/>
+          <text x="469.57142857142856" y="950" class="t-muted" font-size="11" text-anchor="middle">store note · mark done · outbox row for the push</text>
+        </g>
+        <text x="367.7142857142857" y="978" class="t-muted" font-size="7">one transaction</text>
+        </g>
+
+        <g data-edge-from="worker" data-edge-to="pg" data-edge-label="relay takes the push's outbox row" data-edge-key="15" data-edge-id="relay-take">
+          <path data-composition-edge-from="worker" data-composition-edge-to="pg" data-composition-edge-id="relay-take" data-composition-points="583.4285714285714,1032;355.7142857142857,1032" d="M 583.4285714285714 1032 L 355.7142857142857 1032" class="a-default" data-animate="edge" style="--step: 12;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g>
+          <rect x="354.6714285714286" y="1012" width="229.79999999999998" height="18" rx="3" class="c-mask"/>
+          <text x="469.57142857142856" y="1022" class="t-muted" font-size="11" text-anchor="middle">relay takes the push's outbox row</text>
+        </g>
+        <text x="367.7142857142857" y="1050" class="t-muted" font-size="7"><tspan x="367.7142857142857" dy="0">the relay loop runs</tspan><tspan x="367.7142857142857" dy="11">inside the worker</tspan><tspan x="367.7142857142857" dy="11">role</tspan></text>
+        </g>
+
+        <g data-edge-from="worker" data-edge-to="sqs" data-edge-label="push job → notify queue" data-edge-key="16" data-edge-id="relay-send">
+          <path data-composition-edge-from="worker" data-composition-edge-to="sqs" data-composition-edge-id="relay-send" data-composition-points="597.4285714285714,1090;704.2857142857143,1090" d="M 597.4285714285714 1090 L 704.2857142857143 1090" class="a-dashed" data-animate="edge" style="--step: 12;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <g>
+          <rect x="568.9571428571429" y="1070" width="163.79999999999998" height="18" rx="3" class="c-mask"/>
+          <text x="650.8571428571429" y="1080" class="t-edge-dashed" font-size="11" text-anchor="middle">push job → notify queue</text>
+        </g>
+        </g>
+
+        <g data-edge-from="sqs" data-edge-to="worker" data-edge-label="push job" data-edge-key="17" data-edge-id="push-deliver">
+          <path data-composition-edge-from="sqs" data-composition-edge-to="worker" data-composition-edge-id="push-deliver" data-composition-points="704.2857142857143,1122;597.4285714285714,1122" d="M 704.2857142857143 1122 L 597.4285714285714 1122" class="a-dashed" data-animate="edge" style="--step: 12;" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <g>
+          <rect x="618.4571428571429" y="1102" width="64.8" height="18" rx="3" class="c-mask"/>
+          <text x="650.8571428571429" y="1112" class="t-edge-dashed" font-size="11" text-anchor="middle">push job</text>
+        </g>
+        </g>
+
+        <g data-edge-from="worker" data-edge-to="apns" data-edge-label="push: recovery note ready" data-edge-key="18" data-edge-id="push">
+          <path data-composition-edge-from="worker" data-composition-edge-to="apns" data-composition-edge-id="push" data-composition-points="597.4285714285714,1154;946,1154" d="M 597.4285714285714 1154 L 946 1154" class="a-emphasis" data-animate="edge" style="--step: 12;" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <g>
+          <rect x="683.2142857142858" y="1134" width="177" height="18" rx="3" class="c-mask"/>
+          <text x="771.7142857142858" y="1144" class="t-edge-emphasis" font-size="11" text-anchor="middle">push: recovery note ready</text>
+        </g>
+        <text x="609.4285714285714" y="1172" class="t-muted" font-size="7"><tspan x="609.4285714285714" dy="0">generic text; held in</tspan><tspan x="609.4285714285714" dy="11">quiet hours</tspan></text>
+        </g>
+
+        <g data-edge-from="apns" data-edge-to="phone" data-edge-label="notification" data-edge-key="19" data-edge-id="notify">
+          <path data-composition-edge-from="apns" data-composition-edge-to="phone" data-composition-edge-id="notify" data-composition-points="946,1224;114,1224" d="M 946 1224 L 114 1224" class="a-default" data-animate="edge" style="--step: 12;" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <g>
+          <rect x="484.4" y="1204" width="91.19999999999999" height="18" rx="3" class="c-mask"/>
+          <text x="530" y="1214" class="t-muted" font-size="11" text-anchor="middle">notification</text>
         </g>
         </g>
 
@@ -1143,16 +1273,16 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           <text x="62" y="359" class="t-muted" font-size="9" font-weight="600">Batch rebuild</text>
         </g>
         <g data-graph-role="segment-label" data-segment-id="2">
-          <rect x="56" y="398" width="97.2" height="18" rx="3" class="c-mask"/>
-          <text x="62" y="411" class="t-muted" font-size="9" font-weight="600">Every 15 minutes</text>
+          <rect x="56" y="486" width="97.2" height="18" rx="3" class="c-mask"/>
+          <text x="62" y="499" class="t-muted" font-size="9" font-weight="600">Every 15 minutes</text>
         </g>
         <g data-graph-role="segment-label" data-segment-id="3">
-          <rect x="56" y="598" width="97.2" height="18" rx="3" class="c-mask"/>
-          <text x="62" y="611" class="t-muted" font-size="9" font-weight="600">Check once a day</text>
+          <rect x="56" y="730" width="97.2" height="18" rx="3" class="c-mask"/>
+          <text x="62" y="743" class="t-muted" font-size="9" font-weight="600">Check once a day</text>
         </g>
         <g data-graph-role="segment-label" data-segment-id="4">
-          <rect x="56" y="828" width="45.2" height="18" rx="3" class="c-mask"/>
-          <text x="62" y="841" class="t-muted" font-size="9" font-weight="600">Notify</text>
+          <rect x="56" y="998" width="45.2" height="18" rx="3" class="c-mask"/>
+          <text x="62" y="1011" class="t-muted" font-size="9" font-weight="600">Notify</text>
         </g>
 
         <!-- Participants -->
@@ -1193,32 +1323,32 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           <text x="348.7142857142857" y="122" class="t-muted" font-size="7" text-anchor="middle">RLS · outbox</text>
         </g>
 
-        <g id="node-tick" data-node-id="tick" data-node-label="Scheduler" tabindex="0" role="button" aria-label="Focus Scheduler, 15-minute tick, Sequence participant" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="15-minute tick" data-node-context="Sequence participant">
-          <title>Scheduler · 15-minute tick · Sequence participant</title>
+        <g id="node-tick" data-node-id="tick" data-node-label="Scheduler" tabindex="0" role="button" aria-label="Focus Scheduler, EventBridge ticks, Sequence participant" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="EventBridge ticks" data-node-context="Sequence participant">
+          <title>Scheduler · EventBridge ticks · Sequence participant</title>
           <rect x="424.57142857142856" y="72" width="90" height="60" rx="6" class="c-mask"/>
-          <rect x="424.57142857142856" y="72" width="90" height="60" rx="6" class="c-cloud" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-4;" stroke-width="1.5"/>
+          <rect x="424.57142857142856" y="72" width="90" height="60" rx="6" class="c-cloud" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="clock" class="semantic-sigil s-cloud" transform="translate(430.57142857142856 78) scale(0.6875)">
             <circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/>
           </g>
           <text data-node-label="" x="469.57142857142856" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Scheduler</text>
-          <text x="469.57142857142856" y="122" class="t-muted" font-size="7" text-anchor="middle">15-minute tick</text>
+          <text x="469.57142857142856" y="122" class="t-muted" font-size="7" text-anchor="middle">EventBridge ticks</text>
         </g>
 
-        <g id="node-worker" data-node-id="worker" data-node-label="worker role" tabindex="0" role="button" aria-label="Focus worker role, health + coaching, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="health + coaching" data-node-context="Sequence participant">
-          <title>worker role · health + coaching · Sequence participant</title>
+        <g id="node-worker" data-node-id="worker" data-node-label="worker role" tabindex="0" role="button" aria-label="Focus worker role, relay + consumers, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="relay + consumers" data-node-context="Sequence participant">
+          <title>worker role · relay + consumers · Sequence participant</title>
           <rect x="545.4285714285714" y="72" width="90" height="60" rx="6" class="c-mask"/>
-          <rect x="545.4285714285714" y="72" width="90" height="60" rx="6" class="c-backend" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
+          <rect x="545.4285714285714" y="72" width="90" height="60" rx="6" class="c-backend" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(551.4285714285714 78) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="590.4285714285714" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">worker role</text>
-          <text x="590.4285714285714" y="122" class="t-muted" font-size="7" text-anchor="middle">health + coaching</text>
+          <text x="590.4285714285714" y="122" class="t-muted" font-size="7" text-anchor="middle">relay + consumers</text>
         </g>
 
-        <g id="node-sqs" data-node-id="sqs" data-node-label="SQS" tabindex="0" role="button" aria-label="Focus SQS, recovery-check jobs, Sequence participant" aria-pressed="false" data-node-kind="messagebus" data-node-sublabel="recovery-check jobs" data-node-context="Sequence participant">
-          <title>SQS · recovery-check jobs · Sequence participant</title>
+        <g id="node-sqs" data-node-id="sqs" data-node-label="SQS" tabindex="0" role="button" aria-label="Focus SQS, ticks + jobs, Sequence participant" aria-pressed="false" data-node-kind="messagebus" data-node-sublabel="ticks + jobs" data-node-context="Sequence participant">
+          <title>SQS · ticks + jobs · Sequence participant</title>
           <rect x="666.2857142857143" y="72" width="90" height="60" rx="6" class="c-mask"/>
-          <rect x="666.2857142857143" y="72" width="90" height="60" rx="6" class="c-messagebus" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
+          <rect x="666.2857142857143" y="72" width="90" height="60" rx="6" class="c-messagebus" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-4;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="messagebus" class="semantic-sigil s-messagebus" transform="translate(672.2857142857143 78) scale(0.6875)">
             <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11"/>
             <circle cx="5" cy="4.5" r="1" class="sigil-fill"/>
@@ -1226,7 +1356,7 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
             <circle cx="7" cy="11.5" r="1" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="711.2857142857143" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">SQS</text>
-          <text x="711.2857142857143" y="122" class="t-muted" font-size="7" text-anchor="middle">recovery-check jobs</text>
+          <text x="711.2857142857143" y="122" class="t-muted" font-size="7" text-anchor="middle">ticks + jobs</text>
         </g>
 
         <g id="node-model" data-node-id="model" data-node-label="Model provider" tabindex="0" role="button" aria-label="Focus Model provider, recovery note text, Sequence participant" aria-pressed="false" data-node-kind="external" data-node-sublabel="recovery note text" data-node-context="Sequence participant">
@@ -1255,26 +1385,26 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
 
         <!-- Legend -->
         <g data-legend="">
-          <text x="40" y="982" class="t-primary" font-size="12" font-weight="650">Legend</text>
-          <g data-legend-semantic-kind="emphasis" data-legend-x="40" data-legend-baseline="1002" data-legend-width="118">
-            <path d="M 40 999 L 74 999" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-            <text x="83" y="1002" class="t-muted" font-size="10" font-weight="500">main request</text>
+          <text x="40" y="1260" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="emphasis" data-legend-x="40" data-legend-baseline="1280" data-legend-width="118">
+            <path d="M 40 1277 L 74 1277" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+            <text x="83" y="1280" class="t-muted" font-size="10" font-weight="500">main request</text>
           </g>
-          <g data-legend-semantic-kind="return" data-legend-x="180" data-legend-baseline="1002" data-legend-width="81">
-            <path d="M 180 999 L 214 999" class="a-default" stroke-width="1.4" stroke-dasharray="3,5" marker-end="url(#arrowhead)"/>
-            <text x="223" y="1002" class="t-muted" font-size="10" font-weight="500">return</text>
+          <g data-legend-semantic-kind="return" data-legend-x="180" data-legend-baseline="1280" data-legend-width="81">
+            <path d="M 180 1277 L 214 1277" class="a-default" stroke-width="1.4" stroke-dasharray="3,5" marker-end="url(#arrowhead)"/>
+            <text x="223" y="1280" class="t-muted" font-size="10" font-weight="500">return</text>
           </g>
-          <g data-legend-semantic-kind="security" data-legend-x="283" data-legend-baseline="1002" data-legend-width="93">
-            <path d="M 283 999 L 317 999" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-            <text x="326" y="1002" class="t-muted" font-size="10" font-weight="500">security</text>
+          <g data-legend-semantic-kind="security" data-legend-x="283" data-legend-baseline="1280" data-legend-width="93">
+            <path d="M 283 1277 L 317 1277" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+            <text x="326" y="1280" class="t-muted" font-size="10" font-weight="500">security</text>
           </g>
-          <g data-legend-semantic-kind="dashed" data-legend-x="398" data-legend-baseline="1002" data-legend-width="112">
-            <path d="M 398 999 L 432 999" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-            <text x="441" y="1002" class="t-muted" font-size="10" font-weight="500">async trace</text>
+          <g data-legend-semantic-kind="dashed" data-legend-x="398" data-legend-baseline="1280" data-legend-width="112">
+            <path d="M 398 1277 L 432 1277" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+            <text x="441" y="1280" class="t-muted" font-size="10" font-weight="500">async trace</text>
           </g>
-          <g data-legend-semantic-kind="default" data-legend-x="532" data-legend-baseline="1002" data-legend-width="87">
-            <path d="M 532 999 L 566 999" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-            <text x="575" y="1002" class="t-muted" font-size="10" font-weight="500">message</text>
+          <g data-legend-semantic-kind="default" data-legend-x="532" data-legend-baseline="1280" data-legend-width="87">
+            <path d="M 532 1277 L 566 1277" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+            <text x="575" y="1280" class="t-muted" font-size="10" font-weight="500">message</text>
           </g>
         </g>
       </svg>
