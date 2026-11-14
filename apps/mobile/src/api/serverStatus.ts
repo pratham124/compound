@@ -37,7 +37,7 @@ export async function loadServerStatus({
 
     return { kind: 'ready', health };
   } catch (error) {
-    return error instanceof ZodError ? { kind: 'invalid' } : { kind: 'unreachable' };
+    return error instanceof ZodError || error instanceof SyntaxError ? { kind: 'invalid' } : { kind: 'unreachable' };
   } finally {
     clearTimeout(timer);
   }

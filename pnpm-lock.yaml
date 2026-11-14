@@ -214,6 +214,9 @@ importers:
       react-native-screens:
         specifier: ~4.30.1
         version: 4.30.1(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@react-native/jest-preset':
         specifier: ^0.88.1
@@ -236,9 +239,6 @@ importers:
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
-      zod:
-        specifier: 4.6.7
-        version: 4.6.7
 
   apps/server:
     dependencies:

@@ -65,4 +65,14 @@ describe('loadServerStatus', () => {
 
     expect(status).toEqual({ kind: 'invalid' });
   });
+
+  it('reports invalid when the server answers with a body that is not JSON', async () => {
+    const status = await loadServerStatus({
+      baseUrl: 'http://laptop:3000',
+      fetch: async () => new Response('<!doctype html><title>Not Found</title>', { status: 404 }),
+      timeoutMs: 1000,
+    });
+
+    expect(status).toEqual({ kind: 'invalid' });
+  });
 });
