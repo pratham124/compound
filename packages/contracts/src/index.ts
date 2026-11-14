@@ -1,1 +1,1 @@
-export { HealthResponse } from './health.ts';
+export { DependencyStatus, HealthResponse } from './health.ts';

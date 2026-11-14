@@ -16,7 +16,11 @@
         "tinted": "../../docs/brand/app-icon/icon-tinted.png"
       },
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        },
+        "NSLocalNetworkUsageDescription": "Compound connects to the server on your local network during development."
       }
     },
     "android": {

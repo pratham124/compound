@@ -37,8 +37,13 @@ test:
     2. If .claude/skills/verify-compound/SKILL.md exists, follow its Launch, Doctor, Drive,
        Evidence and Cleanup sections for each feature the change touches (use the run's
        verification plan if one was given). Capture screenshots or recordings as evidence.
-    3. Otherwise run the repo's tests for the changed area and say live driving isn't set up
-       yet (the verify skill arrives at the end of M1).
+    3. If step 2 did not apply, run the repo's tests for the changed area and say live driving
+       isn't set up yet (the verify skill arrives at the end of M1). The server tests need the
+       local stack, which every worktree shares. Run `[ -f .env ] || cp .env.example .env`. If
+       `docker compose ps --status running -q` prints nothing, run `pnpm stack:up` before the
+       tests and `pnpm stack:down` after. If it prints something, the stack was already running:
+       use it and leave it running, except that if the change touches compose.yaml or
+       infra/local/, run `pnpm stack:up` anyway so Compose recreates the changed services.
   evidence:
     store_in_repo: false # keep binary evidence out of git history
     attach_media: true

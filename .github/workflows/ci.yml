@@ -22,5 +22,15 @@ jobs:
         run: pnpm lint
       - name: Typecheck
         run: pnpm typecheck
+      - name: Start the local stack
+        run: |
+          cp .env.example .env
+          pnpm stack:up
       - name: Test
         run: pnpm test
+      - name: Show stack logs on failure
+        if: failure() && hashFiles('.env') != ''
+        run: docker compose logs
+      - name: Stop the local stack
+        if: always() && hashFiles('.env') != ''
+        run: pnpm stack:down
