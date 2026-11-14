@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Compound mockups</title>
+<title>Compound: design and architecture</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,600,100&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -24,8 +24,8 @@
 </head>
 <body>
 <main>
-  <h1>Compound mockups</h1>
-  <p>The app's look, in light and Cocoa dark. Layout and style only: motion and touch are judged on the phone.</p>
+  <h1>Compound</h1>
+  <p>The app's look, in light and Cocoa dark, and how the backend works. Mockups show layout and style only: motion and touch are judged on the phone.</p>
 
   <h2>The app</h2>
   <ul>
@@ -41,6 +41,14 @@
     <li><a href="mockups/rest-clock-options.html"><b>Rest timer</b><span>Kitchen dial, hourglass, flip clock. Hourglass with quiet buttons won.</span></a></li>
     <li><a href="mockups/setup-start-options.html"><b>Budget setup and starting a day</b><span>Pick your jars, and the round start button.</span></a></li>
     <li><a href="mockups/brand-options.html"><b>App icon</b><span>Colourways and creative directions. The clay mark won.</span></a></li>
+  </ul>
+
+  <h2>How the backend works</h2>
+  <ul>
+    <li><a href="architecture/deployment.html"><b>The big picture</b><span>What runs where, and each service's parts: the outbox, the relay loop, the queues.</span></a></li>
+    <li><a href="architecture/modules.html"><b>Inside the server</b><span>The seven modules and how they hand work to each other.</span></a></li>
+    <li><a href="architecture/plaid-webhook-flow.html"><b>New bank transactions</b><span>A Plaid webhook through to stored transactions, fetched once.</span></a></li>
+    <li><a href="architecture/sleep-recovery-note-flow.html"><b>Sleep to recovery note</b><span>Last night's sleep through to a recovery note and its notification.</span></a></li>
   </ul>
 </main>
 </body>

@@ -21,11 +21,15 @@ Everything comes in through one front door: the app, your AI assistant, and Plai
 
 ![The big picture](docs/architecture/deployment.svg)
 
+[Open the interactive version](https://pratham124.github.io/compound/architecture/deployment.html): zoom, follow a route, and play the animation.
+
 ### Inside the server
 
 The server is split into seven parts: workouts, health, money, coaching, notifications, the AI assistant, and sign-in. Each part keeps its own data. Solid arrows mean one part asks another directly. Dashed arrows mean it leaves a job to be done later, through the queue.
 
 ![Inside the server](docs/architecture/modules.svg)
+
+[Open the interactive version](https://pratham124.github.io/compound/architecture/modules.html): zoom, follow a route, and play the animation.
 
 ### When your bank has new transactions
 
@@ -33,8 +37,12 @@ Plaid tells Compound when there are new transactions. If it says so several time
 
 ![New bank transactions](docs/architecture/plaid-webhook-flow.svg)
 
+[Open the interactive version](https://pratham124.github.io/compound/architecture/plaid-webhook-flow.html): zoom, follow a route, and play the animation.
+
 ### From last night's sleep to a recovery note
 
 When your phone has new sleep data, it sends it to Compound. Once no new sleep has arrived for 30 minutes, Compound treats last night's sleep as complete. A check that runs every 15 minutes then looks at your recovery, once for the day. If your sleep and training together suggest a lighter day, it writes a short recovery note and sends you a notification.
 
 ![Sleep to recovery note](docs/architecture/sleep-recovery-note-flow.svg)
+
+[Open the interactive version](https://pratham124.github.io/compound/architecture/sleep-recovery-note-flow.html): zoom, follow a route, and play the animation.

@@ -4,7 +4,7 @@ The look Pratham picked for Compound on 7 November 2026 ([#27](https://github.co
 
 - [`tokens.ts`](../../../apps/mobile/src/theme/tokens.ts) holds the colours, type, spacing, radii, press feedback and chat button values. The Expo app imports it from there, so it is the one source.
 - [`../mockups/index.html`](../mockups/index.html) shows every tab and Settings in light and dark, built from these values. Open it in a browser.
-- **View them in a browser:** https://pratham124.github.io/compound/ (published from `main` by `.github/workflows/mockups-pages.yml`).
+- **View them in a browser:** https://pratham124.github.io/compound/ (published from `main` by `.github/workflows/pages.yml`).
 - [`../mockups/three-looks.html`](../mockups/three-looks.html) is the comparison the pick was made from (Calm, Soft, Friendly), kept as a record.
 
 The mockups judge layout and style only. Motion and touch feel are judged later on a real iPhone, and the motion values in `tokens.ts` are starting points for that.
