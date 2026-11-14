@@ -7,7 +7,9 @@
   "scripts": {
     "lint": "oxlint --deny-warnings .",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test && node --test \"scripts/verification/*.test.mjs\""
+    "stack:up": "docker compose up -d --wait",
+    "stack:down": "docker compose down",
+    "test": "pnpm -r test && node --test \"infra/local/*.test.ts\" \"scripts/verification/*.test.mjs\""
   },
   "devDependencies": {
     "@oxlint/plugins": "1.93.0",

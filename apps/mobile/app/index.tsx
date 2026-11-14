@@ -1,17 +1,29 @@
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, useColorScheme } from 'react-native';
 
-import { colors, type } from '../src/theme/tokens.ts';
+import { useServerStatus } from '../src/api/useServerStatus.ts';
+import { ServerStatusCard } from '../src/components/ServerStatusCard.tsx';
+import { colors, layout, space, type } from '../src/theme/tokens.ts';
 
 export default function Index() {
   const palette = useColorScheme() === 'dark' ? colors.dark : colors.light;
+  const { status, refresh } = useServerStatus();
 
   return (
-    <View style={[styles.screen, { backgroundColor: palette.bg }]}>
+    <ScrollView style={{ backgroundColor: palette.bg }} contentContainerStyle={styles.content}>
       <Text style={[type.largeTitle, { color: palette.label }]}>Compound</Text>
-    </View>
+      <ServerStatusCard palette={palette} status={status} onRetry={refresh} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  // Scrolls so the card and its button stay reachable at the largest accessibility text size.
+  content: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.xxl,
+    paddingHorizontal: layout.screenMargin,
+    paddingVertical: space.xxl,
+  },
 });
