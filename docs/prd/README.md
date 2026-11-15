@@ -294,7 +294,7 @@ Two kinds of push: **recovery notes** and **budget alerts**.
 
 ## 11. Accounts, privacy and security
 
-**Sign-in** is Sign in with Apple plus email one-time codes, with no passwords. The same sign-in serves the MCP consent page. Phone sessions are opaque tokens looked up in Valkey, kept in the phone's SecureStore.
+**Sign-in** is Sign in with Apple plus email one-time codes, with no passwords. The same sign-in serves the MCP consent page. Phone sessions are opaque tokens looked up in Valkey, kept in the phone's SecureStore. An emailed code works for 5 minutes, can be tried 5 times, and can be used once. Asking for codes is limited to 3 a minute from one address.
 
 **Pratham-only baseline**, required:
 - no secrets or personal data in the repo; HTTPS only; encryption at rest (on the laptop during M1 to M6, that means full-disk encryption);

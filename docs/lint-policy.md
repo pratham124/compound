@@ -2,7 +2,9 @@
 
 Lint is Oxlint with the anti-slop rules (`.oxlintrc.json`, vendored in `tools/oxlint/anti-slop/`). It covers every package and `scripts/`. Every rule is at `error`, and CI runs `pnpm lint` with `--deny-warnings`, so any finding fails the build. Findings are fixed, never silenced: no `// oxlint-disable`, no lowering a rule's severity, no casts to get past a type rule.
 
-Two rules need a policy because Expo changes how they apply.
+Lint is type-aware (`options.typeAware`, through `oxlint-tsgolint`), so `typescript/*` rules see TypeScript's types. That is what lets `typescript/switch-exhaustiveness-check` fail a `switch` over a union that misses a case, even one with a `default`.
+
+Two rules need a policy because Expo changes how they apply, and one rule is off.
 
 ## `no-module-mocking`
 
@@ -18,3 +20,7 @@ Both forms below replace `.filter(...).map(...)` so the array is walked once.
 
 - **Server (`apps/server`, `scripts/`):** Node 24 has iterator helpers. Write `.values().filter(...).map(...).toArray()`.
 - **Mobile (`apps/mobile`, `packages/contracts`):** use a single `flatMap` or a local reducer that pushes into a fresh array. Contracts goes here because the app bundles it and runs it on Hermes. Hermes support for iterator helpers has not been checked on the phone yet, and a missing helper crashes at runtime rather than at build time. Revisit once iterator helpers are confirmed on a device. Then mobile can use the same form as the server.
+
+## `typescript/no-floating-promises` is off in test files
+
+It is the one exception to "never lower a rule's severity", and it is scoped to `*.test.ts` and `*.test.tsx` through `overrides` in `.oxlintrc.json`. In test files the rule flags every `test(...)` call in the server's `node:test` files, because `test` returns a promise the file doesn't await. That is how `node:test` is meant to be used: the runner tracks each test itself. Marking all of them `void test(...)` would add noise to every test file and catch nothing. App code keeps the rule, so an async call there that nobody awaits still fails lint.

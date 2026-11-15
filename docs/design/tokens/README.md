@@ -2,7 +2,7 @@
 
 The look Pratham picked for Compound on 7 November 2026 ([#27](https://github.com/pratham124/compound/issues/27)): **Friendly**, with **Cocoa** dark mode and the mochi chat button.
 
-- [`tokens.ts`](../../../apps/mobile/src/theme/tokens.ts) holds the colours, type, spacing, radii, press feedback and chat button values. The Expo app imports it from there, so it is the one source.
+- [`tokens.ts`](../../../apps/mobile/src/theme/tokens.ts) holds the colours, type, spacing, radii, press feedback, chat button and sign-in motion values. The Expo app imports it from there, so it is the one source.
 - [`../mockups/index.html`](../mockups/index.html) shows every tab and Settings in light and dark, built from these values. Open it in a browser.
 - **View them in a browser:** https://pratham124.github.io/compound/ (published from `main` by `.github/workflows/pages.yml`).
 - [`../mockups/three-looks.html`](../mockups/three-looks.html) is the comparison the pick was made from (Calm, Soft, Friendly), kept as a record.
@@ -22,7 +22,7 @@ The brand mark is a cent sign whose top bar is a flexed arm: money and training 
 
 ## Using the tokens in Expo
 
-- **Colours:** pick `colors.light` or `colors.dark` from `useColorScheme()`. Don't hard-code a hex anywhere else.
+- **Colours:** take the palette from `useAppearance()` (`apps/mobile/src/theme/useAppearance.ts`) rather than reading `useColorScheme()` in each screen. Don't hard-code a hex anywhere else.
 - **Rounded body text:** `fontFamily: 'ui-rounded'` is the iOS system rounded face. No font file is needed.
 - **Fraunces:** load the variable font file with `expo-font`. Then spread the display styles from `type` (`largeTitle`, `title2`, `headline`). Each one carries its own `fontVariationSettings`: SOFT 100, WONK 0, and an optical size (`opsz`) equal to its point size. React Native doesn't set optical size automatically, and without it a 17pt title gets the thin, high-contrast shapes meant for big display text. That needs React Native 0.88 or later. On an older version, make static instances (SOFT 100, one per optical size) with `fonttools varLib.instancer` and load those instead.
 - **Numbers:** set `fontVariant: ['tabular-nums']` wherever numbers line up in columns (sets, money, timers).

@@ -54,7 +54,7 @@ export type Palette = {
   glassLine: string;
 };
 
-/** Both appearances, picked with `useColorScheme()`. */
+/** Both appearances; screens pick one with `useAppearance()`. */
 export type ColorSchemes = { light: Palette; dark: Palette };
 
 export const colors: ColorSchemes = {
@@ -237,12 +237,13 @@ export const shadow = {
 
 /**
  * Press feedback. Every pressable scales down slightly as soon as a finger lands on it.
- * Starting values from the mockup. Judge on a real phone and tune here.
+ * The mockup used 160ms; 140ms keeps press feedback inside animate-expo's 100–150ms range.
+ * Judge on a real phone and tune here.
  */
 export const press = {
   scale: 0.97,
   /** Ease-out on the way down. */
-  durationMs: 160,
+  durationMs: 140,
   /** cubic-bezier(0.23, 1, 0.32, 1): a strong ease-out. */
   easing: [0.23, 1, 0.32, 1] as const,
 } as const;
@@ -281,4 +282,28 @@ export const chatButton = {
   /** Idle blink every ~5.6 s. Off when Reduce Motion is on. */
   blinkEveryMs: 5600,
   accessibilityLabel: 'Ask Compound',
+} as const;
+
+/**
+ * Motion on the sign-in flow. Eases use `press.easing`. Reduce Motion drops the movement and keeps the fades.
+ * Starting values to judge on a release build, then tune here.
+ */
+export const motion = {
+  /** Screen swap between signed out and signed in: the native stack fade. */
+  screenFadeMs: 250,
+  /** A button's label and spinner swapping places. */
+  busyMs: 150,
+  /** An error notice fading in, and the content below it sliding to make room. */
+  noticeMs: 150,
+  /** The next step of a flow fading in, rising from `stepNudge` points below. */
+  stepMs: 200,
+  stepNudge: 4,
+  /** The mochi hopping out from behind the tile each time the sign-in screen appears. */
+  mochiHopMs: 720,
+  /** The mochi squishing and wiggling when tapped. */
+  mochiBoopMs: 480,
+  /** One mochi blink per loop; the blink itself is 4% of it, about 160ms. */
+  mochiBlinkLoopMs: 4000,
+  /** Under Reduce Motion the mochi only fades in. */
+  mochiFadeMs: 200,
 } as const;
