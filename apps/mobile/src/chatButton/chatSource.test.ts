@@ -5,10 +5,6 @@ describe('chatSourceFromScreen', () => {
     expect(chatSourceFromScreen({ kind: 'tab', tab: 'money' })).toBe('money');
   });
 
-  it('names Settings', () => {
-    expect(chatSourceFromScreen({ kind: 'settings' })).toBe('settings');
-  });
-
   it('falls back to "other" on a screen with no name of its own', () => {
     expect(chatSourceFromScreen({ kind: 'other' })).toBe('other');
   });
@@ -27,7 +23,6 @@ describe('parseChatSource', () => {
 describe('describeChatSource', () => {
   it('names the screen the chat is about, in the "About:" form from the mockup', () => {
     expect(describeChatSource('money')).toBe('About: Money');
-    expect(describeChatSource('settings')).toBe('About: Settings');
   });
 
   it('says "this screen" when the source has no name', () => {

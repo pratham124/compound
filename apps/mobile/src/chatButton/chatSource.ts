@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { TABS } from '../navigation/tabs.ts';
 import type { Screen } from './visibility.ts';
 
-const chatSourceSchema = z.enum(['today', 'train', 'money', 'trends', 'settings', 'other']);
+const chatSourceSchema = z.enum(['today', 'train', 'money', 'trends', 'other']);
 
 /** The screen the quick-chat sheet was opened from. The Chat tab is absent: the button is hidden there. */
 export type ChatSource = z.infer<typeof chatSourceSchema>;
@@ -13,7 +13,6 @@ export function chatSourceFromScreen(screen: Screen): ChatSource {
     case 'tab':
       return screen.tab === 'chat' ? 'other' : screen.tab;
     case 'settings':
-      return 'settings';
     case 'task':
     case 'sign-in':
     case 'quick-chat':
@@ -35,8 +34,6 @@ export function parseChatSource(param: string | string[] | undefined): ChatSourc
 
 export function describeChatSource(source: ChatSource): string {
   switch (source) {
-    case 'settings':
-      return 'About: Settings';
     case 'other':
       return 'About: this screen';
     case 'today':

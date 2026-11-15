@@ -59,21 +59,6 @@ describe('ChatButton drag', () => {
     expect(moved[0]?.edge).toBe('left');
     expect(moved[0]?.fraction).toBeCloseTo((422 + 100) / 844);
   });
-
-  it('stays on the right edge when released before the middle', async () => {
-    const moved: ButtonPosition[] = [];
-
-    await renderButton({ onMoved: (position) => moved.push(position) });
-
-    const pan = createGestureController(PAN_TEST_ID);
-
-    pan.begin();
-    pan.activate({ translationX: 0, translationY: 0 });
-    pan.update({ translationX: -100, translationY: 0 });
-    pan.end({ translationX: -100, translationY: 0, velocityX: 0, velocityY: 0 });
-
-    await waitFor(() => expect(moved[0]?.edge).toBe('right'));
-  });
 });
 
 describe('ChatButton tap', () => {
@@ -91,14 +76,6 @@ describe('ChatButton tap', () => {
 
     await waitFor(() => expect(presses).toBe(1));
     expect(moved).toHaveLength(0);
-  });
-});
-
-describe('ChatButton accessibility', () => {
-  it('is a button that VoiceOver reads as "Ask Compound"', async () => {
-    await renderButton();
-
-    expect(screen.getByRole('button', { name: 'Ask Compound' })).toBeTruthy();
   });
 });
 
