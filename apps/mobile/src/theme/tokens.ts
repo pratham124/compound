@@ -169,6 +169,12 @@ export const type: Record<
   caption: { fontFamily: fonts.text, fontSize: 12, lineHeight: 16, fontWeight: '400' },
 };
 
+/**
+ * Large titles stay on one line and shrink to fit at the biggest Dynamic Type sizes, down to this share
+ * of their size, instead of wrapping mid-word.
+ */
+export const titleFit = { minimumFontScale: 0.7 } as const;
+
 /** Every number that lines up in a column (sets, money, timers) uses tabular figures. */
 export const numberVariant = ['tabular-nums'] as const;
 
@@ -242,10 +248,14 @@ export const shadow = {
  */
 export const press = {
   scale: 0.97,
+  /** Small icon buttons (44pt) use the strong end of the 0.95–0.98 range; 0.97 moves them about 1pt, too little to feel. */
+  iconScale: 0.95,
   /** Ease-out on the way down. */
   durationMs: 140,
   /** cubic-bezier(0.23, 1, 0.32, 1): a strong ease-out. */
   easing: [0.23, 1, 0.32, 1] as const,
+  /** With Reduce Motion on, a press dims instead of scaling. */
+  reducedMotionOpacity: 0.6,
 } as const;
 
 /**
@@ -281,6 +291,16 @@ export const chatButton = {
   snapSpring: { dampingRatio: 0.8, response: 0.35 },
   /** Idle blink every ~5.6 s. Off when Reduce Motion is on. */
   blinkEveryMs: 5600,
+  /** How long one blink takes, closed and open again. */
+  blinkDurationMs: 180,
+  /** Fades out while the keyboard is up and back in after. Opacity only, so it stays under Reduce Motion. */
+  fade: { durationMs: 150, easing: [0.23, 1, 0.32, 1] as const },
+  /** First appearance after launch: fades in while growing from `fromScale`, both on one ease-out. Reduce Motion fades only. */
+  entrance: { fromScale: 0.9, durationMs: 300, easing: [0.23, 1, 0.32, 1] as const },
+  /** Coming back after the quick chat sheet closes: a shorter version of the entrance, since it happens tens of times a day. */
+  popBack: { durationMs: 200 },
+  /** The white highlight and starch dusting drawn on the mochi, in both appearances. */
+  highlight: '#fff',
   accessibilityLabel: 'Ask Compound',
 } as const;
 
@@ -289,6 +309,8 @@ export const chatButton = {
  * Starting values to judge on a release build, then tune here.
  */
 export const motion = {
+  /** The native splash screen fading out once fonts and the session have loaded. */
+  splashFadeMs: 200,
   /** Screen swap between signed out and signed in: the native stack fade. */
   screenFadeMs: 250,
   /** A button's label and spinner swapping places. */

@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { authClient } from '../src/auth/authClient.ts';
-import { useServerStatus } from '../src/api/useServerStatus.ts';
-import { endSessionOnServer } from '../src/auth/serverSignOut.ts';
-import { signOut } from '../src/auth/signOut.ts';
-import { ServerStatusCard } from '../src/components/ServerStatusCard.tsx';
-import { slideLayout } from '../src/motion/layoutAnimations.ts';
-import { SignedInCard } from '../src/components/SignedInCard.tsx';
-import { layout, space, type } from '../src/theme/tokens.ts';
-import { useAppearance } from '../src/theme/useAppearance.ts';
+import { useServerStatus } from '../../src/api/useServerStatus.ts';
+import { useAuthClient } from '../../src/auth/AuthClientContext.tsx';
+import { endSessionOnServer } from '../../src/auth/serverSignOut.ts';
+import { signOut } from '../../src/auth/signOut.ts';
+import { ProfileButton } from '../../src/components/ProfileButton.tsx';
+import { ServerStatusCard } from '../../src/components/ServerStatusCard.tsx';
+import { SignedInCard } from '../../src/components/SignedInCard.tsx';
+import { TabScreen } from '../../src/components/TabScreen.tsx';
+import { slideLayout } from '../../src/motion/layoutAnimations.ts';
+import { useAppearance } from '../../src/theme/useAppearance.ts';
 
-export default function Index() {
+export default function TodayScreen() {
   const { palette } = useAppearance();
   const { status, refresh } = useServerStatus();
+  const authClient = useAuthClient();
   const { data: session } = authClient.useSession();
   const [signingOut, setSigningOut] = useState(false);
   const [signOutFailed, setSignOutFailed] = useState(false);
@@ -36,10 +38,7 @@ export default function Index() {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: palette.bg }} contentContainerStyle={styles.content}>
-      <Animated.Text layout={slideLayout} style={[type.largeTitle, { color: palette.label }]}>
-        Compound
-      </Animated.Text>
+    <TabScreen title="Today" trailing={<ProfileButton />}>
       {session === null ? null : (
         <SignedInCard
           palette={palette}
@@ -52,19 +51,10 @@ export default function Index() {
       <Animated.View layout={slideLayout} style={styles.statusSlot}>
         <ServerStatusCard palette={palette} status={status} onRetry={refresh} />
       </Animated.View>
-    </ScrollView>
+    </TabScreen>
   );
 }
 
 const styles = StyleSheet.create({
   statusSlot: { alignSelf: 'stretch' },
-  // Scrolls so the card and its button stay reachable at the largest accessibility text size.
-  content: {
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.xxl,
-    paddingHorizontal: layout.screenMargin,
-    paddingVertical: space.xxl,
-  },
 });
