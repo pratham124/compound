@@ -13,4 +13,10 @@ module.exports = {
     '/node_modules/react-native-reanimated/plugin/',
     '/node_modules/@react-native/babel-preset/',
   ],
+  setupFiles: ['react-native-gesture-handler/jestSetup'],
+  resolver: '<rootDir>/jest.resolver.js',
+  // AsyncStorage's own in-memory stand-in, because the native module doesn't exist under Node.
+  moduleNameMapper: {
+    '^@react-native-async-storage/async-storage$': '@react-native-async-storage/async-storage/jest/async-storage-mock',
+  },
 };
