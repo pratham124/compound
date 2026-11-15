@@ -27,6 +27,13 @@ A PR that changes something a diagram shows updates that diagram in the same PR,
 - **Same folder, no new timestamp.** Update the source folder where it is.
 - **Say so in the PR.** Name the diagram you updated in the PR description, or say why no diagram changed.
 
+## Where tests live
+
+Put each test file next to the file it tests, named `<file>.test.ts`, such as `apps/mobile/src/auth/signIn.test.ts` beside `signIn.ts`. A module's tests and test helpers stay in its folder, so a module isn't split across two trees, and a file with no test beside it stands out. The server's test script runs `src/**/*.test.ts` and Jest finds `*.test.ts` anywhere, so no config changes either way.
+
+- **Never in `apps/mobile/app/`.** Expo Router turns every file there into a screen, so a test there becomes a route. Keep screens thin and test the logic they call, under `apps/mobile/src/`.
+- **Whole-system tests get their own top-level folder,** as `loadtest/` does, because they test the running system rather than one file.
+
 ## Tests: no vacuous or redundant ones
 
 Every test must be able to fail when the behavior it names breaks, and no two tests should guard the same thing. A test that can't fail costs run time and upkeep while proving nothing, and duplicates make every behavior change edit several tests. This applies to the author and to the no-mistakes Review step: raise each vacuous or redundant test as a finding.

@@ -6,7 +6,7 @@ export type FetchHealthOptions = {
 };
 
 export async function fetchHealth({ baseUrl, fetch }: FetchHealthOptions): Promise<HealthResponse> {
-  const response = await fetch(`${baseUrl.replace(/\/$/, '')}/health`);
+  const response = await fetch(new URL('/health', baseUrl).href);
   const body: unknown = JSON.parse(await response.text());
 
   return HealthResponse.parse(body);

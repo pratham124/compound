@@ -10,7 +10,7 @@ function fakeServer(body: ServerBody) {
   const requested: string[] = [];
 
   const fetch: FetchHealthOptions['fetch'] = async (input) => {
-    requested.push(String(input));
+    requested.push(new Request(input).url);
 
     return Response.json(body);
   };

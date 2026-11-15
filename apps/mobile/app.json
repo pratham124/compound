@@ -10,6 +10,7 @@
     "ios": {
       "bundleIdentifier": "com.pratham124.compound",
       "supportsTablet": false,
+      "usesAppleSignIn": true,
       "icon": {
         "light": "../../docs/brand/app-icon/icon.png",
         "dark": "../../docs/brand/app-icon/icon-dark.png",
@@ -47,7 +48,9 @@
             "backgroundColor": "#191614"
           }
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-apple-authentication"
     ],
     "extra": {
       "eas": {

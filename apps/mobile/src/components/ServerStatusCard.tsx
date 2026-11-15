@@ -1,8 +1,9 @@
 import type { DependencyStatus } from '@compound/contracts';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type { ServerStatus } from '../api/serverStatus.ts';
-import { layout, press, radius, space, type, type Palette } from '../theme/tokens.ts';
+import { layout, radius, space, type, type Palette } from '../theme/tokens.ts';
+import { PressScale } from './PressScale.tsx';
 
 export type ServerStatusCardProps = {
   palette: Palette;
@@ -55,16 +56,9 @@ export function ServerStatusCard({ palette, status, onRetry }: ServerStatusCardP
         <Text style={[type.subheadline, { color: palette.secondary }]}>{message(status)}</Text>
       )}
       {status.kind === 'loading' ? null : (
-        <Pressable
-          accessibilityRole="button"
-          onPress={onRetry}
-          style={({ pressed }) => [
-            styles.button,
-            { backgroundColor: palette.accentSoft, transform: [{ scale: pressed ? press.scale : 1 }] },
-          ]}
-        >
+        <PressScale accessibilityRole="button" onPress={onRetry} style={[styles.button, { backgroundColor: palette.accentSoft }]}>
           <Text style={[type.callout, { color: palette.accent }]}>Check again</Text>
-        </Pressable>
+        </PressScale>
       )}
     </View>
   );
