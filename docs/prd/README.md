@@ -92,7 +92,7 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 - It can be dragged anywhere. On release it snaps to the nearest side edge and remembers where it was left, stored as an edge plus a fraction of the screen height, so it survives different screen sizes.
 - Tapping it opens a quick-chat sheet over the current screen. The chat is told which screen it was opened from and the selected item's id (for example, a transaction), nothing more.
 - A conversation started from the button also appears in the Chat tab's history.
-- It's hidden on the Chat tab, during an active workout and while the keyboard is up.
+- It's hidden on the Chat tab, on Settings, on task screens that end in one confirm button (Set up budgets, New routine, Workout finished), during an active workout and while the keyboard is up.
 - It has a small idle animation, which stops when iOS Reduce Motion is on, and a VoiceOver label ("Ask Compound").
 
 **Settings** holds: AI and assistants (sharing switches, connected assistants, the AI changes list), Notifications (switches per kind, quiet hours), Connections (Apple Health, bank logins), and Account (sign out, delete account).
