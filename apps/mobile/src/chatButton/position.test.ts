@@ -18,18 +18,16 @@ describe('positionFromRelease', () => {
     expect(positionFromRelease({ centerX: 300, centerY: 422 }, phone).fraction).toBeCloseTo(0.5);
   });
 
-  it('keeps the button below the status bar when released above it', () => {
+  it('stores a release above the status bar as the highest allowed height', () => {
     const { fraction } = positionFromRelease({ centerX: 300, centerY: 0 }, phone);
-    const { y } = restingPoint({ edge: 'right', fraction }, phone);
 
-    expect(y).toBe(phone.insetTop + chatButton.edgeGap);
+    expect(fraction).toBeCloseTo((47 + 8 + 28) / 844);
   });
 
-  it('keeps the button above the tab bar when released over it', () => {
+  it('stores a release over the tab bar as the lowest allowed height', () => {
     const { fraction } = positionFromRelease({ centerX: 300, centerY: 840 }, phone);
-    const { y } = restingPoint({ edge: 'right', fraction }, phone);
 
-    expect(y + chatButton.touch).toBe(phone.height - phone.insetBottom - layout.tabBarHeight - chatButton.edgeGap);
+    expect(fraction).toBeCloseTo((844 - 34 - 62 - 8 - 28) / 844);
   });
 });
 
