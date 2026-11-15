@@ -29,7 +29,7 @@ A PR that changes something a diagram shows updates that diagram in the same PR,
 
 ## Where tests live
 
-Put each test file next to the file it tests, named `<file>.test.ts`, such as `apps/mobile/src/auth/signIn.test.ts` beside `signIn.ts`. A module's tests and test helpers stay in its folder, so a module isn't split across two trees, and a file with no test beside it stands out. The server's test script runs `src/**/*.test.ts` and Jest finds `*.test.ts` anywhere, so no config changes either way.
+Put each test file next to the file it tests, named `<file>.test.ts`, such as `apps/mobile/src/auth/signIn.test.ts` beside `signIn.ts`. A module's tests and test helpers stay in its folder, so a module isn't split across two trees, and a file with no test beside it stands out. The server's test script runs `src/**/*.test.ts`, and the mobile Jest config only looks under `apps/mobile/src/` (`roots` in `jest.config.js`), so a mobile test anywhere else never runs.
 
 - **Never in `apps/mobile/app/`.** Expo Router turns every file there into a screen, so a test there becomes a route. Keep screens thin and test the logic they call, under `apps/mobile/src/`.
 - **Whole-system tests get their own top-level folder,** as `loadtest/` does, because they test the running system rather than one file.

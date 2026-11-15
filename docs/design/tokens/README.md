@@ -22,7 +22,7 @@ The brand mark is a cent sign whose top bar is a flexed arm: money and training 
 
 ## Using the tokens in Expo
 
-- **Colours:** pick `colors.light` or `colors.dark` from `useColorScheme()`. Don't hard-code a hex anywhere else.
+- **Colours:** take the palette from `useAppearance()` (`apps/mobile/src/theme/useAppearance.ts`) rather than reading `useColorScheme()` in each screen. Don't hard-code a hex anywhere else.
 - **Rounded body text:** `fontFamily: 'ui-rounded'` is the iOS system rounded face. No font file is needed.
 - **Fraunces:** load the variable font file with `expo-font`. Then spread the display styles from `type` (`largeTitle`, `title2`, `headline`). Each one carries its own `fontVariationSettings`: SOFT 100, WONK 0, and an optical size (`opsz`) equal to its point size. React Native doesn't set optical size automatically, and without it a 17pt title gets the thin, high-contrast shapes meant for big display text. That needs React Native 0.88 or later. On an older version, make static instances (SOFT 100, one per optical size) with `fonttools varLib.instancer` and load those instead.
 - **Numbers:** set `fontVariant: ['tabular-nums']` wherever numbers line up in columns (sets, money, timers).
