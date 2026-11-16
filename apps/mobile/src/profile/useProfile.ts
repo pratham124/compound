@@ -1,5 +1,5 @@
 import type { Profile, Units } from '@compound/contracts';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /** The latest units change: none in flight, one being saved (with the units asked for), or one that failed. */
 export type SaveState = { kind: 'idle' } | { kind: 'saving'; units: Units } | { kind: 'failed' };
@@ -17,6 +17,8 @@ export type ProfileActions = {
 export function useProfile({ load, save }: ProfileActions) {
   const [state, setState] = useState<ProfileState>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
+  // Two taps in one frame both land before the saving state re-renders, so the guard can't rely on state.
+  const saving = useRef(false);
 
   useEffect(() => {
     let current = true;
@@ -37,7 +39,7 @@ export function useProfile({ load, save }: ProfileActions) {
   const retry = useCallback(() => setAttempt((n) => n + 1), []);
 
   async function chooseUnits(units: Units) {
-    if (state.kind !== 'ready' || state.save.kind === 'saving') {
+    if (saving.current || state.kind !== 'ready') {
       return;
     }
 
@@ -48,6 +50,7 @@ export function useProfile({ load, save }: ProfileActions) {
       return;
     }
 
+    saving.current = true;
     setState({ ...state, save: { kind: 'saving', units } });
 
     try {
@@ -56,6 +59,8 @@ export function useProfile({ load, save }: ProfileActions) {
       setState({ kind: 'ready', profile, save: { kind: 'idle' } });
     } catch {
       setState({ ...state, save: { kind: 'failed' } });
+    } finally {
+      saving.current = false;
     }
   }
 

@@ -79,6 +79,24 @@ describe('useProfile', () => {
     await act(async () => answer.resolve(imperial));
   });
 
+  it('ignores a second tap in the same frame while a save is in flight', async () => {
+    const answer = Promise.withResolvers<Profile>();
+    const save = jest.fn(() => answer.promise);
+
+    const { result } = await renderHook(() => useProfile({ load: async () => metric, save }));
+
+    await waitFor(() => expect(result.current.state.kind).toBe('ready'));
+    await act(async () => {
+      void result.current.chooseUnits('imperial');
+      void result.current.chooseUnits('metric');
+    });
+
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(result.current.state).toEqual({ kind: 'ready', profile: metric, save: { kind: 'saving', units: 'imperial' } });
+
+    await act(async () => answer.resolve(imperial));
+  });
+
   it('does not save when the chosen units are already the stored ones', async () => {
     const save = jest.fn(async () => imperial);
 
