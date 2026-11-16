@@ -57,12 +57,16 @@ export type SignedInLabel = { kind: 'name'; name: string } | { kind: 'email'; em
 
 const APPLE_RELAY_DOMAIN = '@privaterelay.appleid.com';
 
-// What the signed-in card shows: the name, else the email. An Apple relay address
-// (someone who chose Hide My Email) is a random string, so it shows "Signed in with Apple" instead.
+// An Apple relay address (someone who chose Hide My Email) is a random string, so screens
+// show "Signed in with Apple" in its place.
+export function isAppleRelay(email: string): boolean {
+  return email.endsWith(APPLE_RELAY_DOMAIN);
+}
+
 export function signedInLabel({ name, email }: { name: string; email: string }): SignedInLabel {
   if (name.trim() !== '') {
     return { kind: 'name', name };
   }
 
-  return email.endsWith(APPLE_RELAY_DOMAIN) ? { kind: 'apple' } : { kind: 'email', email };
+  return isAppleRelay(email) ? { kind: 'apple' } : { kind: 'email', email };
 }

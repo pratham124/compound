@@ -51,3 +51,19 @@ test('queue check rejects when the ticks queue does not exist', async (t) => {
 
   await assert.rejects(healthChecks.queue());
 });
+
+test('the api pool has Postgres cancel a slow statement before the client gives up on it', async (t) => {
+  const { apiPool } = withConnections(t, config);
+
+  const shown = await apiPool.query<{ statement_timeout: string }>('show statement_timeout');
+  const serverLimitMs = Number.parseInt(shown.rows[0]?.statement_timeout ?? '', 10);
+
+  assert.ok(serverLimitMs > 0, 'statement_timeout is set');
+  assert.ok(serverLimitMs < (apiPool.options.query_timeout ?? 0), 'Postgres gives up first');
+});
+
+test('connect gives the owner and auth pools a fixed few connections and the api pool the rest of the budget', (t) => {
+  const { pool, authPool, apiPool } = withConnections(t, { ...config, databasePoolMax: 14 });
+
+  assert.deepEqual([pool.options.max, authPool.options.max, apiPool.options.max], [2, 3, 9]);
+});

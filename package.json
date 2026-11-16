@@ -11,6 +11,7 @@
     "typecheck": "pnpm -r typecheck",
     "stack:up": "docker compose up -d --wait",
     "stack:down": "docker compose down",
+    "test:non-superuser": "node --env-file=.env.example --env-file-if-exists=.env scripts/test-as-non-superuser.mjs",
     "test": "pnpm -r test && node --test \"infra/local/*.test.ts\" \"scripts/verification/*.test.mjs\""
   },
   "devDependencies": {

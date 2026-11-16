@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { randomInt, randomUUID } from 'node:crypto';
 import type { TestContext } from 'node:test';
 
@@ -28,8 +29,8 @@ export async function startIdentity(t: TestContext) {
     },
   };
 
-  const auth = createAuth({ pool: connections.pool, valkey: connections.valkey, config, mailer });
-  const app = buildApp({ logger: false, healthChecks: connections.healthChecks, auth });
+  const auth = createAuth({ pool: connections.authPool, valkey: connections.valkey, config, mailer });
+  const app = buildApp({ logger: false, healthChecks: connections.healthChecks, auth, apiPool: connections.apiPool });
 
   t.after(() => app.close());
 
@@ -38,6 +39,22 @@ export async function startIdentity(t: TestContext) {
   const client = { inject: (options: InjectOptions) => app.inject({ remoteAddress, ...options }) };
 
   return { app, client, config, connections, sentCodes };
+}
+
+export async function signInByEmail(client: Awaited<ReturnType<typeof startIdentity>>['client'], sentCodes: { code: string }[]) {
+  const email = uniqueEmail();
+
+  await client.inject({ method: 'POST', url: '/api/auth/email-otp/send-verification-otp', payload: { email, type: 'sign-in' } });
+
+  const response = await client.inject({
+    method: 'POST',
+    url: '/api/auth/sign-in/email-otp',
+    payload: { email, otp: sentCodes.at(-1)?.code },
+  });
+
+  assert.equal(response.statusCode, 200);
+
+  return { email, response };
 }
 
 export function uniqueEmail(): string {

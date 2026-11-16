@@ -26,6 +26,9 @@ jobs:
         run: |
           cp .env.example .env
           pnpm stack:up
+      # First, so the owner's migration creates the database roles itself, as a fresh RDS deploy will.
+      - name: Test with a database owner that is not a superuser
+        run: pnpm test:non-superuser
       - name: Test
         run: pnpm test
       - name: Show stack logs on failure

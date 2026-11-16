@@ -24,13 +24,13 @@ const connections = connect(config);
 await migrate(connections.pool);
 
 const auth = createAuth({
-  pool: connections.pool,
+  pool: connections.authPool,
   valkey: connections.valkey,
   config,
   mailer: mailerFor(config.signInMailer),
 });
 
-const app = buildApp({ logger: true, healthChecks: connections.healthChecks, auth });
+const app = buildApp({ logger: true, healthChecks: connections.healthChecks, auth, apiPool: connections.apiPool });
 
 // The laptop runs the api and worker roles in one process (PRD section 12).
 const worker = startTickWorker({ sqs: connections.sqs, queueUrl: connections.ticksQueueUrl, logger: app.log });

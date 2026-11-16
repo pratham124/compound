@@ -1,14 +1,22 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import { StyleSheet, Text } from 'react-native';
 
-import { layout, press, radius } from '../theme/tokens.ts';
+import { useAuthClient } from '../auth/AuthClientContext.tsx';
+import { initialsOf } from '../profile/initials.ts';
+import { glassShadow, layout, press, radius, type } from '../theme/tokens.ts';
 import { useAppearance } from '../theme/useAppearance.ts';
+import { PersonGlyph } from './PersonGlyph.tsx';
 import { PressableScale } from './PressableScale.tsx';
+
+const GLYPH_SIZE = 24;
+const INITIALS_SIZE = 20;
+const GLYPH_STROKE = 1.8;
 
 export function ProfileButton() {
   const { palette } = useAppearance();
   const router = useRouter();
+  const { data: session } = useAuthClient().useSession();
+  const initials = initialsOf(session?.user.name ?? '');
 
   return (
     <PressableScale
@@ -16,22 +24,26 @@ export function ProfileButton() {
       accessibilityLabel="Settings"
       pressedScale={press.iconScale}
       onPress={() => router.push('/settings')}
-      style={[styles.circle, { backgroundColor: palette.accentSoft }]}
+      style={[styles.circle, { backgroundColor: palette.glass, boxShadow: glassShadow(palette) }]}
     >
-      <Svg width={22} height={22} viewBox="0 0 22 22">
-        <Circle cx={11} cy={7.5} r={3.6} fill={palette.accent} />
-        <Path d="M3.5 19 C3.5 14.6 6.8 12.6 11 12.6 C15.2 12.6 18.5 14.6 18.5 19 Z" fill={palette.accent} />
-      </Svg>
+      {initials === '' ? (
+        <PersonGlyph size={GLYPH_SIZE} color={palette.label} strokeWidth={GLYPH_STROKE} />
+      ) : (
+        <Text maxFontSizeMultiplier={1.2} style={[type.body, styles.initials, { color: palette.label }]}>
+          {initials}
+        </Text>
+      )}
     </PressableScale>
   );
 }
 
 const styles = StyleSheet.create({
   circle: {
-    width: layout.minTouch,
-    height: layout.minTouch,
+    width: layout.profileButton,
+    height: layout.profileButton,
     borderRadius: radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  initials: { fontSize: INITIALS_SIZE, lineHeight: INITIALS_SIZE + 4, fontWeight: '600' },
 });

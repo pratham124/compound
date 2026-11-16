@@ -25,3 +25,15 @@ test('a missing SIGN_IN_MAILER is an error rather than a silent default', () => 
 
   assert.throws(() => parseConfig(withoutMailer));
 });
+
+test('the Postgres connection budget defaults to the starting value in docs/prd/numbers.md', () => {
+  assert.equal(parseConfig(baseEnv).databasePoolMax, 10);
+});
+
+test('the Postgres connection budget is read from DATABASE_POOL_MAX', () => {
+  assert.equal(parseConfig({ ...baseEnv, DATABASE_POOL_MAX: '14' }).databasePoolMax, 14);
+});
+
+test('a connection budget too small to leave the api pool a connection is refused', () => {
+  assert.throws(() => parseConfig({ ...baseEnv, DATABASE_POOL_MAX: '5' }));
+});

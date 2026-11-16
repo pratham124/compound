@@ -1,6 +1,7 @@
 import { HealthResponse } from '@compound/contracts';
 import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod';
+import type pg from 'pg';
 
 import { checkHealth, type HealthChecks } from './health.ts';
 import type { Auth } from './identity/auth.ts';
@@ -10,9 +11,10 @@ export type BuildAppOptions = {
   logger: boolean;
   healthChecks: HealthChecks;
   auth: Auth;
+  apiPool: pg.Pool;
 };
 
-export function buildApp({ logger, healthChecks, auth }: BuildAppOptions) {
+export function buildApp({ logger, healthChecks, auth, apiPool }: BuildAppOptions) {
   const app = Fastify({ logger });
 
   app.setValidatorCompiler(validatorCompiler);
@@ -28,7 +30,7 @@ export function buildApp({ logger, healthChecks, auth }: BuildAppOptions) {
     },
   );
 
-  void app.register(identity, { auth });
+  void app.register(identity, { auth, apiPool });
 
   return app;
 }

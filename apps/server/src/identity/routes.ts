@@ -1,17 +1,28 @@
-import { Me, Unauthenticated, UserId } from '@compound/contracts';
+import { Me, Profile, ProfileQuery, ProfileUpdate, Unauthenticated, UserId } from '@compound/contracts';
 import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 
+import type pg from 'pg';
+
 import type { Auth } from './auth.ts';
+import { createProfileStore } from './profileStore.ts';
 
 export async function sessionFor(auth: Auth, request: FastifyRequest) {
   return auth.api.getSession({ headers: fromNodeHeaders(request.headers) });
 }
 
-export type IdentityOptions = { auth: Auth };
+async function signedInUserId(auth: Auth, request: FastifyRequest): Promise<UserId | null> {
+  const session = await sessionFor(auth, request);
 
-export const identity: FastifyPluginAsync<IdentityOptions> = async (app, { auth }) => {
+  return session === null ? null : UserId.parse(session.user.id);
+}
+
+export type IdentityOptions = { auth: Auth; apiPool: pg.Pool };
+
+export const identity: FastifyPluginAsync<IdentityOptions> = async (app, { auth, apiPool }) => {
+  const profiles = createProfileStore(apiPool);
+
   app.route({
     method: ['GET', 'POST'],
     url: '/api/auth/*',
@@ -54,6 +65,33 @@ export const identity: FastifyPluginAsync<IdentityOptions> = async (app, { auth 
       const { id, name, email } = session.user;
 
       return { id: UserId.parse(id), name, email };
+    },
+  );
+  app.withTypeProvider<ZodTypeProvider>().get(
+    '/me/profile',
+    { schema: { querystring: ProfileQuery, response: { 200: Profile, 401: Unauthenticated } } },
+    async (request, reply) => {
+      const userId = await signedInUserId(auth, request);
+
+      if (userId === null) {
+        return reply.code(401).send({ error: 'unauthenticated' });
+      }
+
+      return profiles.getOrCreate(userId, request.query.timeZone);
+    },
+  );
+
+  app.withTypeProvider<ZodTypeProvider>().put(
+    '/me/profile',
+    { schema: { body: ProfileUpdate, response: { 200: Profile, 401: Unauthenticated } } },
+    async (request, reply) => {
+      const userId = await signedInUserId(auth, request);
+
+      if (userId === null) {
+        return reply.code(401).send({ error: 'unauthenticated' });
+      }
+
+      return profiles.setUnits(userId, request.body.units);
     },
   );
 };

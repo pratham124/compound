@@ -6,12 +6,14 @@ import { useAppearance } from '../theme/useAppearance.ts';
 
 export type TabScreenProps = {
   title: string;
-  /** Sits level with the title, at the trailing edge. */
+  /** Lines under the title (Today's greeting and date). */
+  subtitle?: ReactNode;
+  /** Sits level with the title, at the trailing edge. With a subtitle it lines up with the top of the title block. */
   trailing?: ReactNode;
   children?: ReactNode;
 };
 
-export function TabScreen({ title, trailing, children }: TabScreenProps) {
+export function TabScreen({ title, subtitle, trailing, children }: TabScreenProps) {
   const { palette } = useAppearance();
 
   return (
@@ -20,17 +22,22 @@ export function TabScreen({ title, trailing, children }: TabScreenProps) {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={styles.content}
     >
-      <View style={styles.header}>
-        <Text
-          accessibilityRole="header"
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={titleFit.minimumFontScale}
-          style={[type.largeTitle, styles.title, { color: palette.label }]}
-        >
-          {title}
-        </Text>
-        {trailing === undefined ? null : <View style={styles.trailing}>{trailing}</View>}
+      <View testID="tab-header" style={[styles.header, subtitle === undefined ? null : styles.headerTop]}>
+        <View style={styles.titleBlock}>
+          <Text
+            accessibilityRole="header"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={titleFit.minimumFontScale}
+            style={[type.largeTitle, { color: palette.label }]}
+          >
+            {title}
+          </Text>
+          {subtitle}
+        </View>
+        {trailing === undefined ? null : (
+          <View style={[styles.trailing, subtitle === undefined ? null : styles.trailingTop]}>{trailing}</View>
+        )}
       </View>
       {children}
     </ScrollView>
@@ -52,6 +59,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: space.md,
   },
-  title: { flexShrink: 1 },
+  headerTop: { alignItems: 'flex-start' },
+  titleBlock: { flexShrink: 1 },
   trailing: { flexShrink: 0 },
+  trailingTop: { marginTop: space.xxs },
 });

@@ -38,6 +38,10 @@ export type Palette = {
   eyes: string;
   /** Recovery note card. A barely-there pink, so the note reads as warm, not alarming. */
   charTint: string;
+  /** The tint of a list row's blob (`.blob.bc`): the mochi pink mixed into the card, 50% in light and 30% in dark. */
+  charBlob: string;
+  /** The fill that sweeps across a hold-to-delete row: `danger` at about 14% over `card`. */
+  dangerTint: string;
   /** Small highlights: the "Best yet" sparkle, the Steps and Notifications icon chips. Never text. */
   warm: string;
   /** The sparkle itself, where warm is too pale to see. Decorative. */
@@ -73,6 +77,8 @@ export const colors: ColorSchemes = {
     blush: '#EE8FA6',
     eyes: '#3A2A2E',
     charTint: '#FFF5F7',
+    charBlob: '#FDEAEE',
+    dangerTint: '#F4E5E3',
     warm: '#F5DD8C',
     warmDeep: '#C9A227',
     danger: '#B04534',
@@ -97,6 +103,8 @@ export const colors: ColorSchemes = {
     blush: '#E07D96',
     eyes: '#3A2A2E',
     charTint: '#2E2225',
+    charBlob: '#614F50',
+    dangerTint: '#41322D',
     warm: '#E6CB7A',
     warmDeep: '#E6CB7A',
     danger: '#F2A08F',
@@ -202,6 +210,8 @@ export const layout = {
   tileGap: 10,
   /** Minimum touch target. Applies to every button, field, check and row. */
   minTouch: 44,
+  /** The profile button beside Today's title, greeting and date; 44 looked lost next to the three lines. */
+  profileButton: 52,
   /** Main buttons (Apply, Finish when large, Add exercise). */
   buttonHeight: 50,
   /** Number fields in the logger. */
@@ -212,13 +222,28 @@ export const layout = {
   tabBarBottom: 21,
   /** Floating pills (rest timer) sit this far above the bottom of the screen. */
   floatingAboveBottom: 93,
+  /** Space between the rows of a list group (`.grp` in the mockup). */
+  groupGap: 6,
+  /** The profile avatar on Settings, and the gap between it and the name. */
+  avatar: 56,
+  profileGap: 14,
+  /** An inline two-option control in a list row (weight units): its width, and the inset of its track. */
+  segmentWidth: 128,
+  segmentInset: 3,
+  /** From this Dynamic Type scale up, a row's value drops under its label (`html.larger` in the mockup is 1.38). */
+  largerTextFrom: 1.3,
 } as const;
+
+/** The soft blob behind a list row's icon, and the icon drawn in it (`.blob` in the mockup). */
+export const blob = { width: 37.4, height: 34, icon: 18.7 } as const;
 
 export const radius = {
   /** Cards and list groups. */
   card: 24,
   /** Tiles inside a card (Today's numbers). */
   tile: 18,
+  /** A row inside a list group (`.lrow` in the mockup). */
+  row: 18,
   /** Chat bubbles. The corner nearest the speaker drops to bubbleTail. */
   bubble: 22,
   bubbleTail: 6,
@@ -238,8 +263,18 @@ export const radius = {
  */
 export const shadow = {
   floating: { shadowColor: '#000', shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.14, shadowRadius: 12 },
+  /** The selected side of an inline two-option control. */
+  segment: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.14, shadowRadius: 3 },
   chatButton: { shadowColor: '#14141E', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.22, shadowRadius: 5 },
 } as const;
+
+/**
+ * The mockup's `.glass` edge and lift, plus a tight contact layer. `boxShadow` rather than the shadow props above,
+ * because iOS scales those by the view's alpha and the glass fill is translucent.
+ */
+export function glassShadow(palette: Palette): string {
+  return `inset 0 1px 0 ${palette.glassEdge}, 0 0 0 0.5px ${palette.glassLine}, 0 1px 3px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.18)`;
+}
 
 /**
  * Press feedback. Every pressable scales down slightly as soon as a finger lands on it.
@@ -317,6 +352,12 @@ export const motion = {
   busyMs: 150,
   /** An error notice fading in, and the content below it sliding to make room. */
   noticeMs: 150,
+  /** The thumb of a two-option control sliding to the other side, with a strong ease-in-out (it moves on screen). */
+  segmentSlideMs: 200,
+  segmentSlideEasing: [0.77, 0, 0.175, 1] as const,
+  /** Hold-to-delete: how long to hold, and how fast the fill snaps back on an early release (with the press easing). */
+  holdToDeleteMs: 1500,
+  holdReleaseMs: 200,
   /** The next step of a flow fading in, rising from `stepNudge` points below. */
   stepMs: 200,
   stepNudge: 4,

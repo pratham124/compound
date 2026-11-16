@@ -1,24 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { cookieHeader, sessionTokenOf, startIdentity, uniqueEmail } from './testkit.ts';
+import { cookieHeader, sessionTokenOf, signInByEmail, startIdentity } from './testkit.ts';
 import { KEY_PREFIX } from './valkeyStorage.ts';
-
-async function signInByEmail(client: Awaited<ReturnType<typeof startIdentity>>['client'], sentCodes: { code: string }[]) {
-  const email = uniqueEmail();
-
-  await client.inject({ method: 'POST', url: '/api/auth/email-otp/send-verification-otp', payload: { email, type: 'sign-in' } });
-
-  const response = await client.inject({
-    method: 'POST',
-    url: '/api/auth/sign-in/email-otp',
-    payload: { email, otp: sentCodes.at(-1)?.code },
-  });
-
-  assert.equal(response.statusCode, 200);
-
-  return { email, response };
-}
 
 test('the session token reveals nothing about the person and is kept in Valkey', async (t) => {
   const { client, connections, sentCodes } = await startIdentity(t);

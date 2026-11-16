@@ -95,7 +95,7 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Always-on monthly cost (from M7) | about $56 to $61, mostly covered by new-account AWS credits ($100 plus up to $100 more) at first | arithmetic (the scaling record's breakdown) | the first month's bill |
 | Always-on after M8 | one EC2 t4g.micro (1 GB) running the Compose stack, about $15 to $16 a month ([PRD section 17](README.md#a-cheaper-setup-for-a-few-people-after-m8)) | decided (a t4g.small, 2 GB, costs about $6 more; a type change takes about two minutes and moves nothing) | after M8: move to t4g.small if memory stays above 85%, swap is used steadily, or CPU credits run out |
 | AWS trial run (end of M6) | a few hours of always-on, under $1 | arithmetic | not planned |
-| Connection pool, api process | 10 | judgement (RDS allows about 100 connections on 1 GB) | M8 breaking point |
+| Connection pool, api process | 10 (`DATABASE_POOL_MAX`): 2 for migrations and health checks, 3 for sign-in, the rest (5) for requests | judgement (RDS allows about 100 connections on 1 GB) | M8 breaking point |
 | Connection pool, worker process | 5 | judgement | M8 |
 | Queues | 4 standard queues (`sync`, `ai`, `notify`, `maintenance`), each with a dead-letter queue | arithmetic (4 long-polled queues stay inside SQS's 1M free requests a month; 8 wouldn't) | M8 |
 | Visibility timeout | 60 s; `ai` queue 120 s | judgement | M8 |

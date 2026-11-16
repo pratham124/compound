@@ -11,6 +11,9 @@ const Env = z.object({
   BETTER_AUTH_URL: z.url(),
   APPLE_APP_BUNDLE_ID: z.string().min(1).default('com.pratham124.compound'),
   SIGN_IN_MAILER: z.enum(['console']),
+  // The process's whole Postgres connection budget (docs/prd/numbers.md). At least 6: the owner and auth pools
+  // take 5 between them and the api pool needs one.
+  DATABASE_POOL_MAX: z.coerce.number().int().min(6).default(10),
   NODE_ENV: z.string().optional(),
 });
 
@@ -25,6 +28,7 @@ export type Config = {
   authBaseUrl: string;
   appleBundleId: string;
   signInMailer: 'console';
+  databasePoolMax: number;
 };
 
 export function parseConfig(env: NodeJS.ProcessEnv): Config {
@@ -45,5 +49,6 @@ export function parseConfig(env: NodeJS.ProcessEnv): Config {
     authBaseUrl: parsed.BETTER_AUTH_URL,
     appleBundleId: parsed.APPLE_APP_BUNDLE_ID,
     signInMailer: parsed.SIGN_IN_MAILER,
+    databasePoolMax: parsed.DATABASE_POOL_MAX,
   };
 }

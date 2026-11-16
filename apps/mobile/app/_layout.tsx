@@ -59,11 +59,11 @@ export default function RootLayout() {
               options={{
                 headerShown: true,
                 title: 'Settings',
+                // The screen draws its own display-font title, so the header keeps only the back control.
+                headerTitle: '',
                 headerBackTitle: 'Today',
-                headerLargeTitleEnabled: true,
                 headerTransparent: true,
                 headerTintColor: palette.accent,
-                headerLargeTitleStyle: { color: palette.label },
               }}
             />
             <Stack.Screen

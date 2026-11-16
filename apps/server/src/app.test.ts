@@ -19,7 +19,7 @@ function appWith(t: test.TestContext, checks: HealthChecks) {
   const connections = connect(config);
 
   const auth = createAuth({
-    pool: connections.pool,
+    pool: connections.authPool,
     valkey: connections.valkey,
     config,
     mailer: createConsoleMailer(() => {}),
@@ -27,7 +27,7 @@ function appWith(t: test.TestContext, checks: HealthChecks) {
 
   t.after(() => connections.close());
 
-  return buildApp({ logger: false, healthChecks: checks, auth });
+  return buildApp({ logger: false, healthChecks: checks, auth, apiPool: connections.apiPool });
 }
 
 test('GET /health returns 200 when Postgres, Valkey and the queue are reachable', async (t) => {
