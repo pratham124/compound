@@ -5250,7 +5250,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="AWS us-east-1 · always-on" x="256" y="53" width="1478" height="462" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="AWS us-east-1 · always-on" x="256" y="53" width="1478" height="477" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="security-group" data-composition-frame-id="1" data-composition-frame-label="private subnet" x="495" y="53" width="230" height="107" rx="8" class="c-security-group" stroke-width="1"/>
 
@@ -5270,8 +5270,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <path data-edge-from="plaidhook" data-edge-to="alb" data-edge-label="webhooks" data-edge-key="3" data-edge-id="plaid-alb" data-composition-points="190,430;360,430;360,360" data-composition-crossover="halo" data-composition-independent="true" d="M 190 430 L 352 430 Q 360 430 360 422 L 360 360" class="a-security" data-animate="edge" style="--step:3" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:4">
-          <path data-graph-role="automatic-crossover-underlay" d="M 440 330 L 520 330" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="alb" data-edge-to="api" data-edge-label="HTTPS" data-edge-key="4" data-edge-id="alb-api" data-composition-points="440,330;520,330" data-composition-crossover="halo" data-composition-independent="true" d="M 440 330 L 520 330" class="a-emphasis" data-animate="edge" style="--step:4" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 440 321.95 L 520 321.95" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="alb" data-edge-to="api" data-edge-label="HTTPS" data-edge-key="4" data-edge-id="alb-api" data-composition-points="440,321.95;520,321.95" data-composition-crossover="halo" data-composition-independent="true" d="M 440 321.95 L 520 321.95" class="a-emphasis" data-animate="edge" style="--step:4" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:5">
           <path data-graph-role="automatic-crossover-underlay" d="M 610 290 L 610 140" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -5287,52 +5287,56 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <path data-edge-from="api" data-edge-to="pg_data" data-edge-label="save the change" data-edge-key="8" data-edge-id="api-data" data-composition-points="684,370;684,441;850,441" data-composition-crossover="halo" data-composition-independent="true" d="M 684 370 L 684 433 Q 684 441 692 441 L 850 441" class="a-emphasis" data-animate="edge" style="--step:8" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:9">
-          <path data-graph-role="automatic-crossover-underlay" d="M 584 370 L 584 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="9" data-edge-id="api-grafana" data-composition-points="584,370;584,630" data-composition-crossover="halo" data-composition-independent="true" d="M 584 370 L 584 630" class="a-dashed" data-animate="edge" style="--step:9" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 536 370 L 536 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="9" data-edge-id="api-grafana" data-composition-points="536,370;536,630" data-composition-crossover="halo" data-composition-independent="true" d="M 536 370 L 536 630" class="a-dashed" data-animate="edge" style="--step:9" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:10">
-          <path data-graph-role="automatic-crossover-underlay" d="M 666 370 L 666 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="10" data-edge-id="api-model" data-composition-points="666,370;666,630" data-composition-crossover="halo" data-composition-independent="true" d="M 666 370 L 666 630" class="a-default" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 617 370 L 617 652 Q 617 660 625 660 L 650 660" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="10" data-edge-id="api-model" data-composition-points="617,370;617,660;650,660" data-composition-crossover="halo" data-composition-independent="true" d="M 617 370 L 617 652 Q 617 660 625 660 L 650 660" class="a-default" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:11">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1190 200 L 1070 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="11" data-edge-id="ticks-todo" data-composition-points="1190,200;1070,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 200 L 1070 200" class="a-default" data-animate="edge" style="--step:11" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 520 337 L 488 337 Q 480 337 480 345 L 480 472 Q 480 480 472 480 L 440 480" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="ses" data-edge-label="sign-in code" data-edge-key="11" data-edge-id="api-ses" data-composition-points="520,337;480,337;480,480;440,480" data-composition-crossover="halo" data-composition-independent="true" d="M 520 337 L 488 337 Q 480 337 480 345 L 480 472 Q 480 480 472 480 L 440 480" class="a-default" data-animate="edge" style="--step:11" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:12">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1190 330 L 1070 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="12" data-edge-id="relay-outbox" data-composition-points="1190,330;1070,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 330 L 1070 330" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1190 200 L 1070 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="12" data-edge-id="ticks-todo" data-composition-points="1190,200;1070,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 200 L 1070 200" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:13">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1190 460 L 1070 460" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="13" data-edge-id="consumers-data" data-composition-points="1190,460;1070,460" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 460 L 1070 460" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1190 330 L 1070 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="13" data-edge-id="relay-outbox" data-composition-points="1190,330;1070,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 330 L 1070 330" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:14">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1390 330 L 1520 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="14" data-edge-id="relay-sqs" data-composition-points="1390,330;1520,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1390 330 L 1520 330" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1190 460 L 1070 460" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="14" data-edge-id="consumers-data" data-composition-points="1190,460;1070,460" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 460 L 1070 460" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:15">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1615 140 L 1615 280" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="15" data-edge-id="scheduler-sqs" data-composition-points="1615,140;1615,280" data-composition-crossover="halo" data-composition-independent="true" d="M 1615 140 L 1615 280" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1390 330 L 1520 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="15" data-edge-id="relay-sqs" data-composition-points="1390,330;1520,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1390 330 L 1520 330" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:16">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="16" data-edge-id="sqs-ticks" data-composition-points="1520,316;1496,316;1496,200;1390,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1615 140 L 1615 280" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="16" data-edge-id="scheduler-sqs" data-composition-points="1615,140;1615,280" data-composition-crossover="halo" data-composition-independent="true" d="M 1615 140 L 1615 280" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:17">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="17" data-edge-id="sqs-consumers" data-composition-points="1536,380;1536,441;1390,441" data-composition-crossover="halo" data-composition-independent="true" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="17" data-edge-id="sqs-ticks" data-composition-points="1520,316;1496,316;1496,200;1390,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:18">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="18" data-edge-id="consumers-plaid" data-composition-points="1290,495;1290,646;1270,646" data-composition-crossover="halo" data-composition-independent="true" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="18" data-edge-id="sqs-consumers" data-composition-points="1536,380;1536,441;1390,441" data-composition-crossover="halo" data-composition-independent="true" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:19">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="19" data-edge-id="consumers-model" data-composition-points="1276,495;1276,519;742,519;742,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="19" data-edge-id="consumers-plaid" data-composition-points="1290,495;1290,646;1270,646" data-composition-crossover="halo" data-composition-independent="true" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:20">
+          <path data-graph-role="automatic-crossover-underlay" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="20" data-edge-id="consumers-model" data-composition-points="1276,495;1276,519;742,519;742,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:21">
           <path data-graph-role="automatic-crossover-underlay" d="M 1366 495 L 1366 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="20" data-edge-id="consumers-apns" data-composition-points="1366,495;1366,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1366 495 L 1366 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="21" data-edge-id="consumers-apns" data-composition-points="1366,495;1366,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1366 495 L 1366 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- Components -->
@@ -5396,6 +5400,17 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <text data-node-label="" data-detail-anchor="" x="360" y="328" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Load balancer</text>
         <text data-detail="context" x="360" y="344" class="t-muted" font-size="9" text-anchor="middle">HTTPS :443 · health checks</text>
         <text data-detail="fine" x="360" y="352" class="t-cloud" font-size="7" text-anchor="middle">ALB</text>
+        </g>
+
+        <g id="node-ses" data-node-id="ses" data-node-label="SES" tabindex="0" role="button" aria-label="Focus SES, emails sign-in codes · from M6, AWS us-east-1 · always-on" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="emails sign-in codes · from M6" data-node-context="AWS us-east-1 · always-on">
+          <title>SES · emails sign-in codes · from M6 · AWS us-east-1 · always-on</title>
+          <rect x="280" y="450" width="160" height="60" rx="8" class="c-mask"/>
+          <rect x="280" y="450" width="160" height="60" rx="8" class="c-cloud" data-animate="node" style="--step:12" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(286 456) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="360" y="478" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">SES</text>
+        <text data-detail="context" x="360" y="494" class="t-muted" font-size="8.4" text-anchor="middle">emails sign-in codes · from M6</text>
         </g>
 
         <g id="node-valkey" data-node-id="valkey" data-node-label="Valkey" tabindex="0" role="button" aria-label="Focus Valkey, sessions · rate limits · chat meter, AWS us-east-1 · always-on › private subnet" aria-pressed="false" data-node-kind="database" data-node-sublabel="sessions · rate limits · chat meter" data-node-tag="Serverless" data-node-context="AWS us-east-1 · always-on › private subnet">
@@ -5462,7 +5477,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-ticks" data-node-id="ticks" data-node-label="Tick handlers" tabindex="0" role="button" aria-label="Focus Tick handlers, do a batch of due work, AWS us-east-1 · always-on › background worker · Fargate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="do a batch of due work" data-node-context="AWS us-east-1 · always-on › background worker · Fargate">
           <title>Tick handlers · do a batch of due work · AWS us-east-1 · always-on › background worker · Fargate</title>
           <rect x="1190" y="165" width="200" height="70" rx="8" class="c-mask"/>
-          <rect x="1190" y="165" width="200" height="70" rx="8" class="c-backend" data-animate="node" style="--step:11" stroke-width="1.5"/>
+          <rect x="1190" y="165" width="200" height="70" rx="8" class="c-backend" data-animate="node" style="--step:12" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1196 171) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
@@ -5584,8 +5599,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <text x="360" y="385" class="t-edge-security" font-size="8" text-anchor="middle">webhooks</text>
         </g>
         <g data-detail="context" data-edge-from="alb" data-edge-to="api" data-edge-label="HTTPS" data-edge-key="4" data-edge-id="alb-api">
-          <rect x="463" y="310" width="34" height="14" rx="3" class="c-mask"/>
-          <text x="480" y="320" class="t-edge-emphasis" font-size="8" text-anchor="middle">HTTPS</text>
+          <rect x="463" y="301.95" width="34" height="14" rx="3" class="c-mask"/>
+          <text x="480" y="311.95" class="t-edge-emphasis" font-size="8" text-anchor="middle">HTTPS</text>
         </g>
         <g data-detail="context" data-edge-from="api" data-edge-to="valkey" data-edge-label="session · limits · meter" data-edge-key="5" data-edge-id="api-valkey">
           <rect x="478.79999999999995" y="208" width="125.19999999999999" height="14" rx="3" class="c-mask"/>
@@ -5604,50 +5619,54 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <text x="767" y="431" class="t-edge-emphasis" font-size="8" text-anchor="middle">save the change</text>
         </g>
         <g data-detail="context" data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="9" data-edge-id="api-grafana">
-          <rect x="457.59999999999997" y="493" width="120.39999999999999" height="14" rx="3" class="c-mask"/>
-          <text x="517.8" y="503" class="t-edge-dashed" font-size="8" text-anchor="middle">traces · metrics · logs</text>
+          <rect x="409.6" y="558" width="120.39999999999999" height="14" rx="3" class="c-mask"/>
+          <text x="469.8" y="568" class="t-edge-dashed" font-size="8" text-anchor="middle">traces · metrics · logs</text>
         </g>
         <g data-detail="context" data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="10" data-edge-id="api-model">
-          <rect x="592.4000000000001" y="493" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="626.2" y="503" class="t-edge-default" font-size="8" text-anchor="middle">chat replies</text>
+          <rect x="543.4000000000001" y="508" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="577.2" y="518" class="t-edge-default" font-size="8" text-anchor="middle">chat replies</text>
         </g>
-        <g data-detail="context" data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="11" data-edge-id="ticks-todo">
+        <g data-detail="context" data-edge-from="api" data-edge-to="ses" data-edge-label="sign-in code" data-edge-key="11" data-edge-id="api-ses">
+          <rect x="446.2" y="388.5" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="480" y="398.5" class="t-edge-default" font-size="8" text-anchor="middle">sign-in code</text>
+        </g>
+        <g data-detail="context" data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="12" data-edge-id="ticks-todo">
           <rect x="1089" y="180" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1130" y="190" class="t-edge-default" font-size="8" text-anchor="middle">find what&#39;s due</text>
         </g>
-        <g data-detail="context" data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="12" data-edge-id="relay-outbox">
+        <g data-detail="context" data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="13" data-edge-id="relay-outbox">
           <rect x="1089" y="310" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1130" y="320" class="t-edge-default" font-size="8" text-anchor="middle">loop: take rows</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="13" data-edge-id="consumers-data">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="14" data-edge-id="consumers-data">
           <rect x="1096.2" y="440" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="1130" y="450" class="t-edge-default" font-size="8" text-anchor="middle">save results</text>
         </g>
-        <g data-detail="context" data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="14" data-edge-id="relay-sqs">
+        <g data-detail="context" data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="15" data-edge-id="relay-sqs">
           <rect x="1418.8" y="310" width="72.4" height="14" rx="3" class="c-mask"/>
           <text x="1455" y="320" class="t-edge-dashed" font-size="8" text-anchor="middle">send each job</text>
         </g>
-        <g data-detail="context" data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="15" data-edge-id="scheduler-sqs">
+        <g data-detail="context" data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="16" data-edge-id="scheduler-sqs">
           <rect x="1527" y="203" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1568" y="213" class="t-edge-dashed" font-size="8" text-anchor="middle">tick on a timer</text>
         </g>
-        <g data-detail="context" data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="16" data-edge-id="sqs-ticks">
+        <g data-detail="context" data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="17" data-edge-id="sqs-ticks">
           <rect x="1462.2" y="238" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="1496" y="248" class="t-edge-dashed" font-size="8" text-anchor="middle">tick message</text>
         </g>
-        <g data-detail="context" data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="17" data-edge-id="sqs-consumers">
+        <g data-detail="context" data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="18" data-edge-id="sqs-consumers">
           <rect x="1419.6" y="421" width="86.8" height="14" rx="3" class="c-mask"/>
           <text x="1463" y="431" class="t-edge-dashed" font-size="8" text-anchor="middle">job (may repeat)</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="18" data-edge-id="consumers-plaid">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="19" data-edge-id="consumers-plaid">
           <rect x="1197.1999999999998" y="563.5" width="86.8" height="14" rx="3" class="c-mask"/>
           <text x="1240.6" y="573.5" class="t-edge-default" font-size="8" text-anchor="middle">sync from cursor</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="19" data-edge-id="consumers-model">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="20" data-edge-id="consumers-model">
           <rect x="968" y="499" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1009" y="509" class="t-edge-default" font-size="8" text-anchor="middle">write note text</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="20" data-edge-id="consumers-apns">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="21" data-edge-id="consumers-apns">
           <rect x="1306.8000000000002" y="555.5" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
           <text x="1333.4" y="565.5" class="t-edge-default" font-size="8" text-anchor="middle">send push</text>
         </g>
