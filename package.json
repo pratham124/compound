@@ -12,7 +12,7 @@
     "stack:up": "docker compose up -d --wait",
     "stack:down": "docker compose down",
     "test:non-superuser": "node --env-file=.env.example --env-file-if-exists=.env scripts/test-as-non-superuser.mjs",
-    "test": "pnpm -r test && node --test \"infra/local/*.test.ts\" \"scripts/verification/*.test.mjs\""
+    "test": "pnpm -r test && node --test \"infra/local/*.test.ts\" \"scripts/verification/*.test.mjs\" \".claude/skills/verify-compound/scripts/*.test.mjs\""
   },
   "devDependencies": {
     "@oxlint/plugins": "1.93.0",

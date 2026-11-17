@@ -126,6 +126,35 @@ describe('check-sync', () => {
     assert.deepEqual(result.findings, []);
   });
 
+  describe('depends.txt', () => {
+    const dependent = { ...verifySkill, '.claude/skills/verify-compound/depends.txt': '# what launch runs\ncompose.yaml\ninfra/local/\n' };
+    const ids = (result) => result.findings.map((f) => f.id);
+
+    test('a dependency changed and the skill did not is an error', () => {
+      const repo = makeRepo({ files: dependent });
+      commit(repo, { 'infra/local/ticker.ts': 'x' });
+      assert.ok(ids(run('check-sync.mjs', repo)).includes('skill-stale-verify-compound'));
+    });
+
+    test('a dependency changed and only the feature map did still is an error', () => {
+      const repo = makeRepo({ files: dependent });
+      commit(repo, { 'compose.yaml': 'x', '.claude/skills/verify-compound/features/log.md': 'new' });
+      assert.deepEqual(ids(run('check-sync.mjs', repo)), ['skill-stale-verify-compound']);
+    });
+
+    test('a dependency changed and a skill script changed passes', () => {
+      const repo = makeRepo({ files: dependent });
+      commit(repo, { 'compose.yaml': 'x', '.claude/skills/verify-compound/scripts/launch.sh': 'new', '.claude/skills/verify-compound/features/log.md': 'new' });
+      assert.deepEqual(run('check-sync.mjs', repo).findings, []);
+    });
+
+    test('editing depends.txt alone does not satisfy the gate', () => {
+      const repo = makeRepo({ files: dependent });
+      commit(repo, { 'compose.yaml': 'x', '.claude/skills/verify-compound/depends.txt': '# edited\ncompose.yaml\n' });
+      assert.deepEqual(ids(run('check-sync.mjs', repo)), ['skill-stale-verify-compound']);
+    });
+  });
+
   test('no base ref gives a warning only', () => {
     const repo = makeRepo({ withMain: false, files: verifySkill });
     commit(repo, { 'app/index.ts': 'x' });

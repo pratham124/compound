@@ -91,7 +91,11 @@ What the pipeline then does (`.no-mistakes.yaml`):
 
 The `gates` and the Test and Document instructions in `.no-mistakes.yaml` only take effect from `main`, so a PR that changes them doesn't exercise them.
 
-Once an app exists, create `verify-compound` with `/pstack:create-verification-skill` (end of M1). Until then Test only runs the repo's tests.
+`verify-compound` exists in `.claude/skills/verify-compound/`: it drives the app on an Android emulator against the local stack, and each feature file lists what only the iPhone can check. Keep its feature map in step with app changes (the `verification-sync` gate).
+
+Each `/no-mistakes` run only updates and drives the features its change touches, so drift elsewhere builds up between runs. Follow pstack's `maintain-verification-skill` at the end of each milestone, and after any change that breaks the skill itself: a new stack service or port, or a native module that needs `scripts/build-dev-client.sh`. It drives every feature and fixes the feature map, `SKILL.md` and the scripts in one PR.
+
+`.claude/skills/verify-compound/depends.txt` lists the files the skill's `SKILL.md` and scripts depend on (compose, the server's start and sign-in code path, the app's package id and sign-in labels), and the `verification-sync` gate fails when one changes and nothing in the skill outside `features/` does; the `No verification update:` commit line is the escape.
 
 ### Formal verification (any skill with a `covers.txt`)
 
@@ -102,6 +106,8 @@ Each formal verification skill has two small files next to its `SKILL.md`:
 Write both when you create one with `create-formal-verification-skill`.
 
 Keeping the model right is the author's job before the pipeline run. When a PR changes covered code, follow `maintain-formal-verification-skill` for that check: update the model or harness and the sync commit, rerun it, and commit those changes in the same PR. If it finds a bug in the code, report it to Pratham instead of changing the property to match.
+
+Once a formal check exists, also run `maintain-formal-verification-skill` across every check at the end of each milestone, alongside `maintain-verification-skill`. It catches what skipped the per-PR step: merges, `No verification update:` escapes, and drift across many commits, where a check keeps passing while describing code that no longer exists.
 
 `maintain-formal-verification-skill` only updates checks that already exist. It never creates one, so new checks come from these two rules:
 - **A PR that implements a promise below** follows `create-formal-verification-skill` for it in the same PR, including `covers.txt` and `check.txt`. Run it once the code exists, because there's nothing to verify before then.

@@ -1,0 +1,26 @@
+# Files this skill's SKILL.md and scripts depend on, one repo-relative path or directory prefix per line.
+# The verification-sync gate fails when one changes and nothing in the skill outside features/ does.
+
+# Local stack: launch.sh and cleanup.sh run docker compose through the root stack:up and stack:down scripts.
+compose.yaml
+infra/local/
+.env.example
+package.json
+
+# Server: launch.sh starts it, waits on /health, and drive.sh reads the sign-in code the console mailer logs.
+apps/server/package.json
+apps/server/src/config.ts
+apps/server/src/server.ts
+apps/server/src/app.ts
+apps/server/src/health.ts
+apps/server/src/identity/mailer.ts
+# The evidence queries read users and user_profiles.
+apps/server/migrations/
+
+# App: the dev client's package id and scheme, Metro's start command, and the labels the sign-in recipe taps.
+apps/mobile/package.json
+apps/mobile/app.json
+apps/mobile/app/sign-in.tsx
+apps/mobile/app/email-code.tsx
+apps/mobile/app/(tabs)/index.tsx
+apps/mobile/src/navigation/tabs.ts
