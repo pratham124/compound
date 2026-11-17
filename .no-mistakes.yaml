@@ -56,6 +56,12 @@ document:
     feature name, then four H2 sections: Sub-features, How to get to it (user POV),
     Driving it with <the verify skill's harness>, Gotchas. Add a new file to the map's
     README.md index too.
+    Each .claude/skills/verify-*/depends.txt lists the files that skill's SKILL.md and scripts
+    depend on. When the change touches a path it lists, also update that skill's SKILL.md and
+    scripts/ (ports, services, env, start commands, labels the recipes use), not only the
+    feature files. If the change adds or upgrades a native module or an app.json plugin, don't
+    try to rebuild the development client: say in your report that
+    .claude/skills/verify-compound/scripts/build-dev-client.sh must be rerun.
     Do not edit formal verification models or any covers.txt; flag drift instead.
     docs/prd/ is the product spec. README.md is the introduction.
     docs/architecture/*.svg are archify exports of the sources in docs/diagrams/ (see the
