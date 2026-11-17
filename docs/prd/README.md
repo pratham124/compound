@@ -294,10 +294,10 @@ Two kinds of push: **recovery notes** and **budget alerts**.
 
 ## 11. Accounts, privacy and security
 
-**Sign-in** is Sign in with Apple plus email one-time codes, with no passwords. The same sign-in serves the MCP consent page. Phone sessions are opaque tokens looked up in Valkey, kept in the phone's SecureStore. An emailed code works for 5 minutes, can be tried 5 times, and can be used once. Asking for codes is limited to 3 a minute from one address.
+**Sign-in** is Sign in with Apple plus email one-time codes, with no passwords. The same sign-in serves the MCP consent page. Phone sessions are opaque tokens looked up in Valkey, kept in the phone's SecureStore. An emailed code works for 5 minutes, can be tried 5 times, and can be used once. Asking for codes is limited to 3 a minute from one IP address. Until a mail service is set up, codes are printed to the laptop's console, which is only acceptable where no logs are kept; Amazon SES sends them from M6's AWS trial run on.
 
 **Pratham-only baseline**, required:
-- no secrets or personal data in the repo; HTTPS only; encryption at rest (on the laptop during M1 to M6, that means full-disk encryption);
+- no secrets or personal data in the repo; HTTPS only, with one exception: during M1 to M3 the phone reaches the laptop over plain HTTP on home Wi-Fi, allowed only to local-network addresses, until Cloudflare Tunnel gives it HTTPS in M4; encryption at rest (on the laptop during M1 to M6, that means full-disk encryption);
 - Plaid, model and push keys in a secrets manager on AWS, and in a git-ignored `.env` file on the laptop before then;
 - MFA on every AWS, GitHub, Plaid and Apple account;
 - Plaid's Developer Policy followed;
@@ -305,7 +305,7 @@ Two kinds of push: **recovery notes** and **budget alerts**.
 - AI gets the least data that answers, chat says it's AI, and prompts stay within general wellness.
 
 **Built anyway, as practice:**
-- **Tenant isolation.** Every query is filtered by user id in the app. Postgres row-level security also refuses other people's rows, using a per-transaction `app.user_id`. System jobs get only a narrow function that returns user ids, then fan out into per-person jobs under the normal rules. Isolation tests cover screens, chat tools and MCP tools. CI fails if any table with a `user_id` lacks forced row-level security.
+- **Tenant isolation.** Every query is filtered by user id in the app. Postgres row-level security also refuses other people's rows, using a per-transaction `app.user_id`. System jobs get only a narrow function that returns user ids, then fan out into per-person jobs under the normal rules. Sign-in is the one other exception: it has to find an account before it knows whose it is, so it runs as its own database role that can reach every row of the sign-in tables (people and their sign-in accounts) and nothing else. Isolation tests cover screens, chat tools and MCP tools. CI fails if any table with a `user_id` lacks forced row-level security.
 - **Account deletion** in the app. The account is locked and signed out at once. Within 24 hours a job deletes every row, removes bank logins from Plaid, revokes assistant and Sign in with Apple tokens, and cancels queued jobs. Backups age out within 35 days. The phone wipes its local database.
 - **Data handling.** No personal data in logs, traces, metrics or error reports. No analytics or ad SDKs; Sentry is used only for crash and error reports, with personal-data capture turned off (section 12). The phone's local database is excluded from iCloud backup.
 
@@ -317,10 +317,10 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 - **Repo:** one pnpm monorepo with `apps/mobile`, `apps/server`, `packages/contracts` (shared Zod schemas), `mocks/` (Plaid, model, push), `loadtest/`, `infra/` (Terraform) and `.github/workflows`.
 - **Phone:** Expo SDK 58, `@kingstinct/react-native-healthkit` 16.x, `expo-sqlite` for the logger, and TanStack Query with a saved cache for other screens.
 - **Server:** Node 24 and TypeScript, Fastify 5, Kysely with hand-written SQL migrations, and better-auth. Uses the official `plaid` client (pinned), `jose` for webhooks, and `ioredis` for Valkey.
-- **AWS:** ALB, Fargate ARM, RDS Postgres (16 or later, for the role grants in migration 0002), ElastiCache Serverless Valkey, SQS and EventBridge Scheduler.
+- **AWS:** ALB, Fargate ARM, RDS Postgres (16 or later, for the role grants in migration 0002), ElastiCache Serverless Valkey, SQS, EventBridge Scheduler, and SES for sign-in codes.
 - **Local:** Docker Compose runs Postgres, Valkey, an SQS emulator and a small tick sender (standing in for EventBridge Scheduler) on the laptop. It's the same stack CI uses. From M4, Cloudflare Tunnel gives the laptop a public HTTPS address for Plaid's webhooks, Claude's MCP connector, and the phone away from home Wi-Fi.
 - **Ops:** Terraform for the always-on and load-test setups, GitHub Actions for CI and deploys, OpenTelemetry for the server, and Sentry for the phone.
-- **Lint:** the anti-slop Oxlint rules across every package (`apps/mobile`, `apps/server`, `packages/contracts`, `mocks/`, `loadtest/`), run in CI on every merge alongside the smoke test. Findings are fixed, never silenced by weakening or suppressing a rule. Two rules need a policy for Expo, decided when lint is installed: `no-module-mocking` (Expo tests often mock native modules) and `no-array-filter-map` (iterator helpers must be supported on Hermes).
+- **Lint:** the anti-slop Oxlint rules across every package (`apps/mobile`, `apps/server`, `packages/contracts`, `mocks/`, `loadtest/`), run in CI on every merge, alongside the smoke test once it exists (its mocks are built in M7). Findings are fixed, never silenced by weakening or suppressing a rule. Two rules need a policy for Expo, decided when lint is installed: `no-module-mocking` (Expo tests often mock native modules) and `no-array-filter-map` (iterator helpers must be supported on Hermes).
 
 **Shape**
 - A **modular monolith** of seven modules. Each is a Fastify plugin with its own tables, one data-access place and a small public interface. No module reads another module's tables.
@@ -349,7 +349,7 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 | identity | people, sign-in and phone sessions, time zone, display units, account deletion |
 | workouts | exercise list and custom exercises, routines, workouts and sets, PRs, Apple Health workouts, per-day training totals |
 | health | health samples in day buckets, daily summaries and the rebuild list, health sync status |
-| money | bank logins and cursors, accounts, transactions and raw payloads, merchant rules, budgets and alert state, subscriptions, per-day spending totals |
+| money | bank logins and cursors, bank accounts (not named `accounts`, which sign-in already uses), transactions and raw payloads, merchant rules, budgets and alert state, subscriptions, per-day spending totals |
 | coaching | recovery checks, per-day claims and recovery notes |
 | assistant | the tool module, MCP adapter and OAuth clients and tokens, AI sharing switches, chat conversations and parts, the chat meter, the AI changes list and before-states, the MCP rate limiter |
 | notifications | device tokens, per-kind switches, quiet hours, held pushes, push sending |
@@ -403,11 +403,11 @@ Each milestone ends with something usable on the phone. M1 to M6 run on the lapt
 |---|---|---|
 | M0 | Device test | On a real iPhone, an EAS development build is granted Health access and registers an observer. The app is killed, a new Health sample is added, and the woken app uploads it. If SDK 58 fails, fall back to SDK 57 and repeat. **Passed on SDK 58 with an internal Release build** (a development build loads its code from the laptop, so it can't be trusted on a background wake). Results in [#22](https://github.com/pratham124/compound/issues/22). |
 | M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI. Docker Compose runs the full local stack. Sign-in works, and one request goes from the phone through the api role to Postgres under row-level security. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
-| M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. |
+| M2 | Workouts | Everything in section 5 works offline and syncs without duplicates. It starts with a new EAS build that adds `expo-sqlite` and `expo-network`, which M1 left out. |
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. Sentry reports phone crashes, including ones during background health sync, which nothing else would show. The 14-morning sleep-arrival measurement starts. |
-| M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Cloudflare Tunnel is set up here, so Plaid's webhooks reach the laptop. |
+| M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Cloudflare Tunnel is set up here, so Plaid's webhooks reach the laptop. The phone moves to the tunnel's HTTPS address, and the sign-in rate limit reads the caller's IP from `cf-connecting-ip`, since every request now arrives from the tunnel and would otherwise share one limit. |
 | M5 | AI | Section 10: tool module, in-app chat with confirm buttons, the allowance and prompt caching, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |
-| M6 | Recovery notes and push | Section 7 and section 9. Then an AWS trial run: always-on is created from Terraform, one deploy and a sign-in work end to end, and it's torn down. That's a few hours of hosting, well under $1. |
+| M6 | Recovery notes and push | Section 7 and section 9. Then an AWS trial run: always-on is created from Terraform, SES sends sign-in codes in place of the console, one deploy and a sign-in work end to end, and it's torn down. That's a few hours of hosting, well under $1. |
 | M7 | AWS, daily use and measurement | First the always-on setup goes up: Terraform, CI deploying main with no downtime, OpenTelemetry to Grafana Cloud with the starter dashboard, alerts and the personal-data test, the laptop's data moved into RDS (dump and restore), and the first restore rehearsed. Then daily use is met, and the starting values below are measured. The load-test tooling (seed generator, mocks, k6 scripts, verifiers) is built during these weeks. |
 | M8 | Load test | The first full run passes the pass bar and ramps to the breaking point. The part that failed first is fixed, a second run measures the fix, and the ClickHouse comparison runs on the same seeded data. |
 
