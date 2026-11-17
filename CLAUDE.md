@@ -62,6 +62,10 @@ Every test must be able to fail when the behavior it names breaks, and no two te
 
 A formal check of a TLA+ model doesn't make tests of the real code redundant, because the model isn't the code. A test that repeats one interleaving the model already covers is still useful if it runs the real code.
 
+**Flaky tests:** don't add a sleep, a retry, a longer timeout or a skip to make a test pass. A test that passes on a rerun teaches the next agent to rerun instead of fix. Find the race or the shared state. If you can't find the root cause, delete the test and give what you tried in the commit message.
+
+**Property tests for the promises:** each promise under "Promises to verify" also gets a fast-check property test of the real code, in the PR that implements it, next to the code like any other test. Generate the inputs, such as replay orders, overlapping webhook pages, or sequences of spending, and assert the promise itself. Examples: replaying a batch twice leaves the same state as replaying it once, the stored transactions don't depend on how the pages overlap, and an alert fires at most once per category per month. The same goes for parsing at a boundary: parsing then serializing returns the original. Generated inputs don't share the author's blind spots the way hand-picked examples do.
+
 ## Starting a ticket
 
 Start each `ready-for-agent` issue from a session on `main` with `/worktree <n>`, which opens the issue's worktree and moves the session into it. Then run `/ticket <n>` there. It claims the issue, then a builder agent builds it test-first, one acceptance criterion at a time, and a separate reviewer agent reviews it with Addy Osmani's skills, at most twice. It stops for you to review the branch before `/no-mistakes`. Both are user skills in `~/.claude/skills/`. For parallel tickets, use one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files such as `docs/tradeoffs.md` are still editable there.
