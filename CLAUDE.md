@@ -20,22 +20,7 @@ Don't write a comment that restates what the code already says, such as explaini
 
 ## Architecture diagrams
 
-The README shows four diagrams, exported from archify sources. Each is committed twice: a static SVG the README displays, and the interactive HTML that GitHub Pages hosts at `https://pratham124.github.io/compound/architecture/<name>.html` (published by `.github/workflows/pages.yml`), linked under each picture.
-
-| Diagram (`docs/architecture/`) | Source (`docs/diagrams/`) | Shows |
-|---|---|---|
-| `deployment.svg` | `architecture-deployment-*` | what runs where: phone, server roles, AWS and outside services |
-| `modules.svg` | `architecture-modules-*` | the server's modules and what each owns |
-| `plaid-webhook-flow.svg` | `sequence-plaid-webhook-*` | a Plaid webhook through to stored transactions |
-| `sleep-recovery-note-flow.svg` | `sequence-sleep-recovery-note-*` | sleep arriving through to a recovery note |
-
-A PR that changes something a diagram shows updates that diagram in the same PR, using the archify skill. That includes PRD-only PRs, which is where architecture usually changes first. Examples: adding a module or service, moving a responsibility between modules, or adding or reordering a step in either flow.
-- **The sources aren't in git.** `docs/diagrams/` is listed in `.git/info/exclude`, so the sources exist only in Pratham's main checkout. In a worktree, copy the source folder in first. Copy it back to the main checkout when you're done, because the main checkout is their only home. no-mistakes runs don't have them, so the Document step can only flag a stale diagram, not redraw it.
-- **Edit the source, not the SVG.** Start archify from the existing `candidate.json`, so the layout and style carry over, then run `finalize`. If that HTML already has browser-check results, pass `--out-dir <folder>/review-<n>`.
-- **Export from the viewer.** Open the HTML and use its export menu's **SVG · Auto** item, which follows the reader's light or dark theme. The CLI has no SVG export, and the current SVGs came from that menu. Write the SVG back to the same `docs/architecture/` file, because the README links to those paths.
-- **Copy the HTML too.** Copy the finalized HTML to `docs/architecture/<name>.html`, the same name as its SVG. Pages serves that copy, so skipping it leaves the interactive version stale while the README picture is current.
-- **Same folder, no new timestamp.** Update the source folder where it is.
-- **Say so in the PR.** Name the diagram you updated in the PR description, or say why no diagram changed.
+A PR that changes what one of the README's four diagrams shows (a module or service, a responsibility moving between modules, a step in either flow) updates that diagram in the same PR, PRD-only PRs included. Follow `docs/agents/diagrams.md`: the archify sources live only in the main checkout, and the export steps aren't guessable. Name the diagram in the PR, or say why none changed.
 
 ## Where tests live
 
@@ -44,82 +29,14 @@ Put each test file next to the file it tests, named `<file>.test.ts`, such as `a
 - **Never in `apps/mobile/app/`.** Expo Router turns every file there into a screen, so a test there becomes a route. Keep screens thin and test the logic they call, under `apps/mobile/src/`.
 - **Whole-system tests get their own top-level folder,** as `loadtest/` does, because they test the running system rather than one file.
 
-## Tests: no vacuous or redundant ones
+## Tests: break each one once
 
-Every test must be able to fail when the behavior it names breaks, and no two tests should guard the same thing. A test that can't fail costs run time and upkeep while proving nothing, and duplicates make every behavior change edit several tests. This applies to the author and to the no-mistakes Review step: raise each vacuous or redundant test as a finding.
-
-**Vacuous: rewrite or delete it when:**
-- **It would still pass if the code were wrong.** For example, the code under test was deleted, returned a constant, or skipped its work. Before keeping a new test, break the behavior once (temporarily) and confirm the test fails. Say in the PR which break you tried.
-- **Its expected value comes from the code's own logic,** or it only checks its own mocks. The expected value must come from somewhere independent: the PRD, a worked example, or a known constant.
-- **It reads source text** (greps or regex-matches the implementation) instead of running the code.
-- **It only checks what the type checker or a schema already enforces.**
-
-**Redundant: delete it when:**
-- **Another test already fails for the same broken behavior,** meaning the same rule and the same branch. Keep the one that best names what broke.
-- **The behavior it checks was removed or changed on purpose.** Update or delete it in the same PR.
-
-**In every PR that changes behavior,** look at the existing tests for the code you touched and delete the ones the change made redundant, in that PR. Never park a test with `.skip`, `.todo` or a commented-out body. Delete it, and give the reason in the commit message.
-
-A formal check of a TLA+ model doesn't make tests of the real code redundant, because the model isn't the code. A test that repeats one interleaving the model already covers is still useful if it runs the real code.
-
-**Flaky tests:** don't add a sleep, a retry, a longer timeout or a skip to make a test pass. A test that passes on a rerun teaches the next agent to rerun instead of fix. Find the race or the shared state. If you can't find the root cause, delete the test and give what you tried in the commit message.
-
-**Property tests for the promises:** each promise under "Promises to verify" also gets a fast-check property test of the real code, in the PR that implements it, next to the code like any other test. Generate the inputs, such as replay orders, overlapping webhook pages, or sequences of spending, and assert the promise itself. Examples: replaying a batch twice leaves the same state as replaying it once, the stored transactions don't depend on how the pages overlap, and an alert fires at most once per category per month. The same goes for parsing at a boundary: parsing then serializing returns the original. Generated inputs don't share the author's blind spots the way hand-picked examples do.
+Before keeping a new test, break the behaviour it names (temporarily, with Edit) and confirm the test fails, then say in the PR which break you tried. The full rules on vacuous, redundant and flaky tests and on property tests for the promises are in `CODING_STANDARDS.md`; the reviewer enforces them.
 
 ## Starting a ticket
 
 Start each `ready-for-agent` issue from a session on `main` with `/worktree <n>`, which opens the issue's worktree and moves the session into it. Then run `/ticket <n>` there. It claims the issue, then a builder agent builds it test-first, one acceptance criterion at a time, and a separate reviewer agent reviews it with Addy Osmani's skills, at most twice. It stops for you to review the branch before `/no-mistakes`. Both are user skills in `~/.claude/skills/`. For parallel tickets, use one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files are still editable there.
 
-## Keep verification in step with the code
+## Verification and shipping
 
-Pstack's verification skills are marked so they can't be invoked as skills. Follow them by reading the skill file from the newest pstack version: `~/.claude/plugins/cache/*/pstack/<newest>/skills/<name>/SKILL.md`. The pstack adapter at `docs/harness/claude-code.md` explains how its Cursor names map to Claude Code.
-
-### Shipping a PR
-
-Ship every PR through `/no-mistakes`. A hook, `.claude/hooks/require-no-mistakes.mjs`, blocks a bare `gh pr create`. To bypass it, put a line `Skipped no-mistakes: <reason>` in the PR body.
-
-Before `axi run`:
-- Run `node scripts/verification/pipeline-skips.mjs`. If it prints `test`, the change is docs or tooling only, so pass `--skip test`.
-- For app changes, write the plan (the features the change touches) to a file and pass `--verification-plan <that file>`. Inline text gets read as a path and the run fails.
-- Start Docker Desktop first if `docker info` fails: the Test step needs the stack, and a run that fails on it refuses a plain retry.
-
-What the pipeline then does (`.no-mistakes.yaml`):
-- **Review** checks the diff.
-- **Document** creates or updates the feature-map files in `.claude/skills/verify-*/features/`.
-- **Test** drives each touched feature live with `verify-compound` and attaches the evidence.
-- **Gate `verification-sync`** fails if app code changed without a feature-map change, or a formal check's covered code changed without its skill changing.
-- **Gate `formal-checks`** runs each formal check whose covered code changed.
-
-The `gates` and the Test and Document instructions in `.no-mistakes.yaml` only take effect from `main`, so a PR that changes them doesn't exercise them.
-
-`verify-compound` exists in `.claude/skills/verify-compound/`: it drives the app on an Android emulator against the local stack, and each feature file lists what only the iPhone can check. Keep its feature map in step with app changes (the `verification-sync` gate).
-
-Each `/no-mistakes` run only updates and drives the features its change touches, so drift elsewhere builds up between runs. Follow pstack's `maintain-verification-skill` at the end of each milestone, and after any change that breaks the skill itself: a new stack service or port, or a native module that needs `scripts/build-dev-client.sh`. It drives every feature and fixes the feature map, `SKILL.md` and the scripts in one PR.
-
-`.claude/skills/verify-compound/depends.txt` lists the files the skill's `SKILL.md` and scripts depend on (compose, the server's start and sign-in code path, the app's package id and sign-in labels), and the `verification-sync` gate fails when one changes and nothing in the skill outside `features/` does; the `No verification update:` commit line is the escape.
-
-### Formal verification (any skill with a `covers.txt`)
-
-Each formal verification skill has two small files next to its `SKILL.md`:
-- `covers.txt`: the code it covers, one repo-relative path or directory prefix per line, `#` for comments.
-- `check.txt`: one command that runs the check from the repo root (first non-comment line).
-
-Write both when you create one with `create-formal-verification-skill`.
-
-Keeping the model right is the author's job before the pipeline run. When a PR changes covered code, follow `maintain-formal-verification-skill` for that check: update the model or harness and the sync commit, rerun it, and commit those changes in the same PR. If it finds a bug in the code, report it to Pratham instead of changing the property to match.
-
-Once a formal check exists, also run `maintain-formal-verification-skill` across every check at the end of each milestone, alongside `maintain-verification-skill`. It catches what skipped the per-PR step: merges, `No verification update:` escapes, and drift across many commits, where a check keeps passing while describing code that no longer exists.
-
-`maintain-formal-verification-skill` only updates checks that already exist. It never creates one, so new checks come from these two rules:
-- **A PR that implements a promise below** follows `create-formal-verification-skill` for it in the same PR, including `covers.txt` and `check.txt`. Run it once the code exists, because there's nothing to verify before then.
-- **A maintain run that reports uncovered code** (new code that should have its own check): tell Pratham in the PR description and in your reply. Don't create the check unasked, because choosing a promise to verify is his call.
-
-Promises to verify, in milestone order (these are the ones tests rarely reach):
-- **M2:** an offline replay never creates a duplicate set.
-- **M4:** bank sync never misses or doubles a transaction when webhooks overlap.
-- **M4:** a budget alert fires at most once per category per month.
-- **M5:** the chat allowance is never overspent by more than 1%.
-
-### When a change really updates nothing a check describes
-
-Put a line starting `No verification update:` with the reason in a commit message, for example a refactor with identical behavior. The gates can't see the PR body, so it has to be in a commit. The `verification-sync` gate then passes.
+Ship every PR through `/no-mistakes`; a hook blocks a bare `gh pr create` unless the body has `Skipped no-mistakes: <reason>`. Read `docs/agents/verification.md` before an `axi run`, when a PR implements a promise from its "Promises to verify" list or touches code in a formal check's `covers.txt`, and at the end of each milestone (both maintain sweeps). It also covers `verify-compound`, `depends.txt` and the `No verification update:` escape.
