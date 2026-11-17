@@ -1,5 +1,5 @@
 // Gate `verification-sync`: verification skills must change with the code they describe.
-// Rules: CLAUDE.md, "Keep verification in step with the code".
+// Rules: docs/agents/verification.md.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';

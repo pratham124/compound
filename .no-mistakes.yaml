@@ -20,6 +20,11 @@ review:
   # and each names the incident or mechanism behind it. Add an entry when something slips past
   # review; delete one when a test or gate starts catching it.
   path_instructions:
+    - path: "**/*.test.*"
+      instructions: |
+        - Apply CODING_STANDARDS.md to every added or changed test, and to the existing tests of the
+          code the change touched. Raise each vacuous or redundant test as a finding. Its rules moved
+          out of CLAUDE.md, so nothing loads them unless this entry fires.
     - path: apps/server/migrations/**
       instructions: |
         - migrate.ts applies each file once by name, so an edit to a migration already on main never
@@ -65,7 +70,7 @@ document:
     Do not edit formal verification models or any covers.txt; flag drift instead.
     docs/prd/ is the product spec. README.md is the introduction.
     docs/architecture/*.svg are archify exports of the sources in docs/diagrams/ (see the
-    "Architecture diagrams" section of CLAUDE.md). If the change alters what one of those
+    docs/agents/diagrams.md). If the change alters what one of those
     diagrams shows and the diagram wasn't updated, raise a finding naming the diagram.
     Never hand-edit the SVGs.
 

@@ -7,12 +7,12 @@
     "node": ">=24"
   },
   "scripts": {
-    "lint": "oxlint --deny-warnings .",
+    "lint": "oxlint --deny-warnings . && node scripts/check-test-placement.mjs",
     "typecheck": "pnpm -r typecheck",
     "stack:up": "docker compose up -d --wait",
     "stack:down": "docker compose down",
     "test:non-superuser": "node --env-file=.env.example --env-file-if-exists=.env scripts/test-as-non-superuser.mjs",
-    "test": "pnpm -r test && node --test \"infra/local/*.test.ts\" \"scripts/verification/*.test.mjs\" \".claude/skills/verify-compound/scripts/*.test.mjs\""
+    "test": "pnpm -r test && node --test \"infra/local/*.test.ts\" \"scripts/*.test.mjs\" \"scripts/verification/*.test.mjs\" \".claude/hooks/*.test.mjs\" \".claude/skills/verify-compound/scripts/*.test.mjs\""
   },
   "devDependencies": {
     "@oxlint/plugins": "1.93.0",
