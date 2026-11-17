@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Easing, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -63,7 +64,14 @@ export function SegmentedControl<Value extends string>({
           slot={slot}
           checked={value === selected}
           disabled={disabled}
-          onPress={() => onChoose(value)}
+          onPress={() => {
+            // A tick only when the choice changes, like the system's own segmented controls.
+            if (value !== selected) {
+              void Haptics.selectionAsync();
+            }
+
+            onChoose(value);
+          }}
         >
           {text}
         </SegmentLabel>
@@ -92,6 +100,7 @@ function SegmentLabel({ palette, position, slot, checked, disabled, onPress, chi
     <PressScale
       accessibilityRole="radio"
       accessibilityState={{ checked, disabled }}
+      haptic="none"
       disabled={disabled}
       onPress={onPress}
       pressableStyle={styles.slot}

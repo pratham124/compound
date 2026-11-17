@@ -272,6 +272,11 @@ export const shadow = {
  * The mockup's `.glass` edge and lift, plus a tight contact layer. `boxShadow` rather than the shadow props above,
  * because iOS scales those by the view's alpha and the glass fill is translucent.
  */
+/** The glass edge without the lift, for small glass controls that sit inside a sheet rather than over the page. */
+export function glassEdge(palette: Palette): string {
+  return `inset 0 1px 0 ${palette.glassEdge}, 0 0 0 0.5px ${palette.glassLine}`;
+}
+
 export function glassShadow(palette: Palette): string {
   return `inset 0 1px 0 ${palette.glassEdge}, 0 0 0 0.5px ${palette.glassLine}, 0 1px 3px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.18)`;
 }

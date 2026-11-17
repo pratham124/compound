@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { useState, type ReactNode } from 'react';
 import { Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { cubicBezier } from 'react-native-reanimated';
@@ -9,6 +10,8 @@ export type PressableScaleProps = Omit<PressableProps, 'style' | 'children'> & {
   style?: StyleProp<ViewStyle>;
   /** How far it shrinks while pressed. */
   pressedScale?: number;
+  /** A light tap on a real press, not when the finger lands, so a scroll that starts on the button stays silent. Turn it off where something else already gives feedback. */
+  haptic?: 'light' | 'none';
   children: ReactNode;
 };
 
@@ -16,8 +19,10 @@ export function PressableScale({
   style,
   children,
   pressedScale = press.scale,
+  haptic = 'light',
   onPressIn,
   onPressOut,
+  onPress,
   ...rest
 }: PressableScaleProps) {
   const [pressed, setPressed] = useState(false);
@@ -37,6 +42,13 @@ export function PressableScale({
       onPressOut={(event) => {
         setPressed(false);
         onPressOut?.(event);
+      }}
+      onPress={(event) => {
+        if (haptic === 'light') {
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+
+        onPress?.(event);
       }}
     >
       <Animated.View

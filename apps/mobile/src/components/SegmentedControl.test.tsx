@@ -1,4 +1,5 @@
-import { act, render, screen } from '@testing-library/react-native';
+import * as Haptics from 'expo-haptics';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { AccessibilityInfo, StyleSheet } from 'react-native';
 
 import { currentStyle } from '../testing/animatedStyle.ts';
@@ -10,9 +11,9 @@ const options = [
   { value: 'imperial', label: 'lb' },
 ] as const;
 
-function control(selected: 'metric' | 'imperial', disabled = false) {
+function control(selected: 'metric' | 'imperial', disabled = false, onChoose = jest.fn()) {
   return (
-    <SegmentedControl palette={colors.light} label="Units" options={options} selected={selected} disabled={disabled} onChoose={jest.fn()} />
+    <SegmentedControl palette={colors.light} label="Units" options={options} selected={selected} disabled={disabled} onChoose={onChoose} />
   );
 }
 
@@ -26,6 +27,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.useRealTimers();
+  jest.restoreAllMocks();
 });
 
 describe('SegmentedControl thumb', () => {
@@ -98,5 +100,40 @@ describe('SegmentedControl touch targets', () => {
     for (const radio of screen.getAllByRole('radio')) {
       expect(StyleSheet.flatten(radio.props.style)).toMatchObject({ flex: 1 });
     }
+  });
+});
+
+describe('SegmentedControl haptics', () => {
+  it('gives one selection tick when the other side is tapped, and no light impact on top of it', async () => {
+    const tick = jest.spyOn(Haptics, 'selectionAsync').mockResolvedValue();
+    const impact = jest.spyOn(Haptics, 'impactAsync').mockResolvedValue();
+    const onChoose = jest.fn();
+
+    await render(control('metric', false, onChoose));
+    await fireEvent(screen.getByRole('radio', { name: 'lb' }), 'pressIn');
+    await fireEvent.press(screen.getByRole('radio', { name: 'lb' }));
+
+    expect(tick).toHaveBeenCalledTimes(1);
+    expect(impact).not.toHaveBeenCalled();
+    expect(onChoose).toHaveBeenCalledWith('imperial');
+  });
+
+  it('gives no tick when the side that is already chosen is tapped again', async () => {
+    const tick = jest.spyOn(Haptics, 'selectionAsync').mockResolvedValue();
+
+    await render(control('metric'));
+    await fireEvent.press(screen.getByRole('radio', { name: 'kg' }));
+
+    expect(tick).not.toHaveBeenCalled();
+  });
+
+  it('gives no tick for a choice that changes without a tap, such as the first render or a saved answer coming back', async () => {
+    const tick = jest.spyOn(Haptics, 'selectionAsync').mockResolvedValue();
+
+    const { rerender } = await render(control('metric'));
+
+    await rerender(control('imperial'));
+
+    expect(tick).not.toHaveBeenCalled();
   });
 });

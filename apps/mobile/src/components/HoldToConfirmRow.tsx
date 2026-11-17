@@ -106,6 +106,8 @@ export function HoldToConfirmRow({
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled }}
+      // The sweeping fill is the feedback while holding, and the warning at the end is the confirmation.
+      haptic="none"
       disabled={disabled}
       onPressIn={pressStart}
       onPress={pressed}
