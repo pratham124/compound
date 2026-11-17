@@ -102,6 +102,8 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Receives before the dead-letter queue | 5 | judgement | M8 |
 | Dead-letter alarm | any message | decided | not planned |
 | Outbox relay poll | every 1 second | judgement | M8: outbox lag during the webhook storm |
+| Outbox relay batch | up to 50 rows per pass, sent with `SendMessageBatch` (10 per call, grouped by queue) | arithmetic (the storm adds about 100 rows a second; one `SendMessage` per row at 10 to 20 ms moves only 50 to 100) | M8: outbox lag during the webhook storm |
+| Relay SQS call timeout | 5 seconds, plus `idle_in_transaction_session_timeout` on the worker's database role | judgement (the relay holds its transaction open during the send, so a hung call would hold a pooled connection, row locks and vacuum) | M8 |
 | Due-row tick (held pushes, cutoffs) | every 5 minutes | judgement | M8 |
 | Nightly maintenance tick (expiry, per-day audit) | 03:00 UTC | judgement | not planned |
 | Scheduler calls a month | about 55,000 (free up to 14M) | arithmetic | not planned |
@@ -140,5 +142,6 @@ Milestones (M0 to M8) are in [PRD section 14](README.md#14-milestones).
 | Alert: errors | over 1% of requests for 5 minutes | judgement | M7 |
 | Alert: queue backlog | over 1,000 messages for 10 minutes, or outbox lag over 60 seconds | judgement | M7 |
 | Alert: dead-letter queue | any message | decided | not planned |
+| Alert: old transaction | oldest open Postgres transaction over 5 minutes | judgement (an old snapshot stops vacuum from clearing deleted outbox rows, which slows the relay; keep dumps and big rebuilds out of the storm window) | M7 |
 | Alert: health sync silent | no Health data for 24 hours | judgement | M7 |
 | Alert: AI spend | chat or unprompted AI spend at 80% of its cap | judgement | M7 |
