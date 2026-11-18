@@ -1,6 +1,6 @@
 import { ExerciseCatalogue } from '@compound/contracts';
 
-import catalogue from './catalogue.json';
+import catalogue from '@compound/exercise-catalogue/catalogue.json';
 
 export const exercises = ExerciseCatalogue.parse(catalogue).sort((a, b) => a.name.localeCompare(b.name, 'en'));
 

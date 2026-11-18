@@ -6,7 +6,7 @@
 - `exercises-search` matches names without case sensitivity, trims surrounding spaces, combines the name with a primary-muscle filter, and shows an empty result message.
 - `exercises-detail` shows the selected stable ID's name, metadata, full instructions and pictures. An unknown link shows Exercise not found.
 - `exercises-images` downloads pictures only on the detail page and stores them in Expo Image's memory and disk cache. A failed first download offers retry.
-- `exercises-parity` compares every field in the server workouts catalogue with the app's copy through `apps/server/src/workouts/catalogue.test.ts`.
+- `exercises-shared-catalogue` uses one JSON source in `packages/exercise-catalogue/` for the app's offline bundle and the server. `apps/server/src/workouts/catalogue.test.ts` checks that the workouts module preserves every shared field and ID.
 
 ## How to get to it (user POV)
 
@@ -28,7 +28,7 @@ The SDK 58 development client can show a floating Tools button over app controls
 
 ## Gotchas
 
-- iPhone acceptance remains human: use the existing `device` EAS profile (`eas build --platform ios --profile device`) to install a Release build, then judge scrolling and fast typing/search from Train. A development build or Android emulator cannot satisfy this criterion. The `/ticket` workflow requires Pratham to review the uncommitted diff before source is uploaded to EAS; prepare this command without starting the upload.
+- Pratham deferred the physical iPhone Release-build check. Scrolling, fast typing/search and fully offline cold launch remain unverified on a Release build. If resumed, use the existing `device` EAS profile (`eas build --platform ios --profile device`); a development build or Android emulator cannot satisfy that check.
 - On that Release build, enable airplane mode before launching and check browsing/search. Load a detail online first, force-close, then relaunch in airplane mode and reopen it to check the iOS disk cache. A first-view picture without a cached copy requires a connection.
 - Expo Image's cache is managed by the operating system and can be evicted. No cache guarantees survival of app-data clearing or OS cache cleanup.
 - iOS safe areas, Dynamic Type, VoiceOver and native back-swipe need the iPhone. The emulator only checks shared JavaScript/layout and Android cache behavior.

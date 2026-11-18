@@ -4,13 +4,11 @@ import { test } from 'node:test';
 
 import { exercises, findExercise } from './catalogue.ts';
 
-test('the workouts catalogue preserves every field and id bundled in the app', () => {
-  const mobile = readFileSync(new URL('../../../mobile/src/exercises/catalogue.json', import.meta.url), 'utf8');
-  const server = readFileSync(new URL('./catalogue.json', import.meta.url), 'utf8');
+test('the workouts catalogue preserves every field and id from the shared catalogue', () => {
+  const shared = readFileSync(new URL(import.meta.resolve('@compound/exercise-catalogue/catalogue.json')), 'utf8');
 
   assert.ok(exercises.length > 800);
-  assert.equal(server, mobile);
-  assert.deepEqual(exercises, JSON.parse(mobile));
+  assert.deepEqual(exercises, JSON.parse(shared));
   assert.equal(new Set(exercises.map(({ id }) => id)).size, exercises.length);
 });
 
