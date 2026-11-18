@@ -18,7 +18,9 @@ It is built for one person first, Pratham, on an iPhone. The main reason for the
 
 The first version is planned in milestones, each ending with something usable on the phone. The full list is in section 14 of the [PRD](docs/prd/README.md).
 
-So far there is the project skeleton, signing in on the phone with Apple or an emailed code, the app's five empty tabs with the draggable chat button, and a Settings screen that shows your time zone and lets you switch between kg and lb. Your profile is the first data kept walled off from everyone else's. Next come workouts, then health, money, AI, recovery notes and push, and the move to always-on hosting on AWS.
+M0 (a device test of Apple Health background sync) and M1 (the walking skeleton and the app's look) are done. M2, workouts, has started with its native build, which adds the offline database, the image cache and the iCloud backup exclusion that logging workouts without signal needs.
+
+What exists today: the project skeleton, signing in on the phone with Apple or an emailed code, the app's five empty tabs with the draggable chat button, and a Settings screen that shows your time zone and lets you switch between kg and lb. Your profile is the first data kept walled off from everyone else's.
 
 ## How it works
 
@@ -86,11 +88,24 @@ pnpm stack:up            # Postgres, Valkey and an SQS emulator; waits until hea
 pnpm --filter @compound/server dev
 ```
 
-The app is an Expo development build, so it needs Xcode and a simulator or phone:
+The app is an Expo development build. On a Mac with Xcode, build it for a simulator or a plugged-in phone:
 
 ```sh
-pnpm --filter @compound/mobile ios      # first build
+pnpm --filter @compound/mobile ios      # first build (expo run:ios)
 pnpm --filter @compound/mobile start    # Metro, after that
+```
+
+Without a Mac, for example on Windows, build it in the cloud with EAS, using the `development` profile in `apps/mobile/eas.json`, and install it on your iPhone:
+
+```sh
+cd apps/mobile
+eas build --platform ios --profile development
+```
+
+Then run Metro on the same Wi-Fi as the phone and open the app:
+
+```sh
+pnpm --filter @compound/mobile start
 ```
 
 To reach the server from a phone on home Wi-Fi, copy `apps/mobile/.env.example` to `apps/mobile/.env` and set the laptop's address. [infra/README.md](infra/README.md) has the details, including the Windows firewall steps.

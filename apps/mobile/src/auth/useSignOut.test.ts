@@ -2,6 +2,10 @@ import { act, renderHook, waitFor } from '@testing-library/react-native';
 
 import { useSignOut } from './useSignOut.ts';
 
+// Expo installs `fetch` as a lazy global, and the first read loads and transforms expo/fetch. That read happens inside
+// the first test's `jest.spyOn`, so on a loaded machine with a cold transform cache it ate the whole 5 s test timeout.
+void globalThis.fetch;
+
 function client() {
   return { getCookie: async () => 'session=abc', signOut: jest.fn(async () => undefined) };
 }
