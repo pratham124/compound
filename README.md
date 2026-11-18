@@ -60,7 +60,7 @@ When your phone has new sleep data, it sends it to Compound. Once no new sleep h
 | `apps/mobile/` | The Expo iPhone app |
 | `apps/server/` | The Fastify server |
 | `packages/contracts/` | Types and schemas shared by the app and the server |
-| `infra/` | The local Docker stack and, later, Terraform for AWS |
+| `infra/` | The local Docker stack, and Terraform for AWS |
 | `loadtest/` | Whole-system test tooling, built in a later milestone |
 | `docs/prd/` | The product spec and its appendices |
 | `docs/architecture/` | The diagrams above, as SVG and interactive HTML |
@@ -111,7 +111,7 @@ pnpm stack:down
 
 ## Docs
 
-- [Product spec (PRD)](docs/prd/README.md): what the first version does, how it's built, the milestones and what is left out.
+- [Product spec (PRD)](docs/prd/README.md)
 - [Coding standards](CODING_STANDARDS.md)
 - [Product notes for the app](apps/mobile/PRODUCT.md)
 - [Brand](docs/brand/README.md)
