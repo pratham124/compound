@@ -51,7 +51,9 @@
         }
       ],
       "expo-secure-store",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "expo-sqlite",
+      "expo-image"
     ],
     "extra": {
       "eas": {

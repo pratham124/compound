@@ -20,6 +20,8 @@ apps/server/migrations/
 # App: the dev client's package id and scheme, Metro's start command, and the labels the sign-in recipe taps.
 apps/mobile/package.json
 apps/mobile/app.json
+# Local native modules: a change to one needs a rebuilt dev client (build-dev-client.sh).
+apps/mobile/modules/
 apps/mobile/app/sign-in.tsx
 apps/mobile/app/email-code.tsx
 apps/mobile/app/(tabs)/index.tsx
