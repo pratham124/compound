@@ -2,7 +2,7 @@ import { useFonts } from 'expo-font';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useReducedMotion } from 'react-native-reanimated';
 
@@ -54,6 +54,14 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false, animation: reduceMotion ? 'fade' : 'default' }}>
           <Stack.Protected guard={session !== null}>
             <Stack.Screen name="(tabs)" options={{ animation: 'fade', animationDuration: motion.screenFadeMs }} />
+            <Stack.Screen
+              name="exercises/index"
+              options={{ headerShown: true, headerTitle: '', headerBackTitle: 'Train', headerTransparent: Platform.OS === 'ios', headerStyle: { backgroundColor: Platform.OS === 'ios' ? 'transparent' : palette.bg }, headerTintColor: palette.accent }}
+            />
+            <Stack.Screen
+              name="exercises/[id]"
+              options={{ headerShown: true, headerTitle: '', headerBackTitle: 'Exercises', headerTransparent: Platform.OS === 'ios', headerStyle: { backgroundColor: Platform.OS === 'ios' ? 'transparent' : palette.bg }, headerTintColor: palette.accent }}
+            />
             <Stack.Screen
               name="settings"
               options={{

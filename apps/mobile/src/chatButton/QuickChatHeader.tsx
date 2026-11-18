@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { PressableScale } from '../components/PressableScale.tsx';
-import { glassEdge, layout, radius, type } from '../theme/tokens.ts';
+import { glassEdge, layout, press, radius, type } from '../theme/tokens.ts';
 import { useAppearance } from '../theme/useAppearance.ts';
 
 export type QuickChatHeaderProps = { onClose: () => void };
@@ -29,6 +29,7 @@ export function QuickChatHeader({ onClose }: QuickChatHeaderProps) {
           accessibilityRole="button"
           accessibilityLabel="Close"
           hitSlop={CLOSE_SLOP}
+          glyphPress={press.glyph.close}
           onPress={onClose}
           style={[styles.close, { backgroundColor: palette.glass, boxShadow: glassEdge(palette) }]}
         >
