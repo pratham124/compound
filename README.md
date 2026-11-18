@@ -12,16 +12,6 @@ One place for your workouts, health and spending, so your AI assistant can see a
 
 Compound never moves money, never gives medical diagnosis or treatment advice, never gives personalized investment or regulated financial advice, and never sells your data or uses it for advertising.
 
-It is built for one person first, Pratham, on an iPhone. The main reason for the project is to learn system design, so each person's data is already kept separate and accounts are designed to be deletable, as if more people were coming. An invite-only group and a public launch are optional later stages.
-
-## Status
-
-The first version is planned in milestones, each ending with something usable on the phone. The full list is in section 14 of the [PRD](docs/prd/README.md).
-
-M0 (a device test of Apple Health background sync) and M1 (the walking skeleton and the app's look) are done. M2, workouts, has started with its native build, which adds the offline database, the image cache and the iCloud backup exclusion that logging workouts without signal needs.
-
-What exists today: the project skeleton, signing in on the phone with Apple or an emailed code, the app's five empty tabs with the draggable chat button, and a Settings screen that shows your time zone and lets you switch between kg and lb. Your profile is the first data kept walled off from everyone else's.
-
 ## How it works
 
 **What it's built with:**
