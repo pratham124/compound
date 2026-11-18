@@ -2,7 +2,7 @@
 
 Nov 4, 2026 · @Pratham · Status: ready to build
 
-Compound is one place for my training, health and spending, which my AI assistant can read and reason across. This PRD says exactly what the first version does and how we judge that it's done, so building can start with nothing left to decide. It's written from the [vision](../vision.md).
+Compound is one place for my training, health and spending, which my AI assistant can read and reason across. This PRD says exactly what the first version does and how we judge that it's done, so building can start with nothing left to decide.
 
 The PRD is this file plus four appendices:
 
@@ -403,7 +403,7 @@ Each milestone ends with something usable on the phone. M1 to M6 run on the lapt
 |---|---|---|
 | M0 | Device test | On a real iPhone, an EAS development build is granted Health access and registers an observer. The app is killed, a new Health sample is added, and the woken app uploads it. If SDK 58 fails, fall back to SDK 57 and repeat. **Passed on SDK 58 with an internal Release build** (a development build loads its code from the laptop, so it can't be trusted on a background wake). Results in [#22](https://github.com/pratham124/compound/issues/22). |
 | M1 | Walking skeleton and look | The monorepo with anti-slop Oxlint installed and running in CI. Docker Compose runs the full local stack. Sign-in works, and one request goes from the phone through the api role to Postgres under row-level security. The app's look is set from mockups of the Today tab and the logger, and turned into shared design tokens. The five-tab shell (native tabs and sheets) and the draggable chat button run on the phone with empty screens. |
-| M2 | Workouts | Everything in section 5 except Apple Health workouts works offline and syncs without duplicates. It starts with a new EAS build that adds `expo-sqlite` and `expo-network`, which M1 left out. |
+| M2 | Workouts | Everything in section 5 except Apple Health workouts works offline and syncs without duplicates. It starts with a new EAS build that adds `expo-sqlite`, `expo-network` and `expo-image` (offline image cache), which M1 left out, plus a small local module that keeps the phone's database out of iCloud backup. |
 | M3 | Health | Section 6: health sync, daily summaries, the Today card and Trends. Section 5's Apple Health workouts move here from M2, because they need the same HealthKit setup: they appear in past workouts, and their calories show on a logged workout they cover by at least half. Sentry reports phone crashes, including ones during background health sync, which nothing else would show. The 14-morning sleep-arrival measurement starts. |
 | M4 | Money | Section 8, first on Plaid Sandbox, then with Pratham's real bank on Plaid's Trial. Cloudflare Tunnel is set up here, so Plaid's webhooks reach the laptop. The phone moves to the tunnel's HTTPS address, and the sign-in rate limit reads the caller's IP from `cf-connecting-ip`, since every request now arrives from the tunnel and would otherwise share one limit. |
 | M5 | AI | Section 10: tool module, in-app chat with confirm buttons, the allowance and prompt caching, sharing switches, MCP with OAuth tested with Claude (reads and writes) and ChatGPT (read-only) through the tunnel, and the AI changes list. |

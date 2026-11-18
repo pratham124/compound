@@ -19,9 +19,23 @@ fi
 
 git -C "$REPO" fetch origin
 if [ -d "$CHECKOUT" ]; then
-  git -C "$CHECKOUT" checkout --detach origin/main
+  # Resets tracked files to origin/main and removes untracked ones that a --worktree run copied in. Ignored files
+  # (node_modules, the generated android/) are kept, so the next build stays incremental.
+  git -C "$CHECKOUT" checkout --detach --force origin/main
+  git -C "$CHECKOUT" clean -fd
 else
   git -C "$REPO" worktree add --detach "$CHECKOUT" origin/main
+fi
+
+# --worktree builds this worktree's tracked and untracked files on top of origin/main, for a native module that hasn't
+# merged yet. Files the worktree deleted stay in the checkout for this build; the next run resets them.
+if [ "${1:-}" = "--worktree" ]; then
+  # --deleted lists tracked files missing on disk, which tar can't read. NUL-separated and byte-sorted on both sides,
+  # so names with spaces, newlines or non-ASCII characters match exactly.
+  LC_ALL=C comm -z -23 \
+    <(git -C "$REPO" ls-files --cached --others --exclude-standard -z | LC_ALL=C sort -z -u) \
+    <(git -C "$REPO" ls-files --deleted -z | LC_ALL=C sort -z -u) \
+    | tar --null -C "$REPO" -T - -cf - | tar -xf - -C "$CHECKOUT"
 fi
 
 # Hoisted, not pnpm's default layout: the isolated layout's long folder names overflow the NDK's path limit.

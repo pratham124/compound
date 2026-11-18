@@ -22,4 +22,5 @@ The maintained source for verifying Compound's user-facing behaviour. Read this,
 - [Sign-in](./sign-in.md) covers the email-code path through the sign-in screen, the refused code, and sign-out.
 - [Profile](./profile.md) covers the time zone and the units setting on the Settings screen.
 - [Five-tab shell](./tab-shell.md) covers the Today, Train, Money, Trends and Chat tabs and the Settings screen.
+- [Device checks](./device-checks.md) covers the dev-only screen for the local database, image cache, network state and haptics that M2's native build added.
 - [Chat button and quick chat](./chat-button.md) covers the draggable button and the Ask Compound sheet it opens.

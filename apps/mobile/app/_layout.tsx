@@ -80,6 +80,7 @@ export default function RootLayout() {
           </Stack.Protected>
           <Stack.Protected guard={__DEV__}>
             <Stack.Screen name="dev-fixtures" />
+            <Stack.Screen name="dev-device-checks" />
           </Stack.Protected>
         </Stack>
         <ChatButtonOverlay />
