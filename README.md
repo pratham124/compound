@@ -2,22 +2,36 @@
 
 One place for your workouts, health and spending, so your AI assistant can see all three and answer questions that need them together. For example: "Do I order more takeout after a bad night's sleep?" or "Is my gym membership worth it, given how often I actually went?"
 
-Compound is early in its first milestone: so far there is the project skeleton, signing in on the phone with Apple or an emailed code, the app's five empty tabs with the draggable chat button, and a Settings screen that shows your time zone and lets you switch between kg and lb. Your profile is the first data kept walled off from everyone else's. To see what it will do and why, start with the [vision](docs/vision.md).
+## What it does
 
-## How it will work
+- **Workouts:** log sets at the gym with no signal, see past workouts and personal bests, use a rest timer and saved routines.
+- **Health:** sleep, steps, resting heart rate and heart rate variability come in from Apple Health on their own and show on a Today card and a Trends screen, next to your training.
+- **Money:** read-only bank sync through Plaid, spending sorted into categories, a monthly view, budgets with alerts, and a list and calendar of subscriptions, including what a gym costs per workout.
+- **Recovery notes:** when your sleep and training suggest a lighter day, Compound writes a short note and sends it to you.
+- **Chat and assistants:** ask questions in the app, or connect Claude or ChatGPT through MCP, a standard way for assistants to use apps. An assistant sees an area only after you turn its sharing switch on, and every change it makes is listed with an Undo.
 
-These diagrams show the plan for the first version. It's built to handle 100,000 people, and that will be tested with 100,000 simulated users. The diagrams will change as planning finishes.
+Compound never moves money, never gives medical diagnosis or treatment advice, never gives personalized investment or regulated financial advice, and never sells your data or uses it for advertising.
+
+It is built for one person first, Pratham, on an iPhone. The main reason for the project is to learn system design, so each person's data is already kept separate and accounts are designed to be deletable, as if more people were coming. An invite-only group and a public launch are optional later stages.
+
+## Status
+
+The first version is planned in milestones, each ending with something usable on the phone. The full list is in section 14 of the [PRD](docs/prd/README.md).
+
+So far there is the project skeleton, signing in on the phone with Apple or an emailed code, the app's five empty tabs with the draggable chat button, and a Settings screen that shows your time zone and lets you switch between kg and lb. Your profile is the first data kept walled off from everyone else's. Next come workouts, then health, money, AI, recovery notes and push, and the move to always-on hosting on AWS.
+
+## How it works
 
 **What it's built with:**
 - **iPhone app:** made with Expo (React Native). It reads sleep, steps and heart data from Apple Health, and logs workouts even with no signal.
-- **Server:** one TypeScript program, split into separate parts, running on Amazon Web Services (AWS).
+- **Server:** one TypeScript program (Fastify), split into separate parts, running on Amazon Web Services (AWS).
 - **Data:** stored in a Postgres database that keeps each person's data walled off from everyone else's, plus a fast in-memory store (Valkey) for sign-ins and usage limits.
 - **Background work:** jobs like syncing bank transactions go through a queue (Amazon SQS) and are written down in the same step as the change that caused them, so none get lost. A scheduler (EventBridge) handles timed work.
-- **AI assistants:** Claude or ChatGPT can connect through MCP, a standard way for assistants to use apps. You approve exactly what they can see and change.
+- **AI assistants:** Claude or ChatGPT connect through MCP. You approve exactly what they can see and change.
 
 ### The big picture
 
-Everything comes in through one front door: the app, your AI assistant, and Plaid (the service that connects bank accounts). The server runs as two kinds of worker. One answers requests right away. The other handles background jobs and talks to Plaid, the AI model, and Apple's notification service. For load tests, a bigger copy of the whole setup is created, run, and then torn down.
+Everything comes in through one front door: the app, your AI assistant, and Plaid (the service that connects bank accounts). The server runs as two kinds of worker. One answers requests right away. The other handles background jobs and talks to Plaid, the AI model, and Apple's notification service.
 
 ![The big picture](docs/architecture/deployment.svg)
 
@@ -46,3 +60,54 @@ When your phone has new sleep data, it sends it to Compound. Once no new sleep h
 ![Sleep to recovery note](docs/architecture/sleep-recovery-note-flow.svg)
 
 [Open the interactive version](https://pratham124.github.io/compound/architecture/sleep-recovery-note-flow.html): zoom, follow a route, and play the animation.
+
+## Repo layout
+
+| Path | What it holds |
+|---|---|
+| `apps/mobile/` | The Expo iPhone app |
+| `apps/server/` | The Fastify server |
+| `packages/contracts/` | Types and schemas shared by the app and the server |
+| `infra/` | The local Docker stack and, later, Terraform for AWS |
+| `loadtest/` | Whole-system test tooling, built in a later milestone |
+| `docs/prd/` | The product spec and its appendices |
+| `docs/architecture/` | The diagrams above, as SVG and interactive HTML |
+| `docs/design/`, `docs/brand/` | Screen mockups, design tokens and brand assets |
+| `scripts/`, `tools/` | Repo checks and the vendored lint plugins |
+
+## Run it locally
+
+You need Node 24 or newer, pnpm and Docker.
+
+```sh
+pnpm install
+cp .env.example .env     # placeholders work as they are
+pnpm stack:up            # Postgres, Valkey and an SQS emulator; waits until healthy
+pnpm --filter @compound/server dev
+```
+
+The app is an Expo development build, so it needs Xcode and a simulator or phone:
+
+```sh
+pnpm --filter @compound/mobile ios      # first build
+pnpm --filter @compound/mobile start    # Metro, after that
+```
+
+To reach the server from a phone on home Wi-Fi, copy `apps/mobile/.env.example` to `apps/mobile/.env` and set the laptop's address. [infra/README.md](infra/README.md) has the details, including the Windows firewall steps.
+
+Checks:
+
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test        # the server tests need the stack running
+pnpm stack:down
+```
+
+## Docs
+
+- [Product spec (PRD)](docs/prd/README.md): what the first version does, how it's built, the milestones and what is left out.
+- [Coding standards](CODING_STANDARDS.md)
+- [Product notes for the app](apps/mobile/PRODUCT.md)
+- [Brand](docs/brand/README.md)
+- [Architecture diagram workflow](docs/agents/diagrams.md)

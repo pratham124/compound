@@ -51,7 +51,7 @@ Workouts, passive health data and spending live in one account, under one consen
 
 ## Evidence on Hand
 
-- Product spec: `docs/prd/README.md`; vision: `docs/vision.md`.
+- Product spec: `docs/prd/README.md`; product overview: `README.md`.
 - Screen mockups for every first-version screen: `docs/design/mockups/`.
 - Brand assets: `docs/brand/`.
 - No users beyond Pratham, no testimonials, press, benchmarks or pricing. Future work must not invent any.

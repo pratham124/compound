@@ -2,7 +2,7 @@
 
 Nov 4, 2026 · @Pratham · Status: ready to build
 
-Compound is one place for my training, health and spending, which my AI assistant can read and reason across. This PRD says exactly what the first version does and how we judge that it's done, so building can start with nothing left to decide. It's written from the [vision](../vision.md).
+Compound is one place for my training, health and spending, which my AI assistant can read and reason across. This PRD says exactly what the first version does and how we judge that it's done, so building can start with nothing left to decide.
 
 The PRD is this file plus four appendices:
 
