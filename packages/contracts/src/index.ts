@@ -1,5 +1,7 @@
 export { DependencyStatus, HealthResponse } from './health.ts';
 
+export { Exercise, ExerciseCatalogue } from './exercises.ts';
+
 export {
   EMAIL_CODE_LENGTH,
   Me,

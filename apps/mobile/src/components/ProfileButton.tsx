@@ -23,6 +23,7 @@ export function ProfileButton() {
       accessibilityRole="button"
       accessibilityLabel="Settings"
       pressedScale={press.iconScale}
+      glyphPress={press.glyph.profile}
       onPress={() => router.push('/settings')}
       style={[styles.circle, { backgroundColor: palette.glass, boxShadow: glassShadow(palette) }]}
     >
@@ -39,8 +40,8 @@ export function ProfileButton() {
 
 const styles = StyleSheet.create({
   circle: {
-    width: layout.profileButton,
-    height: layout.profileButton,
+    width: layout.headerButton,
+    height: layout.headerButton,
     borderRadius: radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',

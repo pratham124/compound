@@ -5264,79 +5264,83 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <path data-graph-role="automatic-crossover-underlay" d="M 190 230 L 352 230 Q 360 230 360 238 L 360 300" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
           <path data-edge-from="phone" data-edge-to="alb" data-edge-label="app (REST)" data-edge-key="1" data-edge-id="phone-alb" data-composition-points="190,230;360,230;360,300" data-composition-crossover="halo" data-composition-independent="true" d="M 190 230 L 352 230 Q 360 230 360 238 L 360 300" class="a-emphasis" data-animate="edge" style="--step:1" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
-        <path data-edge-from="assistant" data-edge-to="alb" data-edge-label="MCP tools" data-edge-key="2" data-edge-id="assistant-alb" data-composition-points="190,330;280,330" d="M 190 330 L 280 330" class="a-security" data-animate="edge" style="--step:2" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
-        <g data-graph-role="automatic-crossover" style="--step:3">
-          <path data-graph-role="automatic-crossover-underlay" d="M 190 430 L 352 430 Q 360 430 360 422 L 360 360" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="plaidhook" data-edge-to="alb" data-edge-label="webhooks" data-edge-key="3" data-edge-id="plaid-alb" data-composition-points="190,430;360,430;360,360" data-composition-crossover="halo" data-composition-independent="true" d="M 190 430 L 352 430 Q 360 430 360 422 L 360 360" class="a-security" data-animate="edge" style="--step:3" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <g data-graph-role="automatic-crossover" style="--step:2">
+          <path data-graph-role="automatic-crossover-underlay" d="M 40 230 L 24 230 Q 16 230 16 238 L 16 562 Q 16 570 24 570 L 40 570" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="phone" data-edge-to="exercise_images" data-edge-label="HTTPS · first view" data-edge-key="2" data-edge-id="phone-images" data-composition-points="40,230;16,230;16,570;40,570" data-composition-crossover="halo" data-composition-independent="true" d="M 40 230 L 24 230 Q 16 230 16 238 L 16 562 Q 16 570 24 570 L 40 570" class="a-default" data-animate="edge" style="--step:2" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
+        <path data-edge-from="assistant" data-edge-to="alb" data-edge-label="MCP tools" data-edge-key="3" data-edge-id="assistant-alb" data-composition-points="190,330;280,330" d="M 190 330 L 280 330" class="a-security" data-animate="edge" style="--step:3" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
         <g data-graph-role="automatic-crossover" style="--step:4">
-          <path data-graph-role="automatic-crossover-underlay" d="M 440 321.95 L 520 321.95" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="alb" data-edge-to="api" data-edge-label="HTTPS" data-edge-key="4" data-edge-id="alb-api" data-composition-points="440,321.95;520,321.95" data-composition-crossover="halo" data-composition-independent="true" d="M 440 321.95 L 520 321.95" class="a-emphasis" data-animate="edge" style="--step:4" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 190 430 L 352 430 Q 360 430 360 422 L 360 360" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="plaidhook" data-edge-to="alb" data-edge-label="webhooks" data-edge-key="4" data-edge-id="plaid-alb" data-composition-points="190,430;360,430;360,360" data-composition-crossover="halo" data-composition-independent="true" d="M 190 430 L 352 430 Q 360 430 360 422 L 360 360" class="a-security" data-animate="edge" style="--step:4" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:5">
-          <path data-graph-role="automatic-crossover-underlay" d="M 610 290 L 610 140" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="valkey" data-edge-label="session · limits · meter" data-edge-key="5" data-edge-id="api-valkey" data-composition-points="610,290;610,140" data-composition-crossover="halo" data-composition-independent="true" d="M 610 290 L 610 140" class="a-default" data-animate="edge" style="--step:5" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 440 321.95 L 520 321.95" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="alb" data-edge-to="api" data-edge-label="HTTPS" data-edge-key="5" data-edge-id="alb-api" data-composition-points="440,321.95;520,321.95" data-composition-crossover="halo" data-composition-independent="true" d="M 440 321.95 L 520 321.95" class="a-emphasis" data-animate="edge" style="--step:5" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:6">
+          <path data-graph-role="automatic-crossover-underlay" d="M 610 290 L 610 140" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="valkey" data-edge-label="session · limits · meter" data-edge-key="6" data-edge-id="api-valkey" data-composition-points="610,290;610,140" data-composition-crossover="halo" data-composition-independent="true" d="M 610 290 L 610 140" class="a-default" data-animate="edge" style="--step:6" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:7">
           <path data-graph-role="automatic-crossover-underlay" d="M 624 290 L 624 208 Q 624 200 632 200 L 850 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="pg_todo" data-edge-label="mark to-do" data-edge-key="6" data-edge-id="api-todo" data-composition-points="624,290;624,200;850,200" data-composition-crossover="halo" data-composition-independent="true" d="M 624 290 L 624 208 Q 624 200 632 200 L 850 200" class="a-default" data-animate="edge" style="--step:6" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="api" data-edge-to="pg_todo" data-edge-label="mark to-do" data-edge-key="7" data-edge-id="api-todo" data-composition-points="624,290;624,200;850,200" data-composition-crossover="halo" data-composition-independent="true" d="M 624 290 L 624 208 Q 624 200 632 200 L 850 200" class="a-default" data-animate="edge" style="--step:7" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
-        <path data-edge-from="api" data-edge-to="pg_outbox" data-edge-label="+ job row, one txn" data-edge-key="7" data-edge-id="api-outbox" data-composition-points="700,330;850,330" d="M 700 330 L 850 330" class="a-emphasis" data-animate="edge" style="--step:7" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <g data-graph-role="automatic-crossover" style="--step:8">
-          <path data-graph-role="automatic-crossover-underlay" d="M 684 370 L 684 433 Q 684 441 692 441 L 850 441" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="pg_data" data-edge-label="save the change" data-edge-key="8" data-edge-id="api-data" data-composition-points="684,370;684,441;850,441" data-composition-crossover="halo" data-composition-independent="true" d="M 684 370 L 684 433 Q 684 441 692 441 L 850 441" class="a-emphasis" data-animate="edge" style="--step:8" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        </g>
+        <path data-edge-from="api" data-edge-to="pg_outbox" data-edge-label="+ job row, one txn" data-edge-key="8" data-edge-id="api-outbox" data-composition-points="700,330;850,330" d="M 700 330 L 850 330" class="a-emphasis" data-animate="edge" style="--step:8" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <g data-graph-role="automatic-crossover" style="--step:9">
-          <path data-graph-role="automatic-crossover-underlay" d="M 536 370 L 536 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="9" data-edge-id="api-grafana" data-composition-points="536,370;536,630" data-composition-crossover="halo" data-composition-independent="true" d="M 536 370 L 536 630" class="a-dashed" data-animate="edge" style="--step:9" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 684 370 L 684 433 Q 684 441 692 441 L 850 441" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="pg_data" data-edge-label="save the change" data-edge-key="9" data-edge-id="api-data" data-composition-points="684,370;684,441;850,441" data-composition-crossover="halo" data-composition-independent="true" d="M 684 370 L 684 433 Q 684 441 692 441 L 850 441" class="a-emphasis" data-animate="edge" style="--step:9" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:10">
-          <path data-graph-role="automatic-crossover-underlay" d="M 617 370 L 617 652 Q 617 660 625 660 L 650 660" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="10" data-edge-id="api-model" data-composition-points="617,370;617,660;650,660" data-composition-crossover="halo" data-composition-independent="true" d="M 617 370 L 617 652 Q 617 660 625 660 L 650 660" class="a-default" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 536 370 L 536 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="10" data-edge-id="api-grafana" data-composition-points="536,370;536,630" data-composition-crossover="halo" data-composition-independent="true" d="M 536 370 L 536 630" class="a-dashed" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:11">
-          <path data-graph-role="automatic-crossover-underlay" d="M 520 337 L 488 337 Q 480 337 480 345 L 480 472 Q 480 480 472 480 L 440 480" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="ses" data-edge-label="sign-in code" data-edge-key="11" data-edge-id="api-ses" data-composition-points="520,337;480,337;480,480;440,480" data-composition-crossover="halo" data-composition-independent="true" d="M 520 337 L 488 337 Q 480 337 480 345 L 480 472 Q 480 480 472 480 L 440 480" class="a-default" data-animate="edge" style="--step:11" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 617 370 L 617 652 Q 617 660 625 660 L 650 660" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="11" data-edge-id="api-model" data-composition-points="617,370;617,660;650,660" data-composition-crossover="halo" data-composition-independent="true" d="M 617 370 L 617 652 Q 617 660 625 660 L 650 660" class="a-default" data-animate="edge" style="--step:11" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:12">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1190 200 L 1070 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="12" data-edge-id="ticks-todo" data-composition-points="1190,200;1070,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 200 L 1070 200" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 520 337 L 488 337 Q 480 337 480 345 L 480 472 Q 480 480 472 480 L 440 480" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="api" data-edge-to="ses" data-edge-label="sign-in code" data-edge-key="12" data-edge-id="api-ses" data-composition-points="520,337;480,337;480,480;440,480" data-composition-crossover="halo" data-composition-independent="true" d="M 520 337 L 488 337 Q 480 337 480 345 L 480 472 Q 480 480 472 480 L 440 480" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:13">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1190 330 L 1070 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="13" data-edge-id="relay-outbox" data-composition-points="1190,330;1070,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 330 L 1070 330" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1190 200 L 1070 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="13" data-edge-id="ticks-todo" data-composition-points="1190,200;1070,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 200 L 1070 200" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:14">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1190 460 L 1070 460" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="14" data-edge-id="consumers-data" data-composition-points="1190,460;1070,460" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 460 L 1070 460" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1190 330 L 1070 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="14" data-edge-id="relay-outbox" data-composition-points="1190,330;1070,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 330 L 1070 330" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:15">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1390 330 L 1520 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="15" data-edge-id="relay-sqs" data-composition-points="1390,330;1520,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1390 330 L 1520 330" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1190 460 L 1070 460" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="15" data-edge-id="consumers-data" data-composition-points="1190,460;1070,460" data-composition-crossover="halo" data-composition-independent="true" d="M 1190 460 L 1070 460" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:16">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1615 140 L 1615 280" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="16" data-edge-id="scheduler-sqs" data-composition-points="1615,140;1615,280" data-composition-crossover="halo" data-composition-independent="true" d="M 1615 140 L 1615 280" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1390 330 L 1520 330" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="16" data-edge-id="relay-sqs" data-composition-points="1390,330;1520,330" data-composition-crossover="halo" data-composition-independent="true" d="M 1390 330 L 1520 330" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:17">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="17" data-edge-id="sqs-ticks" data-composition-points="1520,316;1496,316;1496,200;1390,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1615 140 L 1615 280" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="17" data-edge-id="scheduler-sqs" data-composition-points="1615,140;1615,280" data-composition-crossover="halo" data-composition-independent="true" d="M 1615 140 L 1615 280" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:18">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="18" data-edge-id="sqs-consumers" data-composition-points="1536,380;1536,441;1390,441" data-composition-crossover="halo" data-composition-independent="true" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="18" data-edge-id="sqs-ticks" data-composition-points="1520,316;1496,316;1496,200;1390,200" data-composition-crossover="halo" data-composition-independent="true" d="M 1520 316 L 1504 316 Q 1496 316 1496 308 L 1496 208 Q 1496 200 1488 200 L 1390 200" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:19">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="19" data-edge-id="consumers-plaid" data-composition-points="1290,495;1290,646;1270,646" data-composition-crossover="halo" data-composition-independent="true" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="19" data-edge-id="sqs-consumers" data-composition-points="1536,380;1536,441;1390,441" data-composition-crossover="halo" data-composition-independent="true" d="M 1536 380 L 1536 433 Q 1536 441 1528 441 L 1390 441" class="a-dashed" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:20">
-          <path data-graph-role="automatic-crossover-underlay" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="20" data-edge-id="consumers-model" data-composition-points="1276,495;1276,519;742,519;742,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="20" data-edge-id="consumers-plaid" data-composition-points="1290,495;1290,646;1270,646" data-composition-crossover="halo" data-composition-independent="true" d="M 1290 495 L 1290 638 Q 1290 646 1282 646 L 1270 646" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:21">
+          <path data-graph-role="automatic-crossover-underlay" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="21" data-edge-id="consumers-model" data-composition-points="1276,495;1276,519;742,519;742,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1276 495 L 1276 511 Q 1276 519 1268 519 L 750 519 Q 742 519 742 527 L 742 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:22">
           <path data-graph-role="automatic-crossover-underlay" d="M 1366 495 L 1366 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="21" data-edge-id="consumers-apns" data-composition-points="1366,495;1366,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1366 495 L 1366 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="22" data-edge-id="consumers-apns" data-composition-points="1366,495;1366,630" data-composition-crossover="halo" data-composition-independent="true" d="M 1366 495 L 1366 630" class="a-default" data-animate="edge" style="--step:12" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- Components -->
@@ -5352,8 +5356,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="115" y="124" class="t-muted" font-size="9" text-anchor="middle">phone crashes · from M3</text>
         </g>
 
-        <g id="node-phone" data-node-id="phone" data-node-label="iPhone app" tabindex="0" role="button" aria-label="Focus iPhone app, offline outbox · retries, Architecture component" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="offline outbox · retries" data-node-context="Architecture component">
-          <title>iPhone app · offline outbox · retries · Architecture component</title>
+        <g id="node-phone" data-node-id="phone" data-node-label="iPhone app" tabindex="0" role="button" aria-label="Focus iPhone app, outbox · image disk cache, Architecture component" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="outbox · image disk cache" data-node-context="Architecture component">
+          <title>iPhone app · outbox · image disk cache · Architecture component</title>
           <rect x="40" y="200" width="150" height="60" rx="8" class="c-mask"/>
           <rect x="40" y="200" width="150" height="60" rx="8" class="c-frontend" data-animate="node" style="--step:0" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(46 206) scale(0.6875)">
@@ -5363,13 +5367,13 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="115" y="228" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">iPhone app</text>
-        <text data-detail="context" x="115" y="244" class="t-muted" font-size="9" text-anchor="middle">offline outbox · retries</text>
+        <text data-detail="context" x="115" y="244" class="t-muted" font-size="9" text-anchor="middle">outbox · image disk cache</text>
         </g>
 
         <g id="node-assistant" data-node-id="assistant" data-node-label="Your assistant" tabindex="0" role="button" aria-label="Focus Your assistant, Claude · ChatGPT, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="Claude · ChatGPT" data-node-context="Architecture component">
           <title>Your assistant · Claude · ChatGPT · Architecture component</title>
           <rect x="40" y="300" width="150" height="60" rx="8" class="c-mask"/>
-          <rect x="40" y="300" width="150" height="60" rx="8" class="c-external" data-animate="node" style="--step:2" stroke-width="1.5"/>
+          <rect x="40" y="300" width="150" height="60" rx="8" class="c-external" data-animate="node" style="--step:3" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(46 306) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
@@ -5381,13 +5385,25 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-plaidhook" data-node-id="plaidhook" data-node-label="Plaid" tabindex="0" role="button" aria-label="Focus Plaid, new-transaction webhooks, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="new-transaction webhooks" data-node-context="Architecture component">
           <title>Plaid · new-transaction webhooks · Architecture component</title>
           <rect x="40" y="400" width="150" height="60" rx="8" class="c-mask"/>
-          <rect x="40" y="400" width="150" height="60" rx="8" class="c-external" data-animate="node" style="--step:3" stroke-width="1.5"/>
+          <rect x="40" y="400" width="150" height="60" rx="8" class="c-external" data-animate="node" style="--step:4" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(46 406) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="115" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Plaid</text>
         <text data-detail="context" x="115" y="444" class="t-muted" font-size="9" text-anchor="middle">new-transaction webhooks</text>
+        </g>
+
+        <g id="node-exercise_images" data-node-id="exercise_images" data-node-label="GitHub images" tabindex="0" role="button" aria-label="Focus GitHub images, free-exercise-db · pinned, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="free-exercise-db · pinned" data-node-context="Architecture component">
+          <title>GitHub images · free-exercise-db · pinned · Architecture component</title>
+          <rect x="40" y="540" width="150" height="60" rx="8" class="c-mask"/>
+          <rect x="40" y="540" width="150" height="60" rx="8" class="c-external" data-animate="node" style="--step:3" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(46 546) scale(0.6875)">
+            <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
+            <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="115" y="568" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">GitHub images</text>
+        <text data-detail="context" x="115" y="584" class="t-muted" font-size="9" text-anchor="middle">free-exercise-db · pinned</text>
         </g>
 
         <g id="node-alb" data-node-id="alb" data-node-label="Load balancer" tabindex="0" role="button" aria-label="Focus Load balancer, HTTPS :443 · health checks, AWS us-east-1 · always-on" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="HTTPS :443 · health checks" data-node-tag="ALB" data-node-context="AWS us-east-1 · always-on">
@@ -5416,7 +5432,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-valkey" data-node-id="valkey" data-node-label="Valkey" tabindex="0" role="button" aria-label="Focus Valkey, sessions · rate limits · chat meter, AWS us-east-1 · always-on › private subnet" aria-pressed="false" data-node-kind="database" data-node-sublabel="sessions · rate limits · chat meter" data-node-tag="Serverless" data-node-context="AWS us-east-1 · always-on › private subnet">
           <title>Valkey · sessions · rate limits · chat meter · AWS us-east-1 · always-on › private subnet · Serverless</title>
           <rect x="505" y="80" width="210" height="60" rx="8" class="c-mask"/>
-          <rect x="505" y="80" width="210" height="60" rx="8" class="c-database" data-animate="node" style="--step:6" stroke-width="1.5"/>
+          <rect x="505" y="80" width="210" height="60" rx="8" class="c-database" data-animate="node" style="--step:7" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(511 86) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -5429,7 +5445,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-api" data-node-id="api" data-node-label="API server" tabindex="0" role="button" aria-label="Focus API server, answers every HTTP request, AWS us-east-1 · always-on" aria-pressed="false" data-node-kind="backend" data-node-sublabel="answers every HTTP request" data-node-tag="Fargate" data-node-context="AWS us-east-1 · always-on">
           <title>API server · answers every HTTP request · AWS us-east-1 · always-on · Fargate</title>
           <rect x="520" y="290" width="180" height="80" rx="8" class="c-mask"/>
-          <rect x="520" y="290" width="180" height="80" rx="8" class="c-backend" data-animate="node" style="--step:5" stroke-width="1.5"/>
+          <rect x="520" y="290" width="180" height="80" rx="8" class="c-backend" data-animate="node" style="--step:6" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(526 296) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
@@ -5441,7 +5457,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-pg_todo" data-node-id="pg_todo" data-node-label="To-do rows" tabindex="0" role="button" aria-label="Focus To-do rows, due checks · rebuild marks · deletions, AWS us-east-1 · always-on › RDS Postgres · private subnet" aria-pressed="false" data-node-kind="database" data-node-sublabel="due checks · rebuild marks · deletions" data-node-context="AWS us-east-1 · always-on › RDS Postgres · private subnet">
           <title>To-do rows · due checks · rebuild marks · deletions · AWS us-east-1 · always-on › RDS Postgres · private subnet</title>
           <rect x="850" y="165" width="220" height="70" rx="8" class="c-mask"/>
-          <rect x="850" y="165" width="220" height="70" rx="8" class="c-database" data-animate="node" style="--step:7" stroke-width="1.5"/>
+          <rect x="850" y="165" width="220" height="70" rx="8" class="c-database" data-animate="node" style="--step:8" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(856 171) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -5453,7 +5469,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-pg_outbox" data-node-id="pg_outbox" data-node-label="Outbox table" tabindex="0" role="button" aria-label="Focus Outbox table, jobs waiting to go to SQS, AWS us-east-1 · always-on › RDS Postgres · private subnet" aria-pressed="false" data-node-kind="database" data-node-sublabel="jobs waiting to go to SQS" data-node-context="AWS us-east-1 · always-on › RDS Postgres · private subnet">
           <title>Outbox table · jobs waiting to go to SQS · AWS us-east-1 · always-on › RDS Postgres · private subnet</title>
           <rect x="850" y="295" width="220" height="70" rx="8" class="c-mask"/>
-          <rect x="850" y="295" width="220" height="70" rx="8" class="c-database" data-animate="node" style="--step:8" stroke-width="1.5"/>
+          <rect x="850" y="295" width="220" height="70" rx="8" class="c-database" data-animate="node" style="--step:9" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(856 301) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -5465,7 +5481,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-pg_data" data-node-id="pg_data" data-node-label="App data" tabindex="0" role="button" aria-label="Focus App data, workouts · health · money · keys, AWS us-east-1 · always-on › RDS Postgres · private subnet" aria-pressed="false" data-node-kind="database" data-node-sublabel="workouts · health · money · keys" data-node-context="AWS us-east-1 · always-on › RDS Postgres · private subnet">
           <title>App data · workouts · health · money · keys · AWS us-east-1 · always-on › RDS Postgres · private subnet</title>
           <rect x="850" y="425" width="220" height="70" rx="8" class="c-mask"/>
-          <rect x="850" y="425" width="220" height="70" rx="8" class="c-database" data-animate="node" style="--step:9" stroke-width="1.5"/>
+          <rect x="850" y="425" width="220" height="70" rx="8" class="c-database" data-animate="node" style="--step:10" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(856 431) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -5536,7 +5552,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-grafana" data-node-id="grafana" data-node-label="Grafana Cloud" tabindex="0" role="button" aria-label="Focus Grafana Cloud, dashboards · alerts · from M7, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="dashboards · alerts · from M7" data-node-context="Architecture component">
           <title>Grafana Cloud · dashboards · alerts · from M7 · Architecture component</title>
           <rect x="430" y="630" width="170" height="60" rx="8" class="c-mask"/>
-          <rect x="430" y="630" width="170" height="60" rx="8" class="c-external" data-animate="node" style="--step:10" stroke-width="1.5"/>
+          <rect x="430" y="630" width="170" height="60" rx="8" class="c-external" data-animate="node" style="--step:11" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(436 636) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
@@ -5548,7 +5564,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-model" data-node-id="model" data-node-label="Model provider" tabindex="0" role="button" aria-label="Focus Model provider, chat · recovery note text, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="chat · recovery note text" data-node-context="Architecture component">
           <title>Model provider · chat · recovery note text · Architecture component</title>
           <rect x="650" y="630" width="170" height="60" rx="8" class="c-mask"/>
-          <rect x="650" y="630" width="170" height="60" rx="8" class="c-external" data-animate="node" style="--step:11" stroke-width="1.5"/>
+          <rect x="650" y="630" width="170" height="60" rx="8" class="c-external" data-animate="node" style="--step:12" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(656 636) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
@@ -5590,83 +5606,87 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <rect x="331" y="245" width="58" height="14" rx="3" class="c-mask"/>
           <text x="360" y="255" class="t-edge-emphasis" font-size="8" text-anchor="middle">app (REST)</text>
         </g>
-        <g data-detail="context" data-edge-from="assistant" data-edge-to="alb" data-edge-label="MCP tools" data-edge-key="2" data-edge-id="assistant-alb">
+        <g data-detail="context" data-edge-from="phone" data-edge-to="exercise_images" data-edge-label="HTTPS · first view" data-edge-key="2" data-edge-id="phone-images">
+          <rect x="21.999999999999993" y="478" width="96.39999999999999" height="14" rx="3" class="c-mask"/>
+          <text x="70.19999999999999" y="488" class="t-edge-default" font-size="8" text-anchor="middle">HTTPS · first view</text>
+        </g>
+        <g data-detail="context" data-edge-from="assistant" data-edge-to="alb" data-edge-label="MCP tools" data-edge-key="3" data-edge-id="assistant-alb">
           <rect x="208.4" y="310" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
           <text x="235" y="320" class="t-edge-security" font-size="8" text-anchor="middle">MCP tools</text>
         </g>
-        <g data-detail="context" data-edge-from="plaidhook" data-edge-to="alb" data-edge-label="webhooks" data-edge-key="3" data-edge-id="plaid-alb">
+        <g data-detail="context" data-edge-from="plaidhook" data-edge-to="alb" data-edge-label="webhooks" data-edge-key="4" data-edge-id="plaid-alb">
           <rect x="335.8" y="375" width="48.4" height="14" rx="3" class="c-mask"/>
           <text x="360" y="385" class="t-edge-security" font-size="8" text-anchor="middle">webhooks</text>
         </g>
-        <g data-detail="context" data-edge-from="alb" data-edge-to="api" data-edge-label="HTTPS" data-edge-key="4" data-edge-id="alb-api">
+        <g data-detail="context" data-edge-from="alb" data-edge-to="api" data-edge-label="HTTPS" data-edge-key="5" data-edge-id="alb-api">
           <rect x="463" y="301.95" width="34" height="14" rx="3" class="c-mask"/>
           <text x="480" y="311.95" class="t-edge-emphasis" font-size="8" text-anchor="middle">HTTPS</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="valkey" data-edge-label="session · limits · meter" data-edge-key="5" data-edge-id="api-valkey">
+        <g data-detail="context" data-edge-from="api" data-edge-to="valkey" data-edge-label="session · limits · meter" data-edge-key="6" data-edge-id="api-valkey">
           <rect x="478.79999999999995" y="208" width="125.19999999999999" height="14" rx="3" class="c-mask"/>
           <text x="541.4" y="218" class="t-edge-default" font-size="8" text-anchor="middle">session · limits · meter</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="pg_todo" data-edge-label="mark to-do" data-edge-key="6" data-edge-id="api-todo">
+        <g data-detail="context" data-edge-from="api" data-edge-to="pg_todo" data-edge-label="mark to-do" data-edge-key="7" data-edge-id="api-todo">
           <rect x="708" y="180" width="58" height="14" rx="3" class="c-mask"/>
           <text x="737" y="190" class="t-edge-default" font-size="8" text-anchor="middle">mark to-do</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="pg_outbox" data-edge-label="+ job row, one txn" data-edge-key="7" data-edge-id="api-outbox">
+        <g data-detail="context" data-edge-from="api" data-edge-to="pg_outbox" data-edge-label="+ job row, one txn" data-edge-key="8" data-edge-id="api-outbox">
           <rect x="726.8" y="310" width="96.39999999999999" height="14" rx="3" class="c-mask"/>
           <text x="775" y="320" class="t-edge-emphasis" font-size="8" text-anchor="middle">+ job row, one txn</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="pg_data" data-edge-label="save the change" data-edge-key="8" data-edge-id="api-data">
+        <g data-detail="context" data-edge-from="api" data-edge-to="pg_data" data-edge-label="save the change" data-edge-key="9" data-edge-id="api-data">
           <rect x="726" y="421" width="82" height="14" rx="3" class="c-mask"/>
           <text x="767" y="431" class="t-edge-emphasis" font-size="8" text-anchor="middle">save the change</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="9" data-edge-id="api-grafana">
+        <g data-detail="context" data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="10" data-edge-id="api-grafana">
           <rect x="409.6" y="558" width="120.39999999999999" height="14" rx="3" class="c-mask"/>
           <text x="469.8" y="568" class="t-edge-dashed" font-size="8" text-anchor="middle">traces · metrics · logs</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="10" data-edge-id="api-model">
+        <g data-detail="context" data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="11" data-edge-id="api-model">
           <rect x="543.4000000000001" y="508" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="577.2" y="518" class="t-edge-default" font-size="8" text-anchor="middle">chat replies</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="ses" data-edge-label="sign-in code" data-edge-key="11" data-edge-id="api-ses">
+        <g data-detail="context" data-edge-from="api" data-edge-to="ses" data-edge-label="sign-in code" data-edge-key="12" data-edge-id="api-ses">
           <rect x="446.2" y="388.5" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="480" y="398.5" class="t-edge-default" font-size="8" text-anchor="middle">sign-in code</text>
         </g>
-        <g data-detail="context" data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="12" data-edge-id="ticks-todo">
+        <g data-detail="context" data-edge-from="ticks" data-edge-to="pg_todo" data-edge-label="find what&#39;s due" data-edge-key="13" data-edge-id="ticks-todo">
           <rect x="1089" y="180" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1130" y="190" class="t-edge-default" font-size="8" text-anchor="middle">find what&#39;s due</text>
         </g>
-        <g data-detail="context" data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="13" data-edge-id="relay-outbox">
+        <g data-detail="context" data-edge-from="relay" data-edge-to="pg_outbox" data-edge-label="loop: take rows" data-edge-key="14" data-edge-id="relay-outbox">
           <rect x="1089" y="310" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1130" y="320" class="t-edge-default" font-size="8" text-anchor="middle">loop: take rows</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="14" data-edge-id="consumers-data">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="pg_data" data-edge-label="save results" data-edge-key="15" data-edge-id="consumers-data">
           <rect x="1096.2" y="440" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="1130" y="450" class="t-edge-default" font-size="8" text-anchor="middle">save results</text>
         </g>
-        <g data-detail="context" data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="15" data-edge-id="relay-sqs">
+        <g data-detail="context" data-edge-from="relay" data-edge-to="sqs" data-edge-label="send each job" data-edge-key="16" data-edge-id="relay-sqs">
           <rect x="1418.8" y="310" width="72.4" height="14" rx="3" class="c-mask"/>
           <text x="1455" y="320" class="t-edge-dashed" font-size="8" text-anchor="middle">send each job</text>
         </g>
-        <g data-detail="context" data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="16" data-edge-id="scheduler-sqs">
+        <g data-detail="context" data-edge-from="scheduler" data-edge-to="sqs" data-edge-label="tick on a timer" data-edge-key="17" data-edge-id="scheduler-sqs">
           <rect x="1527" y="203" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1568" y="213" class="t-edge-dashed" font-size="8" text-anchor="middle">tick on a timer</text>
         </g>
-        <g data-detail="context" data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="17" data-edge-id="sqs-ticks">
+        <g data-detail="context" data-edge-from="sqs" data-edge-to="ticks" data-edge-label="tick message" data-edge-key="18" data-edge-id="sqs-ticks">
           <rect x="1462.2" y="238" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="1496" y="248" class="t-edge-dashed" font-size="8" text-anchor="middle">tick message</text>
         </g>
-        <g data-detail="context" data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="18" data-edge-id="sqs-consumers">
+        <g data-detail="context" data-edge-from="sqs" data-edge-to="consumers" data-edge-label="job (may repeat)" data-edge-key="19" data-edge-id="sqs-consumers">
           <rect x="1419.6" y="421" width="86.8" height="14" rx="3" class="c-mask"/>
           <text x="1463" y="431" class="t-edge-dashed" font-size="8" text-anchor="middle">job (may repeat)</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="19" data-edge-id="consumers-plaid">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="plaidapi" data-edge-label="sync from cursor" data-edge-key="20" data-edge-id="consumers-plaid">
           <rect x="1197.1999999999998" y="563.5" width="86.8" height="14" rx="3" class="c-mask"/>
           <text x="1240.6" y="573.5" class="t-edge-default" font-size="8" text-anchor="middle">sync from cursor</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="20" data-edge-id="consumers-model">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="model" data-edge-label="write note text" data-edge-key="21" data-edge-id="consumers-model">
           <rect x="968" y="499" width="82" height="14" rx="3" class="c-mask"/>
           <text x="1009" y="509" class="t-edge-default" font-size="8" text-anchor="middle">write note text</text>
         </g>
-        <g data-detail="context" data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="21" data-edge-id="consumers-apns">
+        <g data-detail="context" data-edge-from="consumers" data-edge-to="apns" data-edge-label="send push" data-edge-key="22" data-edge-id="consumers-apns">
           <rect x="1306.8000000000002" y="555.5" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
           <text x="1333.4" y="565.5" class="t-edge-default" font-size="8" text-anchor="middle">send push</text>
         </g>
@@ -5907,6 +5927,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <li>The API server never sends to SQS itself; it leaves jobs in the outbox table</li>
           <li>Each change and its job row are saved in one transaction (the outbox)</li>
           <li>The relay loops: take outbox rows, send each to its SQS queue, repeat</li>
+          <li>Exercise text ships in the app; images download from a pinned GitHub revision on first view and are cached on the phone for offline use</li>
         </ul>
       </div>
 

@@ -1,10 +1,12 @@
 import { Profile } from '@compound/contracts';
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ProfileCard } from '../src/components/ProfileCard.tsx';
 import { SettingsProfileGroup } from '../src/components/SettingsProfileGroup.tsx';
 import { SignOutGroup } from '../src/components/SignOutGroup.tsx';
+import { ExerciseFixtures } from '../src/exercises/ExerciseFixtures.tsx';
 import type { ProfileState } from '../src/profile/useProfile.ts';
 import { layout, radius, space, type } from '../src/theme/tokens.ts';
 import { useAppearance } from '../src/theme/useAppearance.ts';
@@ -49,6 +51,11 @@ export default function DevFixtures() {
   const [selected, setSelected] = useState(1);
   const [profileIndex, setProfileIndex] = useState(1);
   const [signOutFailed, setSignOutFailed] = useState(true);
+  const { fixture } = useLocalSearchParams<{ fixture?: string }>();
+
+  if (fixture === 'exercises') {
+    return <ExerciseFixtures />;
+  }
 
   return (
     <ScrollView style={{ backgroundColor: palette.bg }} contentContainerStyle={styles.content}>

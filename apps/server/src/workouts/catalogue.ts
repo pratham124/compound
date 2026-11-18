@@ -1,0 +1,10 @@
+import { ExerciseCatalogue } from '@compound/contracts';
+import { readFileSync } from 'node:fs';
+
+export const exercises = ExerciseCatalogue.parse(JSON.parse(readFileSync(new URL('./catalogue.json', import.meta.url), 'utf8')));
+
+const byId = new Map(exercises.map((exercise) => [exercise.id.toString(), exercise]));
+
+export function findExercise(id: string) {
+  return byId.get(id);
+}
