@@ -1,6 +1,6 @@
 # Five-tab shell
 
-The app opens on a native tab bar with five tabs: Today, Train, Money, Trends and Chat. Today shows a greeting, the date and the server status card, with a `Settings` button. The other tabs are empty screens with a title. Settings opens from Today and has its own screen.
+The app opens on a native tab bar with five tabs: Today, Train, Money, Trends and Chat. Today shows a greeting, the date and the server status card, with a `Settings` button. Train opens the [exercise catalogue](./exercises.md); Money, Trends and Chat show a title. Settings opens from Today and has its own screen.
 
 ## Sub-features
 

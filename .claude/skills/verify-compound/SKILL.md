@@ -99,6 +99,7 @@ The handles that exist in this repo:
 | `Email address` (text field), `Send code` | email step | `apps/mobile/app/email-code.tsx` |
 | `Sign-in code` (text field), `Sign in` | code step | `apps/mobile/app/email-code.tsx` |
 | `Today`, `Train`, `Money`, `Trends`, `Chat` | tab labels | `apps/mobile/src/navigation/tabs.ts` |
+| `Search exercises` | Train button and catalogue search field; see `features/exercises.md` | `apps/mobile/src/exercises/` |
 | `Settings` | button on the Today tab, opens settings | `apps/mobile/src/components/ProfileButton.tsx` |
 | `Units` (radio group), radios `kg` and `lb` | settings | `apps/mobile/src/components/ProfileCard.tsx` |
 | `Time Zone` row | settings | `apps/mobile/src/components/ProfileCard.tsx` |
