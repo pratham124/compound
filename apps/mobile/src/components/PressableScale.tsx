@@ -12,14 +12,19 @@ export type PressableScaleProps = Omit<PressableProps, 'style' | 'children'> & {
   pressedScale?: number;
   /** A light tap on a real press, not when the finger lands, so a scroll that starts on the button stays silent. Turn it off where something else already gives feedback. */
   haptic?: 'light' | 'none';
+  /** A second motion on the children alone while pressed, so an icon tilts or turns inside the shrinking button. */
+  glyphPress?: GlyphPress;
   children: ReactNode;
 };
+
+export type GlyphPress = { rotateDeg: number; scale: number };
 
 export function PressableScale({
   style,
   children,
   pressedScale = press.scale,
   haptic = 'light',
+  glyphPress,
   onPressIn,
   onPressOut,
   onPress,
@@ -31,6 +36,8 @@ export function PressableScale({
   const feedback = reduceMotion
     ? { opacity: pressed ? press.reducedMotionOpacity : 1, transitionProperty: 'opacity' as const }
     : { transform: [{ scale: pressed ? pressedScale : 1 }], transitionProperty: 'transform' as const };
+
+  const timing = { transitionDuration: press.durationMs, transitionTimingFunction: cubicBezier(...press.easing) };
 
   return (
     <Pressable
@@ -51,17 +58,23 @@ export function PressableScale({
         onPress?.(event);
       }}
     >
-      <Animated.View
-        style={[
-          style,
-          feedback,
-          {
-            transitionDuration: press.durationMs,
-            transitionTimingFunction: cubicBezier(...press.easing),
-          },
-        ]}
-      >
-        {children}
+      <Animated.View style={[style, feedback, timing]}>
+        {glyphPress === undefined || reduceMotion ? (
+          children
+        ) : (
+          <Animated.View
+            testID="press-glyph"
+            style={[
+              {
+                transform: [{ rotate: `${pressed ? glyphPress.rotateDeg : 0}deg` }, { scale: pressed ? glyphPress.scale : 1 }],
+                transitionProperty: 'transform',
+              },
+              timing,
+            ]}
+          >
+            {children}
+          </Animated.View>
+        )}
       </Animated.View>
     </Pressable>
   );

@@ -4,7 +4,7 @@ One place for your workouts, health and spending, so your AI assistant can see a
 
 ## What it does
 
-- **Workouts:** log sets at the gym with no signal, see past workouts and personal bests, use a rest timer and saved routines.
+- **Workouts:** browse and search exercises from Train, including offline, and open an exercise for instructions and pictures. The workout plans also cover logging sets, past workouts, personal bests, a rest timer and saved routines.
 - **Health:** sleep, steps, resting heart rate and heart rate variability come in from Apple Health on their own and show on a Today card and a Trends screen, next to your training.
 - **Money:** read-only bank sync through Plaid, spending sorted into categories, a monthly view, budgets with alerts, and a list and calendar of subscriptions, including what a gym costs per workout.
 - **Recovery notes:** when your sleep and training suggest a lighter day, Compound writes a short note and sends it to you.

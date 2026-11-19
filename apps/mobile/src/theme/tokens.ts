@@ -210,8 +210,8 @@ export const layout = {
   tileGap: 10,
   /** Minimum touch target. Applies to every button, field, check and row. */
   minTouch: 44,
-  /** The profile button beside Today's title, greeting and date; 44 looked lost next to the three lines. */
-  profileButton: 52,
+  /** Round buttons beside a tab title (profile on Today, search on Train); 44 looked lost next to the large title. */
+  headerButton: 52,
   /** Main buttons (Apply, Finish when large, Add exercise). */
   buttonHeight: 50,
   /** Number fields in the logger. */
@@ -296,6 +296,15 @@ export const press = {
   easing: [0.23, 1, 0.32, 1] as const,
   /** With Reduce Motion on, a press dims instead of scaling. */
   reducedMotionOpacity: 0.6,
+  /**
+   * The glyph inside a round icon button moves on its own while the button shrinks, on the same 140ms ease-out.
+   * Reduce Motion drops it and keeps the dim.
+   */
+  glyph: {
+    search: { rotateDeg: -12, scale: 1.12 },
+    close: { rotateDeg: 90, scale: 1 },
+    profile: { rotateDeg: -8, scale: 1 },
+  },
 } as const;
 
 /**

@@ -60,3 +60,31 @@ describe('PressableScale haptic', () => {
     expect(impact).not.toHaveBeenCalled();
   });
 });
+
+describe('PressableScale glyph press', () => {
+  const glyphPress = { rotateDeg: 90, scale: 1.1 };
+
+  it('turns and grows the glyph while pressed, and lets it go on release', async () => {
+    jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValue(false);
+
+    await render(pressable({ glyphPress }));
+    await act(async () => undefined);
+    const button = screen.getByRole('button');
+
+    await fireEvent(button, 'pressIn');
+    expect(screen.getByTestId('press-glyph')).toHaveStyle({ transform: [{ rotate: '90deg' }, { scale: 1.1 }] });
+
+    await fireEvent(button, 'pressOut');
+    expect(screen.getByTestId('press-glyph')).toHaveStyle({ transform: [{ rotate: '0deg' }, { scale: 1 }] });
+  });
+
+  it('leaves the glyph still with Reduce Motion on', async () => {
+    jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValue(true);
+
+    await render(pressable({ glyphPress }));
+    await act(async () => undefined);
+    await fireEvent(screen.getByRole('button'), 'pressIn');
+
+    expect(screen.queryByTestId('press-glyph')).toBeNull();
+  });
+});

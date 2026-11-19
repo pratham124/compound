@@ -23,4 +23,5 @@ The maintained source for verifying Compound's user-facing behaviour. Read this,
 - [Profile](./profile.md) covers the time zone and the units setting on the Settings screen.
 - [Five-tab shell](./tab-shell.md) covers the Today, Train, Money, Trends and Chat tabs and the Settings screen.
 - [Device checks](./device-checks.md) covers the dev-only screen for the local database, image cache, network state and haptics that M2's native build added.
+- [Exercise catalogue](./exercises.md) covers offline browsing/search from Train, instructions, cached pictures and the release-build iPhone check.
 - [Chat button and quick chat](./chat-button.md) covers the draggable button and the Ask Compound sheet it opens.
