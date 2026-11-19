@@ -146,6 +146,10 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
     return write;
   }
 
+  function showActive(active: Workout | null) {
+    setState((previous) => previous.kind === 'ready' ? { ...previous, active } : previous);
+  }
+
   async function start() {
     if (locked.current || current.current !== null || state.kind !== 'ready' || store.current === null) {
       return;
@@ -157,7 +161,7 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
     try {
       await persist(workout);
       current.current = workout;
-      setState({ ...state, active: workout });
+      showActive(workout);
     } catch {
       setError(true);
     } finally {
@@ -171,7 +175,7 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
     }
 
     current.current = workout;
-    setState({ ...state, active: workout });
+    showActive(workout);
     void persist(workout).catch(() => {});
   }
 
@@ -186,7 +190,7 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
     try {
       await persist(workout);
       current.current = null;
-      setState({ ...state, active: null });
+      showActive(null);
 
       return workout.id;
     } catch {
@@ -204,7 +208,7 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
 
   return (
     <WorkoutContext value={{ state, saving, error, reload, start, change, finish, find }}>
-      <WorkoutStatusContext value={state.kind !== 'ready' || state.active !== null ? { kind: 'in-progress' } : { kind: 'idle' }}>
+      <WorkoutStatusContext value={state.kind === 'loading' || (state.kind === 'ready' && state.active !== null) ? { kind: 'in-progress' } : { kind: 'idle' }}>
         {children}
       </WorkoutStatusContext>
     </WorkoutContext>

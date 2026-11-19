@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 import { workoutMigration } from './migrations/0001-workouts.ts';
 import { workoutPreferenceRevisionMigration } from './migrations/0002-workout-preference-revision.ts';
 
@@ -25,8 +23,6 @@ export async function migrateLocalDatabase(db: LocalDatabase, steps = migrations
       if (applied.length === 0) {
         await db.execAsync(migration.sql);
         await db.runAsync('INSERT INTO local_migrations (name) VALUES (?)', migration.name);
-      } else {
-        z.array(z.object({ name: z.string() })).parse(applied);
       }
 
       await db.execAsync('COMMIT');

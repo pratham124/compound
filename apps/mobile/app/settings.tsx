@@ -1,4 +1,4 @@
-import { TimeZone } from '@compound/contracts';
+import { TimeZone, type Units } from '@compound/contracts';
 import { StyleSheet, View } from 'react-native';
 
 import { useAuthClient } from '../src/auth/AuthClientContext.tsx';
@@ -25,22 +25,26 @@ export default function SettingsScreen() {
   const baseUrl = process.env.EXPO_PUBLIC_API_URL;
   const signOut = useSignOut({ baseUrl, authClient });
 
+  async function cacheUnits(units: Units) {
+    if (session === null) {
+      return;
+    }
+
+    await openWorkoutStore(session.user.id).then((store) => store.saveUnit(units === 'metric' ? 'kg' : 'lb')).catch(() => {});
+  }
+
   const { state, retry, chooseUnits } = useProfile({
     load: async () => {
       const profile = await fetchProfile({ baseUrl, cookie: await authClient.getCookie(), fetch: globalThis.fetch, timeoutMs: REQUEST_TIMEOUT_MS, timeZone: phoneTimeZone });
 
-      if (session !== null) {
-        await (await openWorkoutStore(session.user.id)).saveUnit(profile.units === 'metric' ? 'kg' : 'lb');
-      }
+      await cacheUnits(profile.units);
 
       return profile;
     },
     save: async (units) => {
       const profile = await saveUnits({ baseUrl, cookie: await authClient.getCookie(), fetch: globalThis.fetch, timeoutMs: REQUEST_TIMEOUT_MS, units });
 
-      if (session !== null) {
-        await (await openWorkoutStore(session.user.id)).saveUnit(profile.units === 'metric' ? 'kg' : 'lb');
-      }
+      await cacheUnits(profile.units);
 
       return profile;
     },
