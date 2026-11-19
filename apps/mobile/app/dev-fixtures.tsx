@@ -10,6 +10,7 @@ import { ExerciseFixtures } from '../src/exercises/ExerciseFixtures.tsx';
 import type { ProfileState } from '../src/profile/useProfile.ts';
 import { layout, radius, space, type } from '../src/theme/tokens.ts';
 import { useAppearance } from '../src/theme/useAppearance.ts';
+import { WorkoutFixtures } from '../src/workout/WorkoutFixtures.tsx';
 
 const FIXTURES = [
   { label: 'demo', user: { name: 'Pratham', email: 'pratham@example.com' } },
@@ -55,6 +56,10 @@ export default function DevFixtures() {
 
   if (fixture === 'exercises') {
     return <ExerciseFixtures />;
+  }
+
+  if (fixture === 'workout') {
+    return <WorkoutFixtures />;
   }
 
   return (

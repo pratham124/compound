@@ -6,6 +6,7 @@ import Today from '../../app/(tabs)/index.tsx';
 import Money from '../../app/(tabs)/money.tsx';
 import Trends from '../../app/(tabs)/trends.tsx';
 import Train from '../../app/(tabs)/train.tsx';
+import { WorkoutTestProvider } from '../workout/WorkoutTestProvider.tsx';
 
 describe('tab shell', () => {
   it('uses the native iOS tab bar with Today, Train, Money, Trends, Chat in that order', async () => {
@@ -16,7 +17,7 @@ describe('tab shell', () => {
       '(tabs)/money': Money,
       '(tabs)/trends': Trends,
       '(tabs)/chat': Chat,
-    });
+    }, { wrapper: WorkoutTestProvider });
 
     const hosts = screen.container.queryAll((node) => node.type === 'RNSTabsHostIOS');
 

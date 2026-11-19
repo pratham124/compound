@@ -18,6 +18,23 @@ import { AuthClientContext, type ShellAuthClient } from '../auth/AuthClientConte
 import { PAN_TEST_ID, TAP_TEST_ID } from '../chatButton/ChatButton.tsx';
 import { chatButton, press } from '../theme/tokens.ts';
 import { currentStyle } from '../testing/animatedStyle.ts';
+import { UserId } from '@compound/contracts';
+import { WorkoutStoreContext } from '../workout/WorkoutStoreContext.ts';
+import { createWorkoutStore } from '../workout/workoutStore.ts';
+import { openTestDatabase } from '../workout/workoutTestDatabase.ts';
+import { migrateLocalDatabase } from '../localDatabase/migrations.ts';
+
+const person = UserId.parse('00000000-0000-4000-8000-000000000001');
+
+const { db } = openTestDatabase();
+
+const initialized = migrateLocalDatabase(db);
+
+async function openStore() {
+  await initialized;
+
+  return createWorkoutStore(db, person);
+}
 
 const routes = {
   _layout: RootLayout,
@@ -33,13 +50,13 @@ const routes = {
 
 // The tabs sit behind the sign-in gate; these tests start signed in.
 const signedIn: ShellAuthClient = {
-  useSession: () => ({ data: { user: { name: 'Pratham', email: 'pratham@example.com' } }, isPending: false }),
+  useSession: () => ({ data: { user: { id: person, name: 'Pratham', email: 'pratham@example.com' } }, isPending: false }),
   getCookie: async () => '',
   signOut: async () => undefined,
 };
 
 function SignedIn({ children }: { children: ReactNode }) {
-  return <AuthClientContext value={signedIn}>{children}</AuthClientContext>;
+  return <WorkoutStoreContext value={openStore}><AuthClientContext value={signedIn}>{children}</AuthClientContext></WorkoutStoreContext>;
 }
 
 async function renderApp(initialUrl: string) {

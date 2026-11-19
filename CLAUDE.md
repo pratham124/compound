@@ -35,7 +35,7 @@ Before keeping a new test, break the behaviour it names (temporarily, with Edit)
 
 ## Starting a ticket
 
-Start each `ready-for-agent` issue from a session on `main` with `/worktree <n>`, which opens the issue's worktree and moves the session into it. Then run `/ticket <n>` there. It claims the issue, then a builder agent builds it test-first, one acceptance criterion at a time, and a separate reviewer agent reviews it with Addy Osmani's skills, at most twice. It stops for you to review the branch before `/no-mistakes`. Both are user skills in `~/.claude/skills/`. For parallel tickets, use one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files are still editable there.
+Start each `ready-for-agent` issue from a session on `main` with `/worktree <n>`, which opens the issue's worktree and moves the session into it. Then run `/ticket <n>` there. It claims the issue, then a builder agent builds it test-first, one acceptance criterion at a time, and a separate reviewer agent reviews it once with Addy Osmani's skills. The builder addresses required findings and reruns checks, then hands back without another review pass; `/no-mistakes` independently reviews the final diff before shipping. It stops for you to review the branch before `/no-mistakes`. Both are user skills in `~/.claude/skills/`. For parallel tickets, use one pane per ticket. A hook, `.claude/hooks/require-worktree.mjs`, blocks edits to tracked files in the main checkout, because other sessions work there. Gitignored files are still editable there.
 
 ## Verification and shipping
 

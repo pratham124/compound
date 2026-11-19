@@ -6,7 +6,7 @@ import { ProfileButton } from './ProfileButton.tsx';
 
 function signedInAs(name: string): ShellAuthClient {
   return {
-    useSession: () => ({ data: { user: { name, email: 'someone@example.com' } }, isPending: false }),
+    useSession: () => ({ data: { user: { id: '00000000-0000-4000-8000-000000000001', name, email: 'someone@example.com' } }, isPending: false }),
     getCookie: async () => '',
     signOut: async () => undefined,
   };

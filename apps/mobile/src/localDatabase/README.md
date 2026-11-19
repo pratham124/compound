@@ -26,6 +26,14 @@ On Android there is no module, so the database opens in `expo-sqlite`'s default 
 - Don't use `expo-sqlite/kv-store` or `localStorage` for logged data. They still write to `expo-sqlite`'s default folder, which is backed up.
 - A change to the module's Swift needs a new native build.
 
+## Schema changes
+
+`workoutDatabase()` in `../workout/deviceWorkoutStore.ts` opens `compound.db` through the excluded-directory opener and runs `migrations.ts` before returning the connection. All app features share this file.
+
+Add a new file to `migrations/` with a unique stable name, then append its exported migration to the registry in `migrations.ts`. Never edit a migration already shipped. The `local_migrations` table records names; each migration's SQL and ledger entry commit together, or both roll back. Later features own their new tables and migration files.
+
+`workouts` contains an account UUID, a nullable finished timestamp, and a validated version-one JSON snapshot of the workout and its unfinished input fields. A unique partial index permits one active workout per account. Future sync changes go in their own migration; this ticket sends no workout data to the server.
+
 ## Checking it
 
 `compound://dev-device-checks` (dev builds only) creates a database and reports where it opened and whether that folder carries the exclusion flag (`checkLocalDatabaseBackup(db)` only reads the flag, it never sets it). The steps on the iPhone are in the pull request for issue #64.

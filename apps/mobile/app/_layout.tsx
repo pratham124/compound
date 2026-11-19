@@ -11,6 +11,7 @@ import { sessionLoadedOnce } from '../src/auth/sessionLoadedOnce.ts';
 import { ChatButtonOverlay } from '../src/chatButton/ChatButtonOverlay.tsx';
 import { fonts, motion } from '../src/theme/tokens.ts';
 import { useAppearance } from '../src/theme/useAppearance.ts';
+import { WorkoutProvider } from '../src/workout/WorkoutProvider.tsx';
 
 SplashScreen.setOptions({ fade: true, duration: motion.splashFadeMs });
 
@@ -51,9 +52,12 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={theme}>
       <GestureHandlerRootView style={styles.root}>
+        <WorkoutProvider>
         <Stack screenOptions={{ headerShown: false, animation: reduceMotion ? 'fade' : 'default' }}>
           <Stack.Protected guard={session !== null}>
             <Stack.Screen name="(tabs)" options={{ animation: 'fade', animationDuration: motion.screenFadeMs }} />
+            <Stack.Screen name="train/add-exercise" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="train/workout-finished" options={{ gestureEnabled: false }} />
             <Stack.Screen
               name="exercises/index"
               options={{ headerShown: true, headerTitle: '', headerBackTitle: 'Train', headerTransparent: Platform.OS === 'ios', headerStyle: { backgroundColor: Platform.OS === 'ios' ? 'transparent' : palette.bg }, headerTintColor: palette.accent }}
@@ -92,6 +96,7 @@ export default function RootLayout() {
           </Stack.Protected>
         </Stack>
         <ChatButtonOverlay />
+        </WorkoutProvider>
       </GestureHandlerRootView>
     </ThemeProvider>
   );
