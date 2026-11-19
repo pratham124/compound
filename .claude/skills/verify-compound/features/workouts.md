@@ -5,7 +5,7 @@
 - Start an empty workout from Train, add bundled exercises, enter reps and optional weight, check each completed set, and finish without the API.
 - Save every draft edit to the account's workout in `compound.db`, including unfinished number fields. A saved draft restores on Train after force-stop.
 - Keep rejected draft edits available for retry after returning to Train. Refocus reads cannot overwrite newer edits; a failed Finish keeps the logger active.
-- Cache successful Settings unit reads and saves per account; enter/display kg or lb and retain the original unit on each set. Existing weights convert for display after a Settings change.
+- Cache successful Settings unit reads and saves per account. The local write is best-effort: if it fails, Settings still shows the server's answer instead of an error. Enter/display kg or lb and retain the original unit on each set. Existing weights convert for display after a Settings change.
 - Cancel a previous account's profile refresh before reading current credentials or writing its local preference. Independent conversion examples cover 10 kg → 22.05 lb and 22 lb → 9.98 kg while retaining stored units.
 - Finish waits for queued input writes, persists the finished snapshot, then shows Workout done with elapsed minutes and completed set count.
 - The finished summary fades in over 180 ms with the shared ease-out; opacity remains under Reduce Motion, with no translation or scale.
