@@ -6,10 +6,27 @@ import RootLayout from '../../app/_layout.tsx';
 import TabsLayout from '../../app/(tabs)/_layout.tsx';
 import Today from '../../app/(tabs)/index.tsx';
 import Settings from '../../app/settings.tsx';
-import { AuthClientContext, type ShellAuthClient } from '../auth/AuthClientContext.tsx';
+import { AuthClientContext, type SessionUser, type ShellAuthClient } from '../auth/AuthClientContext.tsx';
+import { UserId } from '@compound/contracts';
+import { WorkoutStoreContext } from '../workout/WorkoutStoreContext.ts';
+import { createWorkoutStore } from '../workout/workoutStore.ts';
+import { openTestDatabase } from '../workout/workoutTestDatabase.ts';
+import { migrateLocalDatabase } from '../localDatabase/migrations.ts';
+
+const person = UserId.parse('00000000-0000-4000-8000-000000000001');
+
+const { db } = openTestDatabase();
+
+const initialized = migrateLocalDatabase(db);
+
+async function openStore() {
+  await initialized;
+
+  return createWorkoutStore(db, person);
+}
 
 const signedIn: ShellAuthClient = {
-  useSession: () => ({ data: { user: { name: 'Pratham Sitoula', email: 'pratham@example.com' } }, isPending: false }),
+  useSession: () => ({ data: { user: { id: person, name: 'Pratham Sitoula', email: 'pratham@example.com' } }, isPending: false }),
   getCookie: async () => 'session=abc',
   signOut: async () => undefined,
 };
@@ -19,7 +36,7 @@ function SignInStub() {
 }
 
 function SignedIn({ children }: { children: ReactNode }) {
-  return <AuthClientContext value={signedIn}>{children}</AuthClientContext>;
+  return <WorkoutStoreContext value={openStore}><AuthClientContext value={signedIn}>{children}</AuthClientContext></WorkoutStoreContext>;
 }
 
 describe('Settings screen', () => {
@@ -62,7 +79,7 @@ describe('Signing out from Settings', () => {
 
   /** A client whose session really goes away when signOut runs, so the app's sign-in gate reacts as it does on a phone. */
   function StatefulSession({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<{ name: string; email: string } | null>({ name: 'Pratham Sitoula', email: 'pratham@example.com' });
+    const [user, setUser] = useState<SessionUser | null>({ id: person, name: 'Pratham Sitoula', email: 'pratham@example.com' });
 
     const client: ShellAuthClient = {
       useSession: () => ({ data: user === null ? null : { user }, isPending: false }),

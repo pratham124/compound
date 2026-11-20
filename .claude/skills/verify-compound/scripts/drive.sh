@@ -24,6 +24,8 @@ load_state || exit 1
 WAIT="${DRIVE_WAIT:-8}"
 LOG="$RUN_DIR/drive.log"
 
+# Git Bash rewrites a leading /sdcard in adb arguments into a Windows path; the file fallback below breaks without this.
+export MSYS_NO_PATHCONV=1
 adb_() { "$ADB" -s "$SERIAL" "$@"; }
 
 note() { echo "$(date +%H:%M:%S) $*" | tee -a "$LOG" >&2; }
@@ -34,6 +36,11 @@ view_tree() {
   xml="$(adb_ exec-out uiautomator dump /dev/tty 2>/dev/null | tr -d '\r')"
   if ! grep -q '<hierarchy' <<<"$xml"; then
     adb_ shell uiautomator dump /sdcard/compound-verify.xml >/dev/null 2>&1
+    xml="$(adb_ exec-out cat /sdcard/compound-verify.xml 2>/dev/null | tr -d '\r')"
+  fi
+  # A running animation (the workout clock) makes the full dump come back empty; --compressed still returns the tree.
+  if ! grep -q '<hierarchy' <<<"$xml"; then
+    adb_ shell uiautomator dump --compressed /sdcard/compound-verify.xml >/dev/null 2>&1
     xml="$(adb_ exec-out cat /sdcard/compound-verify.xml 2>/dev/null | tr -d '\r')"
   fi
   printf '%s' "$xml"

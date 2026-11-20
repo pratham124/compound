@@ -32,6 +32,10 @@ export type Palette = {
   char: string;
   /** Mochi outline and the shade where it sits. */
   charEdge: string;
+  /** The mochi's sweat drop on Workout done. Never text. */
+  sweat: string;
+  /** Outline of the sweat drop. */
+  sweatEdge: string;
   /** Mochi cheeks. */
   blush: string;
   /** Mochi eyes and mouth. Dark in both modes because they sit on the pink body. */
@@ -74,6 +78,8 @@ export const colors: ColorSchemes = {
     accentSoft: '#DDF0E9',
     char: '#FAD4DC',
     charEdge: '#E09AAB',
+    sweat: '#CFE8F3',
+    sweatEdge: '#8DBBD0',
     blush: '#EE8FA6',
     eyes: '#3A2A2E',
     charTint: '#FFF5F7',
@@ -100,6 +106,8 @@ export const colors: ColorSchemes = {
     accentSoft: '#24302B',
     char: '#F0BCC7',
     charEdge: '#C7808F',
+    sweat: '#A9D2E3',
+    sweatEdge: '#6F9FB4',
     blush: '#E07D96',
     eyes: '#3A2A2E',
     charTint: '#2E2225',
@@ -383,4 +391,10 @@ export const motion = {
   mochiBlinkLoopMs: 4000,
   /** Under Reduce Motion the mochi only fades in. */
   mochiFadeMs: 200,
+  /** The mochi on Workout done winding up and raising its arms into a flex. The success haptic fires as it ends. */
+  mochiFlexMs: 600,
+  /** Wait after the summary appears, so the flex lands after the numbers. */
+  mochiFlexDelayMs: 200,
+  /** After the flex, it keeps going: two pumps and a rest per loop, with one sweat drop on the second pump. */
+  mochiPumpLoopMs: 2000,
 } as const;

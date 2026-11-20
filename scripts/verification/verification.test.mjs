@@ -1,7 +1,7 @@
 // Tests the verification tooling through its CLIs, against throwaway git repos.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { after, describe, test } from 'node:test';
@@ -9,7 +9,6 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const script = (name) => join(here, name);
-const hook = resolve(here, '..', '..', '.claude', 'hooks', 'require-no-mistakes.mjs');
 const dirs = [];
 
 after(() => dirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
@@ -216,39 +215,5 @@ describe('run-formal', () => {
     const repo = makeRepo({ files: formal('node -e "process.exit(1)"') });
     commit(repo, { 'src/other/a.ts': 'x' });
     assert.deepEqual(run('run-formal.mjs', repo).findings, []);
-  });
-});
-
-describe('require-no-mistakes hook', () => {
-  // Strip NO_MISTAKES_GATE so these tests behave the same inside a no-mistakes run.
-  const { NO_MISTAKES_GATE: _, ...cleanEnv } = process.env;
-
-  const runHook = (command, cwd = here, env = cleanEnv) =>
-    spawnSync('node', [hook], { input: JSON.stringify({ tool_input: { command }, cwd }), encoding: 'utf8', env });
-
-  test('never blocks agents running inside a no-mistakes pipeline', () => {
-    assert.equal(runHook('gh pr create --title t --body b', here, { ...cleanEnv, NO_MISTAKES_GATE: '1' }).status, 0);
-  });
-
-  test('blocks gh pr create', () => {
-    const result = runHook('gh pr create --title t --body b');
-    assert.equal(result.status, 2);
-    assert.match(result.stderr, /no-mistakes/);
-  });
-
-  test('allows it with a skip reason', () => {
-    assert.equal(runHook('gh pr create --body "Skipped no-mistakes: hotfix"').status, 0);
-  });
-
-  test('reads the skip reason from --body-file', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'hook-'));
-    dirs.push(dir);
-    writeFileSync(join(dir, 'body.md'), 'Skipped no-mistakes: docs typo\n');
-    assert.equal(runHook('gh pr create --body-file body.md', dir).status, 0);
-    assert.ok(existsSync(join(dir, 'body.md')));
-  });
-
-  test('ignores other commands', () => {
-    assert.equal(runHook('git status').status, 0);
   });
 });

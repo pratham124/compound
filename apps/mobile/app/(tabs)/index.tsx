@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useServerStatus } from '../../src/api/useServerStatus.ts';
-import { useAuthClient } from '../../src/auth/AuthClientContext.tsx';
+import { useSignedInSession } from '../../src/auth/useSignedInSession.ts';
 import { ProfileButton } from '../../src/components/ProfileButton.tsx';
 import { ServerStatusCard } from '../../src/components/ServerStatusCard.tsx';
 import { TabScreen } from '../../src/components/TabScreen.tsx';
@@ -13,7 +13,7 @@ import { useAppearance } from '../../src/theme/useAppearance.ts';
 export default function TodayScreen() {
   const { palette } = useAppearance();
   const { status, refresh } = useServerStatus();
-  const { data: session } = useAuthClient().useSession();
+  const { session } = useSignedInSession();
 
   return (
     <TabScreen

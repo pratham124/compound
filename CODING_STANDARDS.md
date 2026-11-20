@@ -1,10 +1,10 @@
 # Coding standards
 
-The reviewer applies these: the /ticket reviewer and the /no-mistakes Review step. Authors follow them too, but this file is read at review time rather than loaded every turn.
+The reviewers apply these: the /ticket reviewer and the /ship review of changes made after the handback. Authors follow them too, but this file is read at review time rather than loaded every turn.
 
 ## Tests: no vacuous or redundant ones
 
-Every test must be able to fail when the behavior it names breaks, and no two tests should guard the same thing. A test that can't fail costs run time and upkeep while proving nothing, and duplicates make every behavior change edit several tests. This applies to the author and to the no-mistakes Review step: raise each vacuous or redundant test as a finding.
+Every test must be able to fail when the behavior it names breaks, and no two tests should guard the same thing. A test that can't fail costs run time and upkeep while proving nothing, and duplicates make every behavior change edit several tests. This applies to the author and to the reviewers: raise each vacuous or redundant test as a finding.
 
 **Vacuous: rewrite or delete it when:**
 - **It would still pass if the code were wrong.** For example, the code under test was deleted, returned a constant, or skipped its work. Before keeping a new test, break the behavior once (temporarily) and confirm the test fails. Say in the PR which break you tried.

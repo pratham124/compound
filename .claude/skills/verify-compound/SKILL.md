@@ -1,6 +1,6 @@
 ---
 name: verify-compound
-description: Drive the Compound iPhone app (Expo, React Native) on an Android emulator against the local stack, sign in a test person, and capture screenshots and database proof. Use when no-mistakes' Test step, or you, need to prove a change to the app or the server's identity module works on screen.
+description: Drive the Compound iPhone app (Expo, React Native) on an Android emulator against the local stack, sign in a test person, and capture screenshots and database proof. Use when /ship's live-driving step, or you, need to prove a change to the app or the server's identity module works on screen.
 ---
 
 # Verify Compound
@@ -27,6 +27,8 @@ If a previous run for this worktree was never cleaned up, Launch refuses to star
 6. The app: Metro with `pnpm --filter @compound/mobile start --port 8082`, then the app is cleared (`pm clear`, so a session from an earlier run is gone) and opened with a `compound://expo-development-client/` deep link. If `com.pratham124.compound` isn't installed, Launch stops with exit 1 and prints the one-time setup recipe. Metro runs with `EXPO_PUBLIC_API_URL=http://localhost:3000` set in the shell. `apps/mobile/.env` holds the phone's LAN address and is never edited. A shell variable wins over `.env` in Expo, and the value is baked in when Metro bundles, so Metro must be started with it, which the script does.
 
 Launch dismisses the development client's first-run welcome sheet and developer menu by label (`drive.sh dev-menu`). Ready means `$EVIDENCE_DIR/metro.log` contains `Android Bundled`, the sign-in screen's button was found, and (unless `--signed-out`) `drive.sh sign-in` ended on the Today tab. The sign-in goes through the real email-code screen. That needs no dev-only bypass and no new server code.
+
+The development client also draws a floating gear (accessibility label `Tools`) at the top right, which sits over the Settings button, the search button and the logger's Finish pill. The dev menu (`adb shell input keyevent 82`) has no toggle to hide it, only Reload, Go home, Open DevTools, Fast Refresh, Toggle element inspector and Toggle performance monitor. Drag it aside once after Launch: `bash $D find "Tools"` prints its bounds, then `"$ADB" shell input swipe <centre x> <centre y> 40 1880 600` (about 965,252 to the left edge, low on the screen) parks it over empty space in the logger. It snaps to the nearest edge, so check with a screenshot that it no longer covers a control. Dragging dev chrome is the one place coordinates are fine; app controls are still found by label.
 
 ### One-time setup: the development build
 
@@ -88,6 +90,8 @@ bash $D tap "Use an email code instead"
 | `code` | prints the latest sign-in code the server logged for `$EMAIL` |
 | `screenshot <name>` | saves `$EVIDENCE_DIR/<name>.png` |
 | `dump <name>` | saves the view tree as `$EVIDENCE_DIR/<name>.xml` |
+
+When the full dump comes back empty (the workout clock keeps the screen animating), `drive.sh` retries with `uiautomator dump --compressed`. That tree is not empty but drops unlabeled views: in the logger it shows Finish, the sets progress and Add exercise, but not the exercise card title or the Set rows, so those controls still cannot be found by label. Turning the three animation scales to 0 did not change this.
 
 Always find views by label through `drive.sh`, and never tap a hard-coded coordinate. If a label isn't in the view tree, report that (and `dump` the tree as evidence) instead of guessing a position. A label matches the view's `accessibilityLabel` or its visible text, exactly. `testID` is not visible to adb. Views are polled for 8 seconds because screens animate; set `DRIVE_WAIT` to change it. The first match wins, so a label shared by two views (`Ask Compound` is both the chat button and the sheet header) finds whichever comes first in the tree. Every action is also appended to `$EVIDENCE_DIR/drive.log`.
 
