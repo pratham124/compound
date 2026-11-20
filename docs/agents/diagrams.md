@@ -9,6 +9,13 @@ The README shows four diagrams, exported from archify sources. Each is committed
 | `plaid-webhook-flow.svg` | `sequence-plaid-webhook-*` | a Plaid webhook through to stored transactions |
 | `sleep-recovery-note-flow.svg` | `sequence-sleep-recovery-note-*` | sleep arriving through to a recovery note |
 
+`docs/agents/workflow.md` shows two more, made the same way:
+
+| Diagram (`docs/architecture/`) | Source (`docs/diagrams/`) | Shows |
+|---|---|---|
+| `development-workflow.svg` | `workflow-development-workflow-*` | one milestone's tickets, from `/to-tickets` to merge |
+| `ticket-orchestration.svg` | `sequence-ticket-orchestration-*` | how `/ticket` runs the builder and Neon's reviews |
+
 A PR that changes something a diagram shows updates that diagram in the same PR, using the archify skill. That includes PRD-only PRs, which is where architecture usually changes first. Examples: adding a module or service, moving a responsibility between modules, or adding or reordering a step in either flow.
 - **The sources aren't in git.** `docs/diagrams/` is listed in `.git/info/exclude`, so the sources exist only in Pratham's main checkout. In a worktree, copy the source folder in first. Copy it back to the main checkout when you're done, because the main checkout is their only home. A worktree without them, such as one `/ship` works in, can only flag a stale diagram, not redraw it.
 - **Edit the source, not the SVG.** Start archify from the existing `candidate.json`, so the layout and style carry over, then run `finalize`. If that HTML already has browser-check results, pass `--out-dir <folder>/review-<n>`.

@@ -64,6 +64,7 @@ When your phone has new sleep data, it sends it to Compound. Once no new sleep h
 | `loadtest/` | Whole-system test tooling, built in a later milestone |
 | `docs/prd/` | The product spec and its appendices |
 | `docs/architecture/` | The diagrams above, as SVG and interactive HTML |
+| `docs/agents/` | How the app gets built ([the workflow](docs/agents/workflow.md)), and the rules agents follow |
 | `docs/design/`, `docs/brand/` | Screen mockups, design tokens and brand assets |
 | `scripts/`, `tools/` | Repo checks and the vendored lint plugins |
 
