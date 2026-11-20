@@ -10,7 +10,8 @@ import { ExerciseCard } from './ExerciseCard.tsx';
 import { closeGap } from './loggerMotion.ts';
 import { WorkoutBar } from './WorkoutBar.tsx';
 import { useJumpToCard } from './useJumpToCard.ts';
-import { completedSets, type WeightUnit, type Workout, type WorkoutExercise, type WorkoutExerciseId } from './workout.ts';
+import { completedSets, type WeightUnit, type Workout, type WorkoutExerciseId } from './workout.ts';
+import type { WorkoutEdit } from './workoutEdit.ts';
 import { totalSets, upNextSet } from './workoutProgress.ts';
 import type { WorkoutRemoval } from './workoutRemoval.ts';
 
@@ -19,27 +20,20 @@ type LoggerProps = {
   unit: WeightUnit;
   error: boolean;
   finishing: boolean;
-  onChange: (workout: Workout) => void;
+  onEdit: (edit: WorkoutEdit) => void;
   onRemove: (removal: WorkoutRemoval) => void;
+  onRetry: () => void;
   onFinish: () => void;
   onAddExercise: () => void;
   focus: WorkoutExerciseId | null;
   onFocusHandled: () => void;
 };
 
-export function WorkoutLogger({ workout, unit, error, finishing, onChange, onRemove, onFinish, onAddExercise, focus, onFocusHandled }: LoggerProps) {
+export function WorkoutLogger({ workout, unit, error, finishing, onEdit, onRemove, onRetry, onFinish, onAddExercise, focus, onFocusHandled }: LoggerProps) {
   const { palette } = useAppearance();
   const { scrollRef, flashTokenFor, onCardLaidOut } = useJumpToCard({ cards: workout.exercises, focus, onFocusHandled });
   const upNext = upNextSet(workout);
   const empty = workout.exercises.length === 0;
-
-  function changeExercise(changed: WorkoutExercise) {
-    onChange({ ...workout, exercises: workout.exercises.map((exercise) => exercise.id === changed.id ? changed : exercise) });
-  }
-
-  function retrySave() {
-    onChange(workout);
-  }
 
   return (
     <SafeAreaView edges={['top', 'left', 'right']} style={styles.fill}>
@@ -51,7 +45,7 @@ export function WorkoutLogger({ workout, unit, error, finishing, onChange, onRem
           error={error}
           finishing={finishing}
           onFinish={onFinish}
-          onRetry={retrySave}
+          onRetry={onRetry}
         />
         <ScrollView
           ref={scrollRef}
@@ -78,7 +72,7 @@ export function WorkoutLogger({ workout, unit, error, finishing, onChange, onRem
               upNext={upNext}
               unit={unit}
               disabled={finishing}
-              onChange={changeExercise}
+              onEdit={onEdit}
               onRemove={onRemove}
             />
           ))}

@@ -4,12 +4,12 @@ import { SheetCloseButton } from '../components/SheetCloseButton.tsx';
 import { layout, space, type } from '../theme/tokens.ts';
 import { useAppearance } from '../theme/useAppearance.ts';
 
-export function SheetBar({ title, onClose }: { title: string; onClose: () => void }) {
+export function SheetBar({ onClose }: { onClose: () => void }) {
   const { palette } = useAppearance();
 
   return (
     <View style={styles.bar}>
-      <Text accessibilityRole="header" style={[type.title2, styles.title, { color: palette.label }]}>{title}</Text>
+      <Text accessibilityRole="header" style={[type.title2, styles.title, { color: palette.label }]}>Add exercise</Text>
       <SheetCloseButton onPress={onClose} />
     </View>
   );

@@ -12,10 +12,10 @@ import { useAppearance } from '../theme/useAppearance.ts';
 import { closeGap, FLASH_MS } from './loggerMotion.ts';
 import { SetRow } from './SetRow.tsx';
 import { showWorkoutMenu } from './workoutMenu.ts';
-import { addEmptySet } from './workoutProgress.ts';
+import type { WorkoutEdit } from './workoutEdit.ts';
 import type { WorkoutRemoval } from './workoutRemoval.ts';
 import { uuidv7 } from './uuidv7.ts';
-import { WorkoutSetId, type WeightUnit, type WorkoutExercise, type WorkoutExerciseId, type WorkoutSet } from './workout.ts';
+import { WorkoutSetId, type WeightUnit, type WorkoutExercise, type WorkoutExerciseId } from './workout.ts';
 
 const DOT_X = [5, 12, 19];
 
@@ -26,11 +26,11 @@ type ExerciseCardProps = {
   flashToken: number;
   upNext: WorkoutSetId | null;
   onLaidOut: (id: WorkoutExerciseId, top: number) => void;
-  onChange: (exercise: WorkoutExercise) => void;
+  onEdit: (edit: WorkoutEdit) => void;
   onRemove: (removal: WorkoutRemoval) => void;
 };
 
-export function ExerciseCard({ exercise, unit, disabled, flashToken, upNext, onLaidOut, onChange, onRemove }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, unit, disabled, flashToken, upNext, onLaidOut, onEdit, onRemove }: ExerciseCardProps) {
   const { palette } = useAppearance();
   const router = useRouter();
   const entry = findExercise(exercise.exerciseId);
@@ -47,10 +47,6 @@ export function ExerciseCard({ exercise, unit, disabled, flashToken, upNext, onL
       flash.set(withTiming(0, { duration: FLASH_MS, easing: Easing.bezier(...press.easing), reduceMotion: ReduceMotion.Never }));
     }
   }, [flashToken, flash]);
-
-  function changeSet(changed: WorkoutSet) {
-    onChange({ ...exercise, sets: exercise.sets.map((set) => set.id === changed.id ? changed : set) });
-  }
 
   function closeOtherRows(openId: WorkoutSetId) {
     for (const [id, row] of rows.current) {
@@ -85,7 +81,7 @@ export function ExerciseCard({ exercise, unit, disabled, flashToken, upNext, onL
   }
 
   function addSet() {
-    onChange(addEmptySet(exercise, unit, WorkoutSetId.parse(uuidv7())));
+    onEdit({ kind: 'add-set', exerciseId: exercise.id, setId: WorkoutSetId.parse(uuidv7()), unit });
   }
 
   return (
@@ -134,12 +130,13 @@ export function ExerciseCard({ exercise, unit, disabled, flashToken, upNext, onL
       {exercise.sets.map((set, index) => (
         <SetRow
           key={set.id}
+          exerciseId={exercise.id}
           set={set}
           index={index}
           upNext={set.id === upNext}
           unit={unit}
           disabled={disabled}
-          onChange={changeSet}
+          onEdit={onEdit}
           onRemove={() => onRemove({ kind: 'set', exerciseId: exercise.id, setId: set.id })}
           onOpen={() => closeOtherRows(set.id)}
           register={registerRow(set.id)}

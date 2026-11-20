@@ -1,3 +1,4 @@
+import type { Exercise } from '@compound/contracts';
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { useAuthClient } from '../auth/AuthClientContext.tsx';
@@ -6,7 +7,9 @@ import { fetchProfile } from '../profile/profileApi.ts';
 import { refreshWorkoutUnits } from '../profile/refreshWorkoutUnits.ts';
 import { useWorkoutStoreFactory } from './WorkoutStoreContext.ts';
 import { uuidv7 } from './uuidv7.ts';
-import { WorkoutId, type WeightUnit, type Workout, type WorkoutExerciseId } from './workout.ts';
+import { pickExercise } from './pickExercise.ts';
+import { WorkoutExerciseId, WorkoutId, WorkoutSetId, type WeightUnit, type Workout } from './workout.ts';
+import { applyWorkoutEdit, type WorkoutEdit } from './workoutEdit.ts';
 import type { WorkoutStore } from './workoutStore.ts';
 import { WorkoutStatusContext } from './workoutStatus.ts';
 import { removeWorkoutItem, type WorkoutRemoval } from './workoutRemoval.ts';
@@ -18,12 +21,13 @@ type WorkoutActions = {
   saving: boolean;
   error: boolean;
   focus: WorkoutExerciseId | null;
-  requestFocus: (id: WorkoutExerciseId) => void;
   clearFocus: () => void;
   reload: () => void;
   start: () => Promise<void>;
-  change: (workout: Workout) => void;
+  edit: (edit: WorkoutEdit) => void;
   remove: (removal: WorkoutRemoval) => void;
+  addExercise: (exerciseId: Exercise['id']) => void;
+  retry: () => void;
   finish: () => Promise<WorkoutId | null>;
   find: (id: WorkoutId) => Promise<Workout | null>;
 };
@@ -58,6 +62,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     return fetchProfile({ baseUrl: process.env.EXPO_PUBLIC_API_URL, cookie, fetch: globalThis.fetch, timeoutMs: 5000, timeZone: undefined });
   }, isCurrent), [authClient]);
 
+  // Deliberately no expiry check: an expired session still opens this account's local workouts offline; the sync ticket enforces the session.
   return <AccountWorkouts key={session?.user.id ?? 'signed-out'} userId={session?.user.id ?? null} refreshUnits={refreshUnits}>{children}</AccountWorkouts>;
 }
 
@@ -221,26 +226,66 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
     }
   }
 
-  function change(workout: Workout) {
-    if (locked.current || state.kind !== 'ready' || latestWorkout.current?.id !== workout.id) {
+  function apply(update: (latest: Workout) => Workout | null) {
+    const latest = latestWorkout.current;
+
+    if (!mounted.current || locked.current || latest === null || state.kind !== 'ready') {
       return;
     }
 
-    latestWorkout.current = workout;
-    showActive(workout);
-    void persist(workout).catch(() => {});
+    const updated = update(latest);
+
+    if (updated === null) {
+      return;
+    }
+
+    latestWorkout.current = updated;
+    showActive(updated);
+    void persist(updated).catch(() => {});
+  }
+
+  function edit(change: WorkoutEdit) {
+    apply((latest) => applyWorkoutEdit(latest, change));
   }
 
   function remove(removal: WorkoutRemoval) {
-    if (!mounted.current || locked.current || latestWorkout.current === null || state.kind !== 'ready') {
+    apply((latest) => removeWorkoutItem(latest, removal));
+  }
+
+  function addExercise(exerciseId: Exercise['id']) {
+    if (state.kind !== 'ready') {
       return;
     }
 
-    const updated = removeWorkoutItem(latestWorkout.current, removal);
+    const { unit } = state;
 
-    if (updated !== null) {
-      change(updated);
+    apply((latest) => {
+      const picked = pickExercise(latest, exerciseId, unit, { exercise: WorkoutExerciseId.parse(uuidv7()), set: WorkoutSetId.parse(uuidv7()) });
+
+      switch (picked.kind) {
+        case 'existing':
+          setFocus(picked.focus);
+
+          return null;
+        case 'added':
+          return picked.workout;
+        default: {
+          const _exhaustive: never = picked;
+
+          return _exhaustive;
+        }
+      }
+    });
+  }
+
+  function retry() {
+    const latest = latestWorkout.current;
+
+    if (locked.current || latest === null || state.kind !== 'ready') {
+      return;
     }
+
+    void persist(latest).catch(() => {});
   }
 
   async function finish() {
@@ -272,7 +317,7 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
   }
 
   return (
-    <WorkoutContext value={{ state, saving, error, focus, requestFocus: setFocus, clearFocus, reload, start, change, remove, finish, find }}>
+    <WorkoutContext value={{ state, saving, error, focus, clearFocus, reload, start, edit, remove, addExercise, retry, finish, find }}>
       <WorkoutStatusContext value={state.kind === 'loading' || (state.kind === 'ready' && state.active !== null) ? { kind: 'in-progress' } : { kind: 'idle' }}>
         {children}
       </WorkoutStatusContext>

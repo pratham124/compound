@@ -1,4 +1,4 @@
-import { TimeZone, type Units } from '@compound/contracts';
+import { TimeZone } from '@compound/contracts';
 import { StyleSheet, View } from 'react-native';
 
 import { useAuthClient } from '../src/auth/AuthClientContext.tsx';
@@ -9,6 +9,7 @@ import { SettingsProfileGroup } from '../src/components/SettingsProfileGroup.tsx
 import { SignOutGroup } from '../src/components/SignOutGroup.tsx';
 import { TabScreen } from '../src/components/TabScreen.tsx';
 import { fetchProfile, saveUnits } from '../src/profile/profileApi.ts';
+import { loadProfileAndCacheUnit, saveUnitsAndCache } from '../src/profile/settingsUnits.ts';
 import { useProfile } from '../src/profile/useProfile.ts';
 import { space } from '../src/theme/tokens.ts';
 import { useAppearance } from '../src/theme/useAppearance.ts';
@@ -26,29 +27,11 @@ export default function SettingsScreen() {
   const baseUrl = process.env.EXPO_PUBLIC_API_URL;
   const signOut = useSignOut({ baseUrl, authClient });
 
-  async function cacheUnits(units: Units) {
-    if (session === null) {
-      return;
-    }
-
-    await openWorkoutStore(session.user.id).then((store) => store.saveUnit(units === 'metric' ? 'kg' : 'lb')).catch(() => {});
-  }
+  const openStore = session === null ? null : () => openWorkoutStore(session.user.id);
 
   const { state, retry, chooseUnits } = useProfile({
-    load: async () => {
-      const profile = await fetchProfile({ baseUrl, cookie: await authClient.getCookie(), fetch: globalThis.fetch, timeoutMs: REQUEST_TIMEOUT_MS, timeZone: phoneTimeZone });
-
-      await cacheUnits(profile.units);
-
-      return profile;
-    },
-    save: async (units) => {
-      const profile = await saveUnits({ baseUrl, cookie: await authClient.getCookie(), fetch: globalThis.fetch, timeoutMs: REQUEST_TIMEOUT_MS, units });
-
-      await cacheUnits(profile.units);
-
-      return profile;
-    },
+    load: () => loadProfileAndCacheUnit(openStore, async () => fetchProfile({ baseUrl, cookie: await authClient.getCookie(), fetch: globalThis.fetch, timeoutMs: REQUEST_TIMEOUT_MS, timeZone: phoneTimeZone })),
+    save: (units) => saveUnitsAndCache(openStore, async () => saveUnits({ baseUrl, cookie: await authClient.getCookie(), fetch: globalThis.fetch, timeoutMs: REQUEST_TIMEOUT_MS, units })),
   });
 
   return (

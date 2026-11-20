@@ -9,6 +9,7 @@ import { useAppearance } from '../theme/useAppearance.ts';
 import { WorkoutLogger } from './WorkoutLogger.tsx';
 import { Workout } from './workout.ts';
 import { TrainHome } from './TrainHome.tsx';
+import { applyWorkoutEdit } from './workoutEdit.ts';
 import { removeWorkoutItem } from './workoutRemoval.ts';
 import { TabScreen } from '../components/TabScreen.tsx';
 
@@ -44,7 +45,7 @@ export function WorkoutFixtures() {
           setWorkout(label === 'Worst' ? worst : label === 'Empty' ? { ...demo, exercises: [] } : demo);
         }} />)}
       </View>
-      <WorkoutLogger workout={workout} unit="kg" error={selected === 'Worst'} finishing={false} onChange={setWorkout} onRemove={(removal) => setWorkout((current) => removeWorkoutItem(current, removal) ?? current)} onFinish={() => {}} onAddExercise={() => {}} focus={null} onFocusHandled={() => {}} />
+      <WorkoutLogger workout={workout} unit="kg" error={selected === 'Worst'} finishing={false} onEdit={(edit) => setWorkout((current) => applyWorkoutEdit(current, edit) ?? current)} onRemove={(removal) => setWorkout((current) => removeWorkoutItem(current, removal) ?? current)} onRetry={() => {}} onFinish={() => {}} onAddExercise={() => {}} focus={null} onFocusHandled={() => {}} />
     </View>
   );
 }

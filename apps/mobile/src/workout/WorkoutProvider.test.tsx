@@ -1,4 +1,4 @@
-import { Exercise, UserId } from '@compound/contracts';
+import { UserId } from '@compound/contracts';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { Pressable, Text, View } from 'react-native';
 
@@ -22,6 +22,8 @@ const populatedWorkout = Workout.parse({
   ] }],
 });
 
+const unfinishedSet = { exerciseId: WorkoutExerciseId.parse('00000000-0000-4000-8000-000000000004'), setId: WorkoutSetId.parse('00000000-0000-4000-8000-000000000006') };
+
 function Driver() {
   const workouts = useWorkouts();
 
@@ -31,47 +33,33 @@ function Driver() {
       <Text testID="snapshot">{workouts.state.kind === 'ready' ? JSON.stringify(workouts.state.active) : 'Loading'}</Text>
       <Text>{workouts.error ? 'Save failed' : 'No save error'}</Text>
       <Pressable accessibilityRole="button" accessibilityLabel="Reload" onPress={workouts.reload}><Text>Reload</Text></Pressable>
-      <Pressable accessibilityRole="button" accessibilityLabel="Edit" onPress={() => {
-        if (workouts.state.kind === 'ready' && workouts.state.active !== null) {
-          workouts.change({ ...workouts.state.active, exercises: workouts.state.active.exercises.map((exercise) => ({ ...exercise, sets: exercise.sets.map((set) => set.done ? set : { ...set, reps: '11' }) })) });
-        }
-      }}><Text>Edit</Text></Pressable>
-      <Pressable accessibilityRole="button" accessibilityLabel="Retry" onPress={() => {
-        if (workouts.state.kind === 'ready' && workouts.state.active !== null) {
-          workouts.change(workouts.state.active);
-        }
-      }}><Text>Retry</Text></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel="Edit" onPress={() => workouts.edit({ kind: 'reps', target: unfinishedSet, reps: '11' })}><Text>Edit</Text></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel="Retry" onPress={workouts.retry}><Text>Retry</Text></Pressable>
       <Pressable accessibilityRole="button" accessibilityLabel="Finish only" onPress={() => void workouts.finish()}><Text>Finish only</Text></Pressable>
-      <Pressable accessibilityRole="button" accessibilityLabel="Start" onPress={() => void workouts.start()}><Text>Start</Text></Pressable>
-      <Pressable accessibilityRole="button" accessibilityLabel="Edit and finish" onPress={() => {
-        if (workouts.state.kind !== 'ready' || workouts.state.active === null) {
-          return;
-        }
-
-        const draft = { ...workouts.state.active, exercises: [{ id: WorkoutExerciseId.parse('00000000-0000-4000-8000-000000000004'), exerciseId: Exercise.shape.id.parse('Pushups'), sets: [{ id: WorkoutSetId.parse('00000000-0000-4000-8000-000000000005'), reps: '8', weight: '', unit: 'kg' as const, done: true }] }] };
-
-        workouts.change(draft);
-        workouts.change({ ...draft, exercises: draft.exercises.map((exercise) => ({ ...exercise, sets: exercise.sets.map((set) => ({ ...set, reps: '9' })) })) });
+      <Pressable accessibilityRole="button" accessibilityLabel="Edit twice and finish" onPress={() => {
+        workouts.edit({ kind: 'reps', target: unfinishedSet, reps: '9' });
+        workouts.edit({ kind: 'weight', target: unfinishedSet, weight: '15', unit: 'kg' });
         void workouts.finish();
-      }}><Text>Edit and finish</Text></Pressable>
+      }}><Text>Edit twice and finish</Text></Pressable>
     </View>
   );
 }
 
-it('serializes rapid edits before finishing and does not show completion until the final write commits', async () => {
+it('keeps both of two edits made before a render, and stays active until the finished workout is written', async () => {
   const { db, native } = openTestDatabase();
 
   try {
     await migrateLocalDatabase(db);
     const store = createWorkoutStore(db, person);
+
+    await store.save(populatedWorkout);
     let release = () => {};
     const delayed = new Promise<void>((resolve) => { release = resolve; });
-    let writes = 0;
+    let finishing = false;
 
-    const open = async () => ({ ...store, save: async (workout: Parameters<typeof store.save>[0]) => {
-      writes++;
-
-      if (writes === 2) {
+    const open = async () => ({ ...store, save: async (workout: Workout) => {
+      if (workout.finishedAt !== null) {
+        finishing = true;
         await delayed;
       }
 
@@ -79,24 +67,14 @@ it('serializes rapid edits before finishing and does not show completion until t
     } });
 
     await render(<WorkoutStoreContext value={open}><AccountWorkouts userId={person}><Driver /></AccountWorkouts></WorkoutStoreContext>);
-    await screen.findByText('Idle');
-    await fireEvent.press(screen.getByRole('button', { name: 'Start' }));
     await screen.findByText('Active');
-    const started = await store.active();
-
-    expect(started).not.toBeNull();
-    await fireEvent.press(screen.getByRole('button', { name: 'Edit and finish' }));
-    await waitFor(() => expect(writes).toBe(2));
+    await fireEvent.press(screen.getByRole('button', { name: 'Edit twice and finish' }));
+    await waitFor(() => expect(finishing).toBe(true));
     expect(screen.getByText('Active')).toBeOnTheScreen();
-    release();
+    await act(async () => { release(); });
     await screen.findByText('Idle');
     expect(await store.active()).toBeNull();
-
-    if (started === null) {
-      throw new Error('Start failed');
-    }
-
-    expect((await store.byId(started.id))?.exercises[0]?.sets[0]?.reps).toBe('9');
+    expect((await store.byId(populatedWorkout.id))?.exercises[0]?.sets[1]).toMatchObject({ reps: '9', weight: '15', unit: 'kg' });
   } finally {
     native.close();
   }

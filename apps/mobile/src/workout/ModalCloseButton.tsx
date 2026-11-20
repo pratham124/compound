@@ -4,12 +4,12 @@ import { PressableScale } from '../components/PressableScale.tsx';
 import { layout, space, type } from '../theme/tokens.ts';
 import { useAppearance } from '../theme/useAppearance.ts';
 
-export function ModalCloseButton({ label, onPress }: { label: string; onPress: () => void }) {
+export function ModalCloseButton({ onPress }: { onPress: () => void }) {
   const { palette } = useAppearance();
 
   return (
-    <PressableScale accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={styles.button}>
-      <Text style={[type.body, styles.done, { color: palette.accent }]}>{label}</Text>
+    <PressableScale accessibilityRole="button" accessibilityLabel="Done" onPress={onPress} style={styles.button}>
+      <Text style={[type.body, styles.done, { color: palette.accent }]}>Done</Text>
     </PressableScale>
   );
 }

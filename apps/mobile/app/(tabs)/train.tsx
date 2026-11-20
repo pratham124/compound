@@ -54,8 +54,9 @@ function ActiveWorkout({ workout, unit }: { workout: Workout; unit: WeightUnit }
       unit={unit}
       error={workouts.error}
       finishing={finishing}
-      onChange={workouts.change}
+      onEdit={workouts.edit}
       onRemove={workouts.remove}
+      onRetry={workouts.retry}
       onFinish={() => void finish()}
       onAddExercise={addExercise}
       // Only jump to a card once the Add exercise sheet has closed and Train is showing again.

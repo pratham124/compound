@@ -12,7 +12,7 @@ export default function ExerciseScreen() {
   const router = useRouter();
   const exercise = findExercise(id);
   const { palette } = useAppearance();
-  const header = from === 'workout' ? <Stack.Screen options={{ presentation: 'modal', headerBackVisible: false, headerRight: () => <ModalCloseButton label="Done" onPress={() => router.back()} /> }} /> : null;
+  const header = from === 'workout' ? <Stack.Screen options={{ presentation: 'modal', headerBackVisible: false, headerRight: () => <ModalCloseButton onPress={() => router.back()} /> }} /> : null;
 
   if (exercise === undefined) {
     return (

@@ -2,7 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { Easing, FadeIn, ReduceMotion, useReducedMotion, withTiming, type EntryAnimationsValues, type LayoutAnimation } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, ReduceMotion } from 'react-native-reanimated';
 
 import { Button } from '../../src/components/Button.tsx';
 import { MochiFlex } from '../../src/components/MochiFlex.tsx';
@@ -14,17 +14,7 @@ import { durationText, workoutDateText } from '../../src/workout/workoutSummary.
 
 const SUMMARY_MS = 180;
 
-function summaryEntrance(_values: EntryAnimationsValues): LayoutAnimation {
-  'worklet';
-  const timing = { duration: SUMMARY_MS, easing: Easing.bezier(...press.easing) };
-
-  return {
-    initialValues: { opacity: 0, transform: [{ scale: 0.97 }] },
-    animations: { opacity: withTiming(1, timing), transform: [{ scale: withTiming(1, timing) }] },
-  };
-}
-
-// Under Reduce Motion the card still fades in, without the scale.
+// A fade isn't movement, so it stays under Reduce Motion.
 const summaryFade = FadeIn.duration(SUMMARY_MS).easing(Easing.bezier(...press.easing)).reduceMotion(ReduceMotion.Never);
 
 export default function WorkoutFinishedScreen() {
@@ -74,10 +64,9 @@ function Summary({ workout }: { workout: Workout }) {
   const { palette } = useAppearance();
   const time = durationText(workout);
   const sets = completedSets(workout);
-  const reduceMotion = useReducedMotion();
 
   return (
-    <Animated.View entering={reduceMotion ? summaryFade : summaryEntrance} style={[styles.card, { backgroundColor: palette.card }]}>
+    <Animated.View entering={summaryFade} style={[styles.card, { backgroundColor: palette.card }]}>
       <View accessible accessibilityLabel={`Time: ${time}`} style={styles.summaryRow}>
         <Text style={[type.body, { color: palette.secondary }]}>Time</Text>
         <Text style={[type.body, styles.value, { color: palette.label }]}>{time}</Text>

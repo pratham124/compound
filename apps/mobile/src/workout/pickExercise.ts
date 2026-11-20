@@ -7,7 +7,7 @@ export function catalogueIdsIn(workout: Workout): ReadonlySet<Exercise['id']> {
   return new Set(workout.exercises.map((exercise) => exercise.exerciseId));
 }
 
-export type Pick = { kind: 'existing'; focus: WorkoutExerciseId } | { kind: 'added'; workout: Workout; focus: WorkoutExerciseId };
+export type Pick = { kind: 'existing'; focus: WorkoutExerciseId } | { kind: 'added'; workout: Workout };
 
 /** An exercise already in the workout is not added again; older saved workouts may hold duplicates, so the first card wins. */
 export function pickExercise(workout: Workout, exerciseId: Exercise['id'], unit: WeightUnit, ids: { exercise: WorkoutExerciseId; set: WorkoutSetId }): Pick {
@@ -20,6 +20,5 @@ export function pickExercise(workout: Workout, exerciseId: Exercise['id'], unit:
   return {
     kind: 'added',
     workout: { ...workout, exercises: [...workout.exercises, { id: ids.exercise, exerciseId, sets: [{ id: ids.set, reps: '', weight: '', unit, done: false }] }] },
-    focus: ids.exercise,
   };
 }

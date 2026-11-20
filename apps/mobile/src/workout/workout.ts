@@ -45,8 +45,8 @@ const DECIMAL = /^\d+(?:[.,]\d+)?$/;
 const MAX_REPS = 999;
 const MAX_WEIGHT = 99999;
 
-function weightNumber(weight: string) {
-  return Number(weight.replace(',', '.'));
+function weightNumber(weight: string): number | null {
+  return DECIMAL.test(weight) ? Number(weight.replace(',', '.')) : null;
 }
 
 function validReps(reps: string) {
@@ -55,26 +55,35 @@ function validReps(reps: string) {
 
 // Blank means bodyweight, which is allowed.
 function validWeight(weight: string) {
-  return weight.trim() === '' || (DECIMAL.test(weight) && weightNumber(weight) <= MAX_WEIGHT);
+  if (weight.trim() === '') {
+    return true;
+  }
+
+  const number = weightNumber(weight);
+
+  return number !== null && number <= MAX_WEIGHT;
 }
 
 export function validSet(set: WorkoutSet) {
   return validReps(set.reps) && validWeight(set.weight);
 }
 
-export function weightInUnit(set: WorkoutSet, unit: WeightUnit) {
+export type ShownWeight = { weight: string; unit: WeightUnit };
+
+/** The weight to show and edit for a set. A half-typed weight like `22.` can't be converted, so it stays in the unit it was typed in. */
+export function shownWeight(set: WorkoutSet, unit: WeightUnit): ShownWeight {
   if (set.weight.trim() === '' || set.unit === unit) {
-    return set.weight;
+    return { weight: set.weight, unit };
   }
 
   const weight = weightNumber(set.weight);
 
-  if (!Number.isFinite(weight)) {
-    return set.weight;
+  if (weight === null) {
+    return { weight: set.weight, unit: set.unit };
   }
 
   // Gym plates and dumbbells go in steps of 0.5 at the finest, so an exact conversion like 22.05 isn't loadable.
-  return String(Math.round((unit === 'lb' ? weight * 2.2046226218 : weight / 2.2046226218) * 2) / 2);
+  return { weight: String(Math.round((unit === 'lb' ? weight * 2.2046226218 : weight / 2.2046226218) * 2) / 2), unit };
 }
 
 export function completedSets(workout: Workout) {

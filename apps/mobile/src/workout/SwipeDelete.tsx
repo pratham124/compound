@@ -14,6 +14,13 @@ export const DELETE_WIDTH = 80;
 const TRASH_PATH = 'M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3';
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
+/** Whether a row dragged to `position` is past the point where letting go deletes it. */
+export function pastDeletePoint(position: number, rowWidth: number) {
+  'worklet';
+
+  return rowWidth > 0 && -position > rowWidth / 2;
+}
+
 type SwipeDeleteProps = {
   translation: SharedValue<number>;
   armed: SharedValue<boolean>;
@@ -27,7 +34,7 @@ export function SwipeDelete({ translation, armed, rowWidth, onDelete }: SwipeDel
   const large = fontScale >= layout.largerTextFrom;
 
   useAnimatedReaction(
-    () => rowWidth.get() > 0 && -translation.get() > rowWidth.get() / 2,
+    () => pastDeletePoint(translation.get(), rowWidth.get()),
     (past, wasPast) => {
       armed.set(past);
 

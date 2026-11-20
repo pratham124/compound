@@ -33,7 +33,7 @@ function Driver() {
   }
 
   return <GestureHandlerRootView>
-    <WorkoutLogger workout={workouts.state.active} unit={workouts.state.unit} error={workouts.error} finishing={false} onChange={workouts.change} onRemove={workouts.remove} onFinish={() => void workouts.finish()} onAddExercise={() => {}} focus={null} onFocusHandled={() => {}} />
+    <WorkoutLogger workout={workouts.state.active} unit={workouts.state.unit} error={workouts.error} finishing={false} onEdit={workouts.edit} onRemove={workouts.remove} onRetry={workouts.retry} onFinish={() => void workouts.finish()} onAddExercise={() => {}} focus={null} onFocusHandled={() => {}} />
     <Pressable accessibilityRole="button" accessibilityLabel="Reload persisted workout" onPress={workouts.reload}><Text>Reload persisted workout</Text></Pressable>
   </GestureHandlerRootView>;
 }
@@ -77,17 +77,31 @@ function deleteSet(label: string) {
   fireEvent(setNumber, 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
 }
 
-it('removes sets by stable ID, preserves newer edits and duplicate exercise instances, and persists across reload', async () => {
+it('removes sets by stable ID, keeps an edit that lands in the same render as a removal, keeps duplicate exercise instances, and reloads them all', async () => {
   const { db, native } = openTestDatabase();
   const menus = nativeMenus();
 
   try {
     await migrateLocalDatabase(db);
     const store = createWorkoutStore(db, person);
+    let reads = 0;
 
     await store.save(draft);
-    const open = async () => store;
+
+    const open = async () => ({ ...store, active: async () => {
+      reads++;
+
+      return store.active();
+    } });
+
     const app = await render(<WorkoutStoreContext value={open}><AccountWorkouts userId={person}><Driver /></AccountWorkouts></WorkoutStoreContext>);
+
+    async function reload() {
+      const before = reads;
+
+      await fireEvent.press(screen.getByRole('button', { name: 'Reload persisted workout' }));
+      await waitFor(() => expect(reads).toBe(before + 1));
+    }
 
     await screen.findAllByRole('button', { name: 'More for Pushups' });
     await fireEvent.press(firstPushupsButton('More for Pushups'));
@@ -95,11 +109,16 @@ it('removes sets by stable ID, preserves newer edits and duplicate exercise inst
     await act(async () => { menus.latestSheet().select(1); });
     expect(await store.active()).toEqual(draft);
 
-    await fireEvent.changeText(screen.getByLabelText('Set 3 weight in kg'), '17.5');
-    await act(async () => { deleteSet('Set 3'); });
-    await waitFor(() => expect(screen.queryByLabelText('Set 3 reps')).toBeNull());
-    expect(screen.getByLabelText('Set 2 weight in kg').props.value).toBe('20');
+    const setTwoWeight = screen.getByLabelText('Set 2 weight in kg');
+
+    await act(async () => {
+      deleteSet('Set 3');
+      setTwoWeight.props.onChangeText('17.5');
+    });
     await screen.findByLabelText('1 of 3 sets done');
+    await reload();
+    expect(screen.queryByLabelText('Set 3 reps')).toBeNull();
+    expect(screen.getByLabelText('Set 2 weight in kg').props.value).toBe('17.5');
 
     await act(async () => { deleteSet('Set 1'); });
     await act(async () => { deleteSet('Set 1'); });
@@ -111,8 +130,10 @@ it('removes sets by stable ID, preserves newer edits and duplicate exercise inst
     await fireEvent.press(firstPushupsButton('More for Pushups'));
     await act(async () => { menus.latestSheet().select(0); });
     await waitFor(() => expect(screen.getAllByRole('button', { name: 'More for Pushups' })).toHaveLength(1));
-    await fireEvent.press(screen.getByRole('button', { name: 'Reload persisted workout' }));
-    await waitFor(async () => expect((await store.active())?.exercises).toEqual(draft.exercises.slice(1)));
+    await reload();
+    expect(screen.getAllByRole('button', { name: 'More for Pushups' })).toHaveLength(1);
+    expect(screen.getByLabelText('Set 1 reps').props.value).toBe('10');
+    expect((await store.active())?.exercises).toEqual(draft.exercises.slice(1));
     await app.unmount();
   } finally {
     native.close();
