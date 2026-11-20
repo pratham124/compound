@@ -2,7 +2,7 @@
 
 ## Sub-features
 
-- Start an empty workout from Train, add bundled exercises, enter reps and optional weight, check each completed set, and finish without the API.
+- Start a workout from Train (Start workout), add bundled exercises, enter reps and optional weight, check each completed set, and finish without the API.
 - Save every draft edit to the account's workout in `compound.db`, including unfinished number fields. A saved draft restores on Train after force-stop.
 - Keep rejected draft edits available for retry after returning to Train. Refocus reads cannot overwrite newer edits; a failed Finish keeps the logger active.
 - Cache successful Settings unit reads and saves per account. The local write is best-effort: if it fails, Settings still shows the server's answer instead of an error. Enter/display kg or lb and retain the original unit on each set. Existing weights convert for display after a Settings change.
@@ -12,7 +12,10 @@
 - The elapsed clock updates seconds in its own component, without rerendering exercise inputs. Long durations use hours:minutes:seconds; the header wraps and stacks at larger text sizes.
 - The logger owns its top safe-area inset, so the fixed Finish header stays below the iPhone status area. Native scroll insets handle the tab bar, and platform keyboard avoidance keeps the numeric fields reachable.
 - Exercise cards use one Set / Last time / unit / Reps header, compact number fields, 28-point check circles in 44-point targets, a short Add set label and an outlined Add exercise control. Last-time placeholders are dashes until history is implemented; larger text moves that column beneath each row.
-- Train uses the reviewed empty Next day card, This week calendar placeholder and grouped routine/record rows. Start empty workout is a quiet row. Workout done pairs the Mochi face with its title and shows Time/Sets as grouped key-value rows.
+- Train uses the reviewed empty Next day card, This week calendar placeholder and grouped routine/record rows. Start workout is a quiet row. Workout done plays the MochiFlex animation (flex, pumps, sweat drop; fade-only under Reduce Motion) above its title, shows the workout date as the subtitle (with the year only when it isn't the current year), and shows Time (for example "1 h 35 min") and Sets as grouped key-value rows.
+- Swipe a set row left to reveal a rounded Delete pill; past half the row width the pill fills red with a haptic, and releasing there deletes the set and slides the row off. The set number's Delete set accessibility action does the same. The ⋯ menu on an exercise card only removes the exercise.
+- The logger header shows a stopwatch pill clock, a soft tinted Finish pill and a sets progress bar ("N of M sets done"). The next set to do has its number in green, and the field being typed in gets a focus ring.
+- The Add exercise sheet has a title bar with the shared round glass ✕. Exercises already in the workout are marked "In workout"; picking one closes the sheet, scrolls to that exercise's card and flashes it instead of adding a duplicate.
 - Remove Ask Compound during an active workout, including the exercise picker, and on Workout done.
 - Tapping an exercise name in the logger opens its existing instructions/pictures page. Its native header shows a Done button on the right (the picker has a round Close ✕ at the top right); returning preserves completed sets and unfinished number fields. Normal catalogue navigation keeps its Exercises back control.
 - Open the single database through the existing iOS excluded-directory helper. Named additive migrations apply once and roll back on failure.
@@ -20,18 +23,18 @@
 
 ## How to get to it (user POV)
 
-Open Train, tap Start empty workout, then Add exercise. Search and tap a bundled exercise to return to the workout. Enter reps and optional weight, then check Set 1 done. Tap an exercise name for its instructions and pictures, then tap Done to continue. Add more sets or exercises as needed. Tap Finish, then Done to return to Train. Checking a completed set again unlocks its inputs for correction.
+Open Train, tap Start workout, then Add exercise. Search and tap a bundled exercise to return to the workout. Enter reps and optional weight, then check Set 1 done. Tap an exercise name for its instructions and pictures, then tap Done to continue. Add more sets or exercises as needed. Tap Finish, then Done to return to Train. Checking a completed set again unlocks its inputs for correction.
 
 ## Driving it with drive.sh (adb on an Android emulator)
 
 Use Launch, Doctor, Drive, Evidence and Cleanup from `../SKILL.md`. Capture screenshots before actions and after finding the resulting screen's label.
 
 1. Open Settings and select lb; return to Train. Capture `workout-train`, including the separate sections.
-2. Tap Start empty workout. Find Add exercise and verify Ask Compound is absent. Capture `workout-empty`.
-3. Tap Add exercise, find Search exercises, search `incline dumbbell press`, then select `Incline Dumbbell Press, Dumbbell`. Find Set 1 reps and Set 1 weight in lb. Capture `workout-picker` and `workout-first-exercise` before/after selection. After editing/checking a set and partially typing the next one, tap `Incline Dumbbell Press`, find How to do it and Done. Tap Done and confirm both the checked set and unfinished text remain.
-4. Remove the API reverse (`adb reverse --remove tcp:3000`), disable emulator Wi-Fi and mobile data, leaving Metro's 8082 reverse available. Type 8 reps, leave weight blank, and tap Set 1 done. Add a set, enter 7 reps and 22.5 lb, then mark Set 2 done. Confirm the completed checks and capture `workout-offline-sets`.
+2. Tap Start workout. Find Add exercise and verify Ask Compound is absent. Capture `workout-empty`.
+3. Tap Add exercise, find Search exercises, search `incline dumbbell press`, then select `Incline Dumbbell Press, Dumbbell`. Find Set 1 reps and Set 1 weight in lb. Capture `workout-picker` and `workout-first-exercise` before/after selection. After editing/checking a set and partially typing the next one, tap `Incline Dumbbell Press`, find How to do it and Done. Tap Done and confirm both the checked set and unfinished text remain. Tap Add exercise again, confirm `Incline Dumbbell Press` shows In workout, select it, and confirm the logger still has one Incline Dumbbell Press card (the card flashes; capture `workout-jump`).
+4. Remove the API reverse (`adb reverse --remove tcp:3000`), disable emulator Wi-Fi and mobile data, leaving Metro's 8082 reverse available. Type 8 reps, leave weight blank, and tap Set 1 done. Add a set, enter 7 reps and 22.5 lb, then mark Set 2 done. Confirm the completed checks and the progress bar's 2 of 2 sets done, and capture `workout-offline-sets`. Add a third set, swipe it left past half the row width and release; confirm Set 3 is gone and capture `workout-swipe-delete`.
 5. Force-stop/restart via `drive.sh restart`, open Train, and confirm both completed sets and their values remain. Capture `workout-reopened`. Input a third unfinished set, restart, and confirm its partial text remains too.
-6. Tap Finish, find Workout done and Sets done: 2, verify Ask Compound absent, and capture `workout-finished`. Tap Done; Train must offer Start empty workout again. Restore the API reverse and Wi-Fi/data even on failure.
+6. Tap Finish, find Workout done, today's date as the subtitle and Sets done: 2, verify Ask Compound absent, and capture `workout-finished` (MochiFlex plays above the title). Tap Done; Train must offer Start workout again. Restore the API reverse and Wi-Fi/data even on failure.
 7. Inspect real local rows with `adb exec-out run-as com.pratham124.compound cat databases/compound.db` plus its WAL/SHM files copied to the evidence directory before querying, or use the runtime database on the device. Check the account UUID, finished_at, set values and original unit. Never modify rows to manufacture evidence.
 8. Open `compound://dev-fixtures?fixture=workout&workoutData=Worst`. Inspect Workout Demo, Workout Worst and Workout Empty. Worst uses the longest bundled exercise name, 999 reps, 99999 weight, a long elapsed time and the retry state. Repeat with `settings put system font_scale 2.0`, then restore the original scale; inspect both appearances. The fixtures write no real workouts.
 9. Open `compound://dev-fixtures?fixture=workout&workoutView=home` for the Train presentation fixture. On the iPhone check that Finish is below the notch, Add set / Add exercise remain reachable after scrolling with the numeric keyboard open, and the native tab bar is not counted twice in the bottom spacing. An emulator cannot establish iOS safe-area or keyboard placement.

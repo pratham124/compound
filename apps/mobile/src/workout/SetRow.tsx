@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, useWindowDimensions, type AccessibilityActionEvent } from 'react-native';
-import ReanimatedSwipeable, { SwipeDirection, type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
+import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { Easing, useReducedMotion, useSharedValue, withTiming, type ExitAnimationsValues, type LayoutAnimation, type SharedValue } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
@@ -54,8 +54,8 @@ export function SetRow({ set, index, upNext, unit, disabled, onChange, onRemove,
     };
   };
 
-  function removeIfFullySwiped(direction: SwipeDirection) {
-    if (direction === SwipeDirection.RIGHT && armed.get()) {
+  function removeIfFullySwiped() {
+    if (armed.get()) {
       onRemove();
     }
   }
