@@ -1,13 +1,15 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { uuid } from 'expo';
 
 import { useAuthClient } from '../auth/AuthClientContext.tsx';
+import { useSignedInSession } from '../auth/useSignedInSession.ts';
 import { fetchProfile } from '../profile/profileApi.ts';
 import { refreshWorkoutUnits } from '../profile/refreshWorkoutUnits.ts';
 import { useWorkoutStoreFactory } from './WorkoutStoreContext.ts';
-import { WorkoutId, type WeightUnit, type Workout } from './workout.ts';
+import { uuidv7 } from './uuidv7.ts';
+import { WorkoutId, type WeightUnit, type Workout, type WorkoutExerciseId } from './workout.ts';
 import type { WorkoutStore } from './workoutStore.ts';
 import { WorkoutStatusContext } from './workoutStatus.ts';
+import { removeWorkoutItem, type WorkoutRemoval } from './workoutRemoval.ts';
 
 type WorkoutState = { kind: 'loading' } | { kind: 'failed' } | { kind: 'ready'; active: Workout | null; unit: WeightUnit };
 
@@ -15,9 +17,13 @@ type WorkoutActions = {
   state: WorkoutState;
   saving: boolean;
   error: boolean;
+  focus: WorkoutExerciseId | null;
+  requestFocus: (id: WorkoutExerciseId) => void;
+  clearFocus: () => void;
   reload: () => void;
   start: () => Promise<void>;
   change: (workout: Workout) => void;
+  remove: (removal: WorkoutRemoval) => void;
   finish: () => Promise<WorkoutId | null>;
   find: (id: WorkoutId) => Promise<Workout | null>;
 };
@@ -36,7 +42,7 @@ export function useWorkouts() {
 
 export function WorkoutProvider({ children }: { children: ReactNode }) {
   const authClient = useAuthClient();
-  const { data: session } = authClient.useSession();
+  const { session } = useSignedInSession();
 
   const refreshUnits = useCallback((store: WorkoutStore, isCurrent: () => boolean) => refreshWorkoutUnits(store, async () => {
     if (!isCurrent()) {
@@ -61,8 +67,11 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
   const [attempt, setAttempt] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
+  const [focus, setFocus] = useState<WorkoutExerciseId | null>(null);
+  // The workout lives in three places: latestWorkout (newest; actions read it so a fast second edit builds on the first),
+  // state.active (what is rendered) and the database (what survives a restart). The version counters track the gap between memory and the database.
   const store = useRef<WorkoutStore | null>(null);
-  const current = useRef<Workout | null>(null);
+  const latestWorkout = useRef<Workout | null>(null);
   const queue = useRef(Promise.resolve());
   const locked = useRef(false);
   const mounted = useRef(true);
@@ -70,7 +79,12 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
   const savedVersion = useRef(0);
 
   const reload = useCallback(() => {
-    void queue.current.then(() => setAttempt((n) => n + 1));
+    async function afterPendingSaves() {
+      await queue.current;
+      setAttempt((n) => n + 1);
+    }
+
+    void afterPendingSaves();
   }, []);
 
   useEffect(() => {
@@ -81,8 +95,53 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
 
   useEffect(() => {
     let live = true;
-    const before = version.current;
-    const cleanBefore = savedVersion.current === before && !locked.current;
+    const startedAt = version.current;
+    const allSavedAtStart = savedVersion.current === startedAt && !locked.current;
+
+    // The database copy is only newer than memory if nothing was edited while it was being read.
+    function untouchedSinceStart() {
+      return allSavedAtStart && version.current === startedAt && savedVersion.current === startedAt && !locked.current;
+    }
+
+    async function load(id: string) {
+      try {
+        const opened = await openStore(id);
+        const [active, unit] = await Promise.all([opened.active(), opened.unit()]);
+
+        if (!live) {
+          return;
+        }
+
+        store.current = opened;
+
+        if (untouchedSinceStart()) {
+          latestWorkout.current = active;
+        }
+
+        setState({ kind: 'ready', active: latestWorkout.current, unit });
+        void refreshUnitFromServer(opened);
+      } catch {
+        if (live) {
+          setState({ kind: 'failed' });
+        }
+      }
+    }
+
+    async function refreshUnitFromServer(opened: WorkoutStore) {
+      if (refreshUnits === undefined) {
+        return;
+      }
+
+      try {
+        const freshUnit = await refreshUnits(opened, () => live && mounted.current);
+
+        if (live) {
+          setState((previous) => previous.kind === 'ready' ? { ...previous, unit: freshUnit } : previous);
+        }
+      } catch {
+        // Offline or the server is down: the unit saved on the phone stays.
+      }
+    }
 
     if (userId === null) {
       setState({ kind: 'ready', active: null, unit: 'kg' });
@@ -90,27 +149,7 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
       return;
     }
 
-    void openStore(userId).then(async (opened) => {
-      const [active, unit] = await Promise.all([opened.active(), opened.unit()]);
-
-      if (live) {
-        store.current = opened;
-
-        if (cleanBefore && version.current === before && savedVersion.current === before && !locked.current) {
-          current.current = active;
-        }
-
-        setState({ kind: 'ready', active: current.current, unit });
-
-        if (refreshUnits !== undefined) {
-          void refreshUnits(opened, () => live && mounted.current).then((freshUnit) => {
-            if (live) {
-              setState((previous) => previous.kind === 'ready' ? { ...previous, unit: freshUnit } : previous);
-            }
-          }).catch(() => {});
-        }
-      }
-    }).catch(() => live && setState({ kind: 'failed' }));
+    void load(userId);
 
     return () => { live = false; };
   }, [userId, attempt, openStore, refreshUnits]);
@@ -124,43 +163,56 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
 
     setSaving(true);
     const writingVersion = ++version.current;
+    const previous = queue.current;
 
-    const write = queue.current.then(() => opened.save(workout));
+    async function write(database: WorkoutStore) {
+      await previous;
+      await database.save(workout);
+    }
 
-    const settled = write.catch(() => {});
+    async function report(saving: Promise<void>) {
+      try {
+        await saving;
+        savedVersion.current = writingVersion;
 
-    queue.current = settled;
-    void write.then(() => {
-      savedVersion.current = writingVersion;
-
-      if (mounted.current) {
-        setError(false);
+        if (mounted.current) {
+          setError(false);
+        }
+      } catch {
+        if (mounted.current) {
+          setError(true);
+        }
       }
-    }, () => mounted.current && setError(true));
-    void settled.then(() => {
-      if (mounted.current && queue.current === settled) {
+
+      if (mounted.current && version.current === writingVersion) {
         setSaving(false);
       }
-    });
+    }
 
-    return write;
+    const saving = write(opened);
+
+    queue.current = report(saving);
+
+    return saving;
   }
+
+  const clearFocus = useCallback(() => setFocus(null), []);
 
   function showActive(active: Workout | null) {
     setState((previous) => previous.kind === 'ready' ? { ...previous, active } : previous);
   }
 
   async function start() {
-    if (locked.current || current.current !== null || state.kind !== 'ready' || store.current === null) {
+    if (locked.current || latestWorkout.current !== null || state.kind !== 'ready' || store.current === null) {
       return;
     }
 
     locked.current = true;
-    const workout: Workout = { id: WorkoutId.parse(uuid.v4()), startedAt: Date.now(), finishedAt: null, exercises: [] };
+    const workout: Workout = { id: WorkoutId.parse(uuidv7()), startedAt: Date.now(), finishedAt: null, exercises: [] };
 
     try {
       await persist(workout);
-      current.current = workout;
+      latestWorkout.current = workout;
       showActive(workout);
     } catch {
       setError(true);
@@ -170,26 +222,39 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
   }
 
   function change(workout: Workout) {
-    if (locked.current || state.kind !== 'ready' || current.current?.id !== workout.id) {
+    if (locked.current || state.kind !== 'ready' || latestWorkout.current?.id !== workout.id) {
       return;
     }
 
-    current.current = workout;
+    latestWorkout.current = workout;
     showActive(workout);
     void persist(workout).catch(() => {});
   }
 
+  function remove(removal: WorkoutRemoval) {
+    if (!mounted.current || locked.current || latestWorkout.current === null || state.kind !== 'ready') {
+      return;
+    }
+
+    const updated = removeWorkoutItem(latestWorkout.current, removal);
+
+    if (updated !== null) {
+      change(updated);
+    }
+  }
+
   async function finish() {
-    if (locked.current || current.current === null || state.kind !== 'ready') {
+    if (locked.current || latestWorkout.current === null || state.kind !== 'ready') {
       return null;
     }
 
     locked.current = true;
-    const workout = { ...current.current, finishedAt: Date.now() };
+    const workout = { ...latestWorkout.current, finishedAt: Date.now() };
 
     try {
       await persist(workout);
-      current.current = null;
+      latestWorkout.current = null;
+      setFocus(null);
       showActive(null);
 
       return workout.id;
@@ -207,7 +272,7 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
   }
 
   return (
-    <WorkoutContext value={{ state, saving, error, reload, start, change, finish, find }}>
+    <WorkoutContext value={{ state, saving, error, focus, requestFocus: setFocus, clearFocus, reload, start, change, remove, finish, find }}>
       <WorkoutStatusContext value={state.kind === 'loading' || (state.kind === 'ready' && state.active !== null) ? { kind: 'in-progress' } : { kind: 'idle' }}>
         {children}
       </WorkoutStatusContext>

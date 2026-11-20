@@ -1,18 +1,31 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { Easing, FadeIn, ReduceMotion } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, ReduceMotion, useReducedMotion, withTiming, type EntryAnimationsValues, type LayoutAnimation } from 'react-native-reanimated';
 
 import { Button } from '../../src/components/Button.tsx';
-import { TabScreen } from '../../src/components/TabScreen.tsx';
-import { press, radius, space, type } from '../../src/theme/tokens.ts';
+import { MochiFlex } from '../../src/components/MochiFlex.tsx';
+import { layout, press, radius, space, type } from '../../src/theme/tokens.ts';
 import { useAppearance } from '../../src/theme/useAppearance.ts';
 import { useWorkouts } from '../../src/workout/WorkoutProvider.tsx';
 import { completedSets, WorkoutId, type Workout } from '../../src/workout/workout.ts';
+import { durationText, workoutDateText } from '../../src/workout/workoutSummary.ts';
 
-// Fades remain under Reduce Motion; this entrance never translates or scales.
-const summaryEntrance = FadeIn.duration(180).easing(Easing.bezier(...press.easing)).reduceMotion(ReduceMotion.Never);
+const SUMMARY_MS = 180;
+
+function summaryEntrance(_values: EntryAnimationsValues): LayoutAnimation {
+  'worklet';
+  const timing = { duration: SUMMARY_MS, easing: Easing.bezier(...press.easing) };
+
+  return {
+    initialValues: { opacity: 0, transform: [{ scale: 0.97 }] },
+    animations: { opacity: withTiming(1, timing), transform: [{ scale: withTiming(1, timing) }] },
+  };
+}
+
+// Under Reduce Motion the card still fades in, without the scale.
+const summaryFade = FadeIn.duration(SUMMARY_MS).easing(Easing.bezier(...press.easing)).reduceMotion(ReduceMotion.Never);
 
 export default function WorkoutFinishedScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -42,18 +55,48 @@ export default function WorkoutFinishedScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: palette.bg }}>
-      <TabScreen title="Workout done" subtitle={<Text style={[type.body, { color: palette.secondary }]}>Empty workout</Text>}>
-        {workout === null ? <Text style={[type.body, { color: palette.label }]}>{failed ? 'Could not load this workout.' : 'Loading workout…'}</Text> : (
-          <Animated.View entering={summaryEntrance} style={[styles.card, { backgroundColor: palette.card }]}>
-            <Text style={[type.body, { color: palette.label }]}>Time: {Math.max(0, Math.floor(((workout.finishedAt ?? workout.startedAt) - workout.startedAt) / 60000))} min</Text>
-            <Text style={[type.body, { color: palette.label }]}>Sets done: {completedSets(workout)}</Text>
-            <Text style={[type.footnote, { color: palette.secondary }]}>Saved on this phone</Text>
-          </Animated.View>
-        )}
+      <ScrollView contentInsetAdjustmentBehavior="never" contentContainerStyle={styles.content}>
+        <View style={styles.heading}>
+          <MochiFlex palette={palette} play={workout !== null} />
+          <View style={styles.headingText}>
+            <Text accessibilityRole="header" style={[type.largeTitle, { color: palette.label }]}>Workout done</Text>
+            <Text style={[type.body, { color: palette.secondary }]}>{workout === null ? '' : workoutDateText(workout.startedAt)}</Text>
+          </View>
+        </View>
+        {workout === null ? <Text style={[type.body, { color: palette.label }]}>{failed ? 'Could not load this workout.' : 'Loading workout…'}</Text> : <Summary workout={workout} />}
         <Button palette={palette} label="Done" onPress={() => router.dismissTo('/train')} />
-      </TabScreen>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({ card: { borderRadius: radius.card, padding: space.lg, gap: space.md } });
+function Summary({ workout }: { workout: Workout }) {
+  const { palette } = useAppearance();
+  const time = durationText(workout);
+  const sets = completedSets(workout);
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <Animated.View entering={reduceMotion ? summaryFade : summaryEntrance} style={[styles.card, { backgroundColor: palette.card }]}>
+      <View accessible accessibilityLabel={`Time: ${time}`} style={styles.summaryRow}>
+        <Text style={[type.body, { color: palette.secondary }]}>Time</Text>
+        <Text style={[type.body, styles.value, { color: palette.label }]}>{time}</Text>
+      </View>
+      <View style={[styles.separator, { backgroundColor: palette.separator }]} />
+      <View accessible accessibilityLabel={`Sets done: ${sets}`} style={styles.summaryRow}>
+        <Text style={[type.body, { color: palette.secondary }]}>Sets done</Text>
+        <Text style={[type.body, styles.value, { color: palette.label }]}>{sets}</Text>
+      </View>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  content: { flexGrow: 1, padding: layout.screenMargin, gap: space.lg },
+  heading: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.sm },
+  headingText: { flex: 1 },
+  card: { borderRadius: radius.card, padding: space.sm },
+  summaryRow: { minHeight: layout.minTouch, paddingHorizontal: 10, paddingVertical: space.sm, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: space.sm },
+  value: { fontWeight: '600', fontVariant: ['tabular-nums'] },
+  separator: { height: StyleSheet.hairlineWidth, marginHorizontal: 10 },
+});

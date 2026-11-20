@@ -1,3 +1,4 @@
+import { Exercise } from '@compound/contracts';
 import { z } from 'zod';
 
 export const WeightUnit = z.enum(['kg', 'lb']);
@@ -26,7 +27,7 @@ export const WorkoutSet = z.object({
 
 export type WorkoutSet = z.infer<typeof WorkoutSet>;
 
-export const WorkoutExercise = z.object({ id: WorkoutExerciseId, exerciseId: z.string(), sets: z.array(WorkoutSet) });
+export const WorkoutExercise = z.object({ id: WorkoutExerciseId, exerciseId: Exercise.shape.id, sets: z.array(WorkoutSet) });
 
 export type WorkoutExercise = z.infer<typeof WorkoutExercise>;
 
@@ -39,9 +40,26 @@ export const Workout = z.object({
 
 export type Workout = z.infer<typeof Workout>;
 
+const WHOLE_NUMBER = /^\d+$/;
+const DECIMAL = /^\d+(?:[.,]\d+)?$/;
+const MAX_REPS = 999;
+const MAX_WEIGHT = 99999;
+
+function weightNumber(weight: string) {
+  return Number(weight.replace(',', '.'));
+}
+
+function validReps(reps: string) {
+  return WHOLE_NUMBER.test(reps) && Number(reps) >= 1 && Number(reps) <= MAX_REPS;
+}
+
+// Blank means bodyweight, which is allowed.
+function validWeight(weight: string) {
+  return weight.trim() === '' || (DECIMAL.test(weight) && weightNumber(weight) <= MAX_WEIGHT);
+}
+
 export function validSet(set: WorkoutSet) {
-  return /^\d+$/.test(set.reps) && Number(set.reps) > 0 && Number(set.reps) <= 999
-    && (set.weight.trim() === '' || (/^\d+(?:[.,]\d+)?$/.test(set.weight) && Number(set.weight.replace(',', '.')) <= 99999));
+  return validReps(set.reps) && validWeight(set.weight);
 }
 
 export function weightInUnit(set: WorkoutSet, unit: WeightUnit) {
@@ -49,13 +67,14 @@ export function weightInUnit(set: WorkoutSet, unit: WeightUnit) {
     return set.weight;
   }
 
-  const weight = Number(set.weight.replace(',', '.'));
+  const weight = weightNumber(set.weight);
 
   if (!Number.isFinite(weight)) {
     return set.weight;
   }
 
-  return String(Math.round((unit === 'lb' ? weight * 2.2046226218 : weight / 2.2046226218) * 100) / 100);
+  // Gym plates and dumbbells go in steps of 0.5 at the finest, so an exact conversion like 22.05 isn't loadable.
+  return String(Math.round((unit === 'lb' ? weight * 2.2046226218 : weight / 2.2046226218) * 2) / 2);
 }
 
 export function completedSets(workout: Workout) {

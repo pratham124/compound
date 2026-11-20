@@ -1,114 +1,119 @@
-import { uuid } from 'expo';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button.tsx';
 import { PressableScale } from '../components/PressableScale.tsx';
-import { displayEquipment, findExercise } from '../exercises/catalogue.ts';
 import { layout, radius, space, type } from '../theme/tokens.ts';
 import { useAppearance } from '../theme/useAppearance.ts';
-import { WorkoutClock } from './WorkoutClock.tsx';
-import { completedSets, validSet, weightInUnit, WorkoutSetId, type WeightUnit, type Workout, type WorkoutExercise, type WorkoutSet } from './workout.ts';
+import { ExerciseCard } from './ExerciseCard.tsx';
+import { closeGap } from './loggerMotion.ts';
+import { WorkoutBar } from './WorkoutBar.tsx';
+import { useJumpToCard } from './useJumpToCard.ts';
+import { completedSets, type WeightUnit, type Workout, type WorkoutExercise, type WorkoutExerciseId } from './workout.ts';
+import { totalSets, upNextSet } from './workoutProgress.ts';
+import type { WorkoutRemoval } from './workoutRemoval.ts';
 
 type LoggerProps = {
   workout: Workout;
   unit: WeightUnit;
-  saving: boolean;
   error: boolean;
   finishing: boolean;
   onChange: (workout: Workout) => void;
+  onRemove: (removal: WorkoutRemoval) => void;
   onFinish: () => void;
   onAddExercise: () => void;
+  focus: WorkoutExerciseId | null;
+  onFocusHandled: () => void;
 };
 
-export function WorkoutLogger({ workout, unit, saving, error, finishing, onChange, onFinish, onAddExercise }: LoggerProps) {
+export function WorkoutLogger({ workout, unit, error, finishing, onChange, onRemove, onFinish, onAddExercise, focus, onFocusHandled }: LoggerProps) {
   const { palette } = useAppearance();
-  const { fontScale } = useWindowDimensions();
-  const total = workout.exercises.reduce((count, exercise) => count + exercise.sets.length, 0);
+  const { scrollRef, flashTokenFor, onCardLaidOut } = useJumpToCard({ cards: workout.exercises, focus, onFocusHandled });
+  const upNext = upNextSet(workout);
+  const empty = workout.exercises.length === 0;
 
   function changeExercise(changed: WorkoutExercise) {
     onChange({ ...workout, exercises: workout.exercises.map((exercise) => exercise.id === changed.id ? changed : exercise) });
   }
 
-  return (
-    <KeyboardAvoidingView style={styles.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={[styles.bar, { backgroundColor: palette.bg }]}>
-        <View style={[styles.top, fontScale >= layout.largerTextFrom ? styles.topLarge : null]}>
-          <WorkoutClock startedAt={workout.startedAt} />
-          <Text accessibilityRole="header" style={[type.headline, styles.title, { color: palette.label }]}>Empty workout</Text>
-          <Button palette={palette} label="Finish" onPress={onFinish} busy={finishing} minHeight={layout.minTouch} />
-        </View>
-        <Text style={[type.footnote, { color: palette.secondary }]}>{completedSets(workout)} of {total} sets done</Text>
-        {error ? (
-          <Button palette={palette} label="Save failed. Retry" variant="quiet" onPress={() => onChange(workout)} />
-        ) : <Text accessibilityLiveRegion="polite" style={[type.caption, { color: palette.secondary }]}>{saving ? 'Saving on this phone…' : 'Saved on this phone'}</Text>}
-      </View>
-      <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
-        {workout.exercises.length === 0 ? <Text style={[type.body, { color: palette.secondary }]}>Add your first exercise to get started.</Text> : null}
-        {workout.exercises.map((exercise) => (
-          <ExerciseCard key={exercise.id} exercise={exercise} unit={unit} disabled={finishing} onChange={changeExercise} />
-        ))}
-        <Button palette={palette} label="Add exercise" variant="quiet" onPress={onAddExercise} disabled={finishing} />
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
-}
-
-function ExerciseCard({ exercise, unit, disabled, onChange }: { exercise: WorkoutExercise; unit: WeightUnit; disabled: boolean; onChange: (exercise: WorkoutExercise) => void }) {
-  const { palette } = useAppearance();
-  const entry = findExercise(exercise.exerciseId);
-
-  function changeSet(changed: WorkoutSet) {
-    onChange({ ...exercise, sets: exercise.sets.map((set) => set.id === changed.id ? changed : set) });
+  function retrySave() {
+    onChange(workout);
   }
 
   return (
-    <View style={[styles.card, { backgroundColor: palette.card }]}>
-      <Text accessibilityRole="header" style={[type.headline, { color: palette.label }]}>{entry?.name ?? 'Exercise unavailable'}</Text>
-      <Text style={[type.footnote, { color: palette.secondary }]}>{entry === undefined ? exercise.exerciseId : displayEquipment(entry.equipment)}</Text>
-      {exercise.sets.map((set, index) => <SetRow key={set.id} set={set} index={index} unit={unit} disabled={disabled} onChange={changeSet} />)}
-      <Button palette={palette} label={`Add set to ${entry?.name ?? 'exercise'}`} variant="quiet" disabled={disabled} onPress={() => onChange({ ...exercise, sets: [...exercise.sets, { id: WorkoutSetId.parse(uuid.v4()), reps: '', weight: '', unit, done: false }] })} />
-    </View>
-  );
-}
-
-function SetRow({ set, index, unit, disabled, onChange }: { set: WorkoutSet; index: number; unit: WeightUnit; disabled: boolean; onChange: (set: WorkoutSet) => void }) {
-  const { palette } = useAppearance();
-  const { fontScale } = useWindowDimensions();
-  const label = `Set ${index + 1}`;
-  const wideText = fontScale >= layout.largerTextFrom;
-
-  return (
-    <View style={[styles.set, wideText ? styles.setLarge : null]}>
-      <Text style={[type.subheadline, { color: palette.secondary }]}>{index + 1}</Text>
-      <View style={styles.fields}>
-        <View style={styles.fieldGroup}>
-          <Text style={[type.caption, { color: palette.secondary }]}>{unit} (optional)</Text>
-          <TextInput accessibilityLabel={`${label} weight in ${unit}`} editable={!disabled && !set.done} keyboardType="decimal-pad" value={weightInUnit(set, unit)} placeholder="—" placeholderTextColor={palette.secondary} onChangeText={(weight) => onChange({ ...set, weight, unit })} style={[type.body, styles.input, { color: palette.label, backgroundColor: palette.bg }]} />
-        </View>
-        <View style={styles.fieldGroup}>
-          <Text style={[type.caption, { color: palette.secondary }]}>Reps</Text>
-          <TextInput accessibilityLabel={`${label} reps`} editable={!disabled && !set.done} keyboardType="number-pad" value={set.reps} placeholder="0" placeholderTextColor={palette.secondary} onChangeText={(reps) => onChange({ ...set, reps })} style={[type.body, styles.input, { color: palette.label, backgroundColor: palette.bg }]} />
-        </View>
-      </View>
-      <PressableScale accessibilityRole="checkbox" accessibilityLabel={`${label} done`} accessibilityState={{ checked: set.done, disabled: disabled || !validSet(set) }} disabled={disabled || !validSet(set)} haptic="none" onPress={() => onChange({ ...set, done: !set.done })} style={[styles.check, { backgroundColor: set.done ? palette.accent : palette.accentSoft }]}>
-        <Text style={[type.headline, { color: set.done ? palette.onAccent : palette.accent }]}>{set.done ? '✓' : '○'}</Text>
-      </PressableScale>
-    </View>
+    <SafeAreaView edges={['top', 'left', 'right']} style={styles.fill}>
+      <KeyboardAvoidingView style={styles.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <WorkoutBar
+          startedAt={workout.startedAt}
+          done={completedSets(workout)}
+          total={totalSets(workout)}
+          error={error}
+          finishing={finishing}
+          onFinish={onFinish}
+          onRetry={retrySave}
+        />
+        <ScrollView
+          ref={scrollRef}
+          contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          contentContainerStyle={styles.content}
+        >
+          {empty ? (
+            <View style={[styles.emptyCard, { backgroundColor: palette.card }]}>
+              <Text accessibilityRole="header" style={[type.title2, { color: palette.label }]}>No exercises yet</Text>
+              <Text style={[type.subheadline, { color: palette.secondary }]}>Add one to start logging sets.</Text>
+              <View style={styles.emptyAction}>
+                <Button palette={palette} label="Add exercise" disabled={finishing} onPress={onAddExercise} />
+              </View>
+            </View>
+          ) : null}
+          {workout.exercises.map((exercise) => (
+            <ExerciseCard
+              key={exercise.id}
+              exercise={exercise}
+              flashToken={flashTokenFor(exercise.id)}
+              onLaidOut={onCardLaidOut}
+              upNext={upNext}
+              unit={unit}
+              disabled={finishing}
+              onChange={changeExercise}
+              onRemove={onRemove}
+            />
+          ))}
+          {empty ? null : (
+            <Animated.View layout={closeGap}>
+              <PressableScale
+                accessibilityRole="button"
+                accessibilityLabel="Add exercise"
+                accessibilityState={{ disabled: finishing }}
+                disabled={finishing}
+                onPress={onAddExercise}
+                style={[styles.addExercise, { borderColor: palette.accent }]}
+              >
+                <Text style={[type.callout, styles.strong, { color: palette.accent }]}>Add exercise</Text>
+              </PressableScale>
+            </Animated.View>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  bar: { paddingHorizontal: layout.screenMargin, paddingTop: space.md, paddingBottom: space.sm, gap: space.xs },
-  top: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: space.sm },
-  topLarge: { flexDirection: 'column', alignItems: 'stretch' },
-  title: { flexGrow: 1, flexShrink: 1, textAlign: 'center' },
-  content: { padding: layout.screenMargin, paddingBottom: layout.tabBarHeight + layout.tabBarBottom + space.xxl, gap: space.lg },
-  card: { borderRadius: radius.card, padding: space.lg, gap: space.sm },
-  set: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  setLarge: { flexWrap: 'wrap' },
-  fields: { flex: 1, flexDirection: 'row', gap: space.sm },
-  fieldGroup: { flex: 1, gap: space.xxs },
-  input: { minHeight: layout.minTouch, paddingHorizontal: space.sm, paddingVertical: space.sm, borderRadius: radius.field, textAlign: 'center', fontVariant: ['tabular-nums'] },
-  check: { minWidth: layout.minTouch, minHeight: layout.minTouch, alignItems: 'center', justifyContent: 'center', borderRadius: radius.capsule },
+  content: { paddingHorizontal: layout.screenMargin, paddingTop: space.xs, paddingBottom: space.lg, gap: layout.cardGap },
+  emptyCard: { borderRadius: radius.card, padding: layout.cardPadding, gap: space.xs },
+  emptyAction: { marginTop: space.sm },
+  addExercise: {
+    minHeight: layout.buttonHeight,
+    borderWidth: 1.5,
+    borderRadius: radius.capsule,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: space.sm,
+  },
+  strong: { fontWeight: '600' },
 });

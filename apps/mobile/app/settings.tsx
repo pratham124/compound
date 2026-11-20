@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { useAuthClient } from '../src/auth/AuthClientContext.tsx';
 import { useSignOut } from '../src/auth/useSignOut.ts';
+import { useSignedInSession } from '../src/auth/useSignedInSession.ts';
 import { ProfileCard } from '../src/components/ProfileCard.tsx';
 import { SettingsProfileGroup } from '../src/components/SettingsProfileGroup.tsx';
 import { SignOutGroup } from '../src/components/SignOutGroup.tsx';
@@ -21,7 +22,7 @@ export default function SettingsScreen() {
   const { palette } = useAppearance();
   const authClient = useAuthClient();
   const openWorkoutStore = useWorkoutStoreFactory();
-  const { data: session } = authClient.useSession();
+  const { session } = useSignedInSession();
   const baseUrl = process.env.EXPO_PUBLIC_API_URL;
   const signOut = useSignOut({ baseUrl, authClient });
 

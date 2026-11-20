@@ -6,8 +6,8 @@ import { Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useReducedMotion } from 'react-native-reanimated';
 
-import { useAuthClient } from '../src/auth/AuthClientContext.tsx';
 import { sessionLoadedOnce } from '../src/auth/sessionLoadedOnce.ts';
+import { useSignedInSession } from '../src/auth/useSignedInSession.ts';
 import { ChatButtonOverlay } from '../src/chatButton/ChatButtonOverlay.tsx';
 import { fonts, motion } from '../src/theme/tokens.ts';
 import { useAppearance } from '../src/theme/useAppearance.ts';
@@ -22,8 +22,7 @@ export default function RootLayout() {
     [fonts.display]: require('../assets/fonts/Fraunces-Variable.ttf'),
   });
 
-  const authClient = useAuthClient();
-  const { data: session, isPending } = authClient.useSession();
+  const { session, isPending } = useSignedInSession();
   const reduceMotion = useReducedMotion();
   const { scheme, palette } = useAppearance();
   const base = scheme === 'dark' ? DarkTheme : DefaultTheme;

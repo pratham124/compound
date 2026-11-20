@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text } from 'react-native';
 
-import { useAuthClient } from '../auth/AuthClientContext.tsx';
+import { useSignedInSession } from '../auth/useSignedInSession.ts';
 import { initialsOf } from '../profile/initials.ts';
 import { glassShadow, layout, press, radius, type } from '../theme/tokens.ts';
 import { useAppearance } from '../theme/useAppearance.ts';
@@ -15,7 +15,7 @@ const GLYPH_STROKE = 1.8;
 export function ProfileButton() {
   const { palette } = useAppearance();
   const router = useRouter();
-  const { data: session } = useAuthClient().useSession();
+  const { session } = useSignedInSession();
   const initials = initialsOf(session?.user.name ?? '');
 
   return (

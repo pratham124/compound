@@ -2,11 +2,13 @@ import { createContext, useContext } from 'react';
 
 import { authClient } from './authClient.ts';
 
-export type SessionUser = { id: string; name: string; email: string };
+import type { SessionData } from './signedInSession.ts';
+
+export type { SessionUser } from './signedInSession.ts';
 
 /** The part of the auth client the app shell uses, so tests can provide a signed-in stand-in. */
 export type ShellAuthClient = {
-  useSession: () => { data: { user: SessionUser } | null; isPending: boolean };
+  useSession: () => { data: SessionData; isPending: boolean };
   getCookie: () => Promise<string>;
   signOut: () => Promise<void>;
 };

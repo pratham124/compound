@@ -1,4 +1,4 @@
-import { UserId } from '@compound/contracts';
+import { Exercise, UserId } from '@compound/contracts';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { Pressable, Text, View } from 'react-native';
 
@@ -48,7 +48,7 @@ function Driver() {
           return;
         }
 
-        const draft = { ...workouts.state.active, exercises: [{ id: WorkoutExerciseId.parse('00000000-0000-4000-8000-000000000004'), exerciseId: 'Pushups', sets: [{ id: WorkoutSetId.parse('00000000-0000-4000-8000-000000000005'), reps: '8', weight: '', unit: 'kg' as const, done: true }] }] };
+        const draft = { ...workouts.state.active, exercises: [{ id: WorkoutExerciseId.parse('00000000-0000-4000-8000-000000000004'), exerciseId: Exercise.shape.id.parse('Pushups'), sets: [{ id: WorkoutSetId.parse('00000000-0000-4000-8000-000000000005'), reps: '8', weight: '', unit: 'kg' as const, done: true }] }] };
 
         workouts.change(draft);
         workouts.change({ ...draft, exercises: draft.exercises.map((exercise) => ({ ...exercise, sets: exercise.sets.map((set) => ({ ...set, reps: '9' })) })) });

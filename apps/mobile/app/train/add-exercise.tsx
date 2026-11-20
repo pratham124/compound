@@ -1,27 +1,45 @@
-import { uuid } from 'expo';
 import { useRouter } from 'expo-router';
+import { useMemo } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button } from '../../src/components/Button.tsx';
 import { ExerciseList } from '../../src/exercises/ExerciseList.tsx';
 import { useAppearance } from '../../src/theme/useAppearance.ts';
+import { SheetBar } from '../../src/workout/SheetBar.tsx';
 import { useWorkouts } from '../../src/workout/WorkoutProvider.tsx';
+import { catalogueIdsIn, pickExercise } from '../../src/workout/pickExercise.ts';
+import { uuidv7 } from '../../src/workout/uuidv7.ts';
 import { WorkoutExerciseId, WorkoutSetId } from '../../src/workout/workout.ts';
 
 export default function AddExerciseScreen() {
-  const { state, change } = useWorkouts();
+  const { state, change, requestFocus } = useWorkouts();
   const router = useRouter();
   const { palette } = useAppearance();
+  const added = useMemo(() => state.kind === 'ready' && state.active !== null ? catalogueIdsIn(state.active) : new Set<never>(), [state]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: palette.bg }}>
-      <Button palette={palette} label="Back to workout" variant="quiet" onPress={() => router.back()} />
-      <ExerciseList onSelect={(exerciseId) => {
+      <SheetBar title="Add exercise" onClose={() => router.back()} />
+      <ExerciseList compact inWorkout={added} onSelect={(exerciseId) => {
         if (state.kind !== 'ready' || state.active === null) {
           return;
         }
 
-        change({ ...state.active, exercises: [...state.active.exercises, { id: WorkoutExerciseId.parse(uuid.v4()), exerciseId, sets: [{ id: WorkoutSetId.parse(uuid.v4()), reps: '', weight: '', unit: state.unit, done: false }] }] });
+        const picked = pickExercise(state.active, exerciseId, state.unit, { exercise: WorkoutExerciseId.parse(uuidv7()), set: WorkoutSetId.parse(uuidv7()) });
+
+        switch (picked.kind) {
+          case 'existing':
+            break;
+          case 'added':
+            change(picked.workout);
+            break;
+          default: {
+            const _exhaustive: never = picked;
+
+            return _exhaustive;
+          }
+        }
+
+        requestFocus(picked.focus);
         router.back();
       }} />
     </SafeAreaView>

@@ -1,17 +1,48 @@
-import { weightInUnit, WorkoutSet } from './workout.ts';
+import { validSet, weightInUnit, WorkoutSet } from './workout.ts';
 
-it('displays 10 kg as 22.05 lb without changing the recorded metric weight', () => {
-  const set = WorkoutSet.parse({ id: '00000000-0000-4000-8000-000000000001', reps: '8', weight: '10', unit: 'kg', done: true });
+function set(weight: string, unit: 'kg' | 'lb') {
+  return WorkoutSet.parse({ id: '00000000-0000-4000-8000-000000000001', reps: '8', weight, unit, done: true });
+}
 
-  expect(weightInUnit(set, 'lb')).toBe('22.05');
-  expect(set.weight).toBe('10');
-  expect(set.unit).toBe('kg');
+it('displays 10 kg as 22 lb, to the nearest half, without changing the recorded metric weight', () => {
+  const metric = set('10', 'kg');
+
+  expect(weightInUnit(metric, 'lb')).toBe('22');
+  expect(metric.weight).toBe('10');
+  expect(metric.unit).toBe('kg');
 });
 
-it('displays 22 lb as 9.98 kg without changing the recorded imperial weight', () => {
-  const set = WorkoutSet.parse({ id: '00000000-0000-4000-8000-000000000001', reps: '8', weight: '22', unit: 'lb', done: true });
+it('displays 22 lb as 10 kg, to the nearest half, without changing the recorded imperial weight', () => {
+  const imperial = set('22', 'lb');
 
-  expect(weightInUnit(set, 'kg')).toBe('9.98');
-  expect(set.weight).toBe('22');
-  expect(set.unit).toBe('lb');
+  expect(weightInUnit(imperial, 'kg')).toBe('10');
+  expect(imperial.weight).toBe('22');
+  expect(imperial.unit).toBe('lb');
+});
+
+it('rounds converted weights to whole or half numbers only', () => {
+  expect(weightInUnit(set('60', 'kg'), 'lb')).toBe('132.5');
+  expect(weightInUnit(set('135', 'lb'), 'kg')).toBe('61');
+  expect(weightInUnit(set('45', 'lb'), 'kg')).toBe('20.5');
+  expect(weightInUnit(set('22.5', 'kg'), 'kg')).toBe('22.5');
+});
+
+describe('validSet', () => {
+  const setWith = (reps: string, weight: string) => WorkoutSet.parse({ id: '00000000-0000-4000-8000-00000000000a', reps, weight, unit: 'kg', done: false });
+
+  it.each([
+    ['8', '', true],
+    ['8', '   ', true],
+    ['8', '12,5', true],
+    ['8', '12.5', true],
+    ['8', '12.', false],
+    ['8', '99999', true],
+    ['8', '100000', false],
+    ['0', '', false],
+    ['1000', '', false],
+    ['999', '', true],
+    ['', '', false],
+  ])('reps %j with weight %j is %s', (reps, weight, expected) => {
+    expect(validSet(setWith(reps, weight))).toBe(expected);
+  });
 });
