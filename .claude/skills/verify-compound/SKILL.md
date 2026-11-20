@@ -1,6 +1,6 @@
 ---
 name: verify-compound
-description: Drive the Compound iPhone app (Expo, React Native) on an Android emulator against the local stack, sign in a test person, and capture screenshots and database proof. Use when no-mistakes' Test step, or you, need to prove a change to the app or the server's identity module works on screen.
+description: Drive the Compound iPhone app (Expo, React Native) on an Android emulator against the local stack, sign in a test person, and capture screenshots and database proof. Use when /ship's live-driving step, or you, need to prove a change to the app or the server's identity module works on screen.
 ---
 
 # Verify Compound

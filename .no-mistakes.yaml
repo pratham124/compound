@@ -1,5 +1,6 @@
-# no-mistakes config. commands, gates, test.instructions, document.instructions, auto_fix.gates
-# and pr are read only from the default branch, so they take effect once this file is on main.
+# Read by /ship (document.instructions, test.instructions, gates) and by the /ticket and /ship
+# reviewers (review.path_instructions). The no-mistakes pipeline it was written for was replaced by
+# /ship on 2026-11-20; commands and pr are left from it and nothing reads them.
 
 commands:
   # Run worktrees start with tracked files only; this installs node_modules once, before lint.
