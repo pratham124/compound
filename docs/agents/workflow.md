@@ -63,9 +63,9 @@ Tests check the cases someone thought to write. The verification skills check th
 
 ### `verify-compound` drives the app on screen
 
-`.claude/skills/verify-compound/` starts the local stack and the Android emulator, signs in a test person, taps through screens, and takes screenshots. It has one feature file per feature in `features/`. Each feature file says how a user reaches the feature, the steps that drive it, and what only a real iPhone can check.
+`.claude/skills/verify-compound/` starts the local stack and the Android emulator, signs in a test person, and runs each feature's Maestro flow, which taps through the screens and takes screenshots in one command. It has one feature file per feature in `features/` and one flow per feature in `flows/`. Each feature file says how a user reaches the feature, the steps that drive it, and what only a real iPhone can check. Slow restart and offline steps sit in separate deep flows, and worst-case data in fixtures flows, which run only when their files change. A flow that fails is rerun once, and one that passes on the retry is reported as flaky, not failed.
 
-New feature files are created in `/ship`: when a branch touches a feature, `/ship` creates or updates that feature's file, then drives it. The `check-sync.mjs` gate fails a ship when app code changed but no feature file did. At the end of each milestone, `maintain-verification-skill` drives every feature and fixes what drifted.
+The `/ticket` builder writes or updates the feature file and its flow along with the feature, and runs it once, so the flow gets reviewed with the code. `/ship` then only runs the touched features' flows and fills any gap a branch built outside `/ticket` left. The `check-sync.mjs` gate fails a ship when app code changed but no feature file did. At the end of each milestone, `maintain-verification-skill` drives every feature and fixes what drifted.
 
 ### Formal checks prove a rule always holds
 
