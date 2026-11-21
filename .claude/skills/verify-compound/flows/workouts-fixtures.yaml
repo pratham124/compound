@@ -1,0 +1,59 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/workouts.md steps 8-9: the logger and Train home under worst-case data, at default and 2.0 font scale.
+# Run via scripts/run-flow.sh workouts-fixtures, which drives PHASE=fixtures, sets font_scale 2.0, then PHASE=fixtures-large-text.
+
+- runFlow:
+    when:
+      true: ${PHASE == 'fixtures'}
+    commands:
+      # Steps 8-9 at default font scale.
+      # WorkoutFixtures mounts its switcher row inside Android's status bar (intercepting taps), so each
+      # fixture variant is opened via its route parameter after pressing back to force a fresh mount.
+      - openLink: "compound://dev-fixtures?fixture=workout&workoutData=Worst"
+      - extendedWaitUntil:
+          visible: "Save failed. Retry"
+          timeout: 15000
+      - takeScreenshot: workout-fixture-worst
+      - back
+      - openLink: "compound://dev-fixtures?fixture=workout&workoutData=Demo"
+      - extendedWaitUntil:
+          visible: "Barbell Bench Press - Medium Grip"
+          timeout: 15000
+      - takeScreenshot: workout-fixture-demo
+      - back
+      - openLink: "compound://dev-fixtures?fixture=workout&workoutData=Empty"
+      - extendedWaitUntil:
+          visible: "No exercises yet"
+          timeout: 15000
+      - takeScreenshot: workout-fixture-empty
+      - back
+      - openLink: "compound://dev-fixtures?fixture=workout&workoutView=home"
+      - extendedWaitUntil:
+          visible: "Start workout"
+          timeout: 15000
+      - takeScreenshot: workout-fixture-home
+
+- runFlow:
+    when:
+      true: ${PHASE == 'fixtures-large-text'}
+    commands:
+      # Step 8 at font_scale 2.0.
+      - back
+      - openLink: "compound://dev-fixtures?fixture=workout&workoutData=Worst"
+      - extendedWaitUntil:
+          visible: "Save failed. Retry"
+          timeout: 15000
+      - takeScreenshot: workout-fixture-worst-large
+      - back
+      - openLink: "compound://dev-fixtures?fixture=workout&workoutData=Demo"
+      - extendedWaitUntil:
+          visible: "Barbell Bench Press - Medium Grip"
+          timeout: 15000
+      - takeScreenshot: workout-fixture-demo-large
+      - back
+      - openLink: "compound://dev-fixtures?fixture=workout&workoutData=Empty"
+      - extendedWaitUntil:
+          visible: "No exercises yet"
+          timeout: 15000
+      - takeScreenshot: workout-fixture-empty-large

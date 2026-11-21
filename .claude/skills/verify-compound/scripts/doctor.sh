@@ -23,10 +23,11 @@ app_foreground() { "$ADB" -s "$SERIAL" shell dumpsys window | tr -d '\r' | grep 
 
 echo "run $RUN_ID, evidence in $RUN_DIR"
 check "this run belongs to this worktree ($REPO)" same_worktree
+check "Maestro CLI is installed" require_maestro
 check "local stack is running" stack_up
 check "server on :$SERVER_PORT is the process this run started" server_ours
 check "server /health reports ok (Postgres, Valkey, queue up, migrations applied)" server_ok
-check "Metro on :$METRO_PORT is the process this run started" metro_ours
+check "Metro on :$METRO_PORT matches the recorded PID" metro_ours
 check "Metro reports running" metro_ok
 check "emulator $SERIAL is online" emulator_up
 check "adb reverse maps the server port" reversed

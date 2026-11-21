@@ -1,0 +1,21 @@
+appId: com.pratham124.compound
+---
+- tapOn:
+    text: "Use an email code instead"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Email address"
+    timeout: 10000
+- tapOn:
+    text: "Email address"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- inputText: ${EMAIL}
+- tapOn:
+    text: "Send code"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Sign-in code"
+    timeout: 15000

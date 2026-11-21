@@ -1,0 +1,120 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/exercises.md steps 1-4 and 7. Steps 5-6 (disk cache and retry) are in exercises-deep.yaml.
+# Run via scripts/run-flow.sh exercises, which orchestrates online, offline and fixtures phases.
+
+- runFlow:
+    when:
+      true: ${PHASE == 'online'}
+    commands:
+      - runFlow: _park-tools.yaml
+      # Step 1: Open Train, then Exercise catalogue.
+      - tapOn: "Train"
+      # Reanimated's dev-only Reduced motion warning can open over the first animated screen of an app process.
+      - runFlow: _dismiss-dev-menu.yaml
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - takeScreenshot: exercises-train
+      - tapOn: "Search exercises"
+      - extendedWaitUntil:
+          visible: "Exercises"
+          timeout: 10000
+      - takeScreenshot: exercises-list
+
+      # Step 2: Search and muscle filter chips.
+      - tapOn: "Search exercises"
+      - inputText: "incline dumbbell press"
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press, Dumbbell"
+          timeout: 10000
+      - tapOn: "Chest"
+      - assertVisible: "Incline Dumbbell Press, Dumbbell"
+      - takeScreenshot: exercises-search
+      - tapOn: "Legs"
+      - extendedWaitUntil:
+          visible: "No matching exercises"
+          timeout: 10000
+      - assertVisible: "Try another name or muscle."
+      - takeScreenshot: exercises-empty
+      - tapOn: "All"
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press, Dumbbell"
+          timeout: 10000
+
+      # Step 3: Detail page and online pictures.
+      - tapOn: "Incline Dumbbell Press, Dumbbell"
+      - extendedWaitUntil:
+          visible: "How to do it"
+          timeout: 15000
+      - assertVisible: "Incline Dumbbell Press, picture 1 of 2"
+      - assertVisible: "Incline Dumbbell Press, picture 2 of 2"
+      - waitForAnimationToEnd:
+          timeout: 2000
+      - takeScreenshot: exercises-detail-online
+
+- runFlow:
+    when:
+      true: ${PHASE == 'offline'}
+    commands:
+      # Step 4 (offline): browse/search and reopen cached detail.
+      - back
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - eraseText: 40
+      - inputText: "dumbbell shoulder press"
+      - extendedWaitUntil:
+          visible: "Dumbbell Shoulder Press.*"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - eraseText: 40
+      - inputText: "incline dumbbell press"
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press, Dumbbell"
+          timeout: 10000
+      - tapOn: "Incline Dumbbell Press, Dumbbell"
+      - extendedWaitUntil:
+          visible: "How to do it"
+          timeout: 10000
+      - takeScreenshot: exercises-detail-offline
+
+- runFlow:
+    when:
+      true: ${PHASE == 'fixtures'}
+    commands:
+      # Step 7 at default font scale.
+      - openLink: "compound://dev-fixtures?fixture=exercises&exerciseData=Worst"
+      - extendedWaitUntil:
+          visible: "Exercises Worst"
+          timeout: 15000
+      - takeScreenshot: exercises-fixture-worst
+      # The fixture switcher sits under the status bar, so variants open through the route parameter after back.
+      - back
+      - openLink: "compound://dev-fixtures?fixture=exercises&exerciseData=Demo"
+      - waitForAnimationToEnd:
+          timeout: 1000
+      - takeScreenshot: exercises-fixture-demo
+      - back
+      - openLink: "compound://dev-fixtures?fixture=exercises&exerciseData=Missing"
+      - waitForAnimationToEnd:
+          timeout: 1000
+      - takeScreenshot: exercises-fixture-missing
+
+- runFlow:
+    when:
+      true: ${PHASE == 'fixtures-large-text'}
+    commands:
+      # Step 7 at font_scale 2.0.
+      - back
+      - openLink: "compound://dev-fixtures?fixture=exercises&exerciseData=Worst"
+      - extendedWaitUntil:
+          visible: "Exercises Worst"
+          timeout: 15000
+      - takeScreenshot: exercises-fixture-worst-large
+      - back
+      - openLink: "compound://dev-fixtures?fixture=exercises&exerciseData=Missing"
+      - waitForAnimationToEnd:
+          timeout: 1000
+      - takeScreenshot: exercises-fixture-missing-large

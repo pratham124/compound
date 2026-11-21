@@ -1,0 +1,115 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/exercises.md steps 5-6: pictures served from the disk cache with the API gone, and Retry once it is back.
+# Run via scripts/run-flow.sh --deep exercises, which orchestrates prime, clear-mem-cache, disk-offline and retry-online.
+
+- runFlow:
+    when:
+      true: ${PHASE == 'prime'}
+    commands:
+      - runFlow: _park-tools.yaml
+      - tapOn: "Train"
+      # Reanimated's dev-only Reduced motion warning can open over the first animated screen of an app process.
+      - runFlow: _dismiss-dev-menu.yaml
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - extendedWaitUntil:
+          visible: "Exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - inputText: "incline dumbbell press"
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press, Dumbbell"
+          timeout: 10000
+      - tapOn: "Incline Dumbbell Press, Dumbbell"
+      - extendedWaitUntil:
+          visible: "How to do it"
+          timeout: 10000
+      - takeScreenshot: exercises-deep-detail-online
+
+- runFlow:
+    when:
+      true: ${PHASE == 'clear-mem-cache'}
+    commands:
+      # Step 5a: clear memory cache before offline disk-cache check.
+      - openLink: "compound://dev-device-checks"
+      - extendedWaitUntil:
+          visible: "Clear memory cache"
+          timeout: 15000
+      - tapOn: "Clear memory cache"
+      - extendedWaitUntil:
+          visible: ".*memory cache cleared: true.*"
+          timeout: 10000
+      - takeScreenshot: exercises-memory-cache-cleared
+
+- runFlow:
+    when:
+      true: ${PHASE == 'disk-offline'}
+    commands:
+      # Step 5b (offline, API reverse removed): reopen exercise to prove disk cache.
+      # The dev device-checks screen sits on top of the exercise detail, which sits on top of the list.
+      - repeat:
+          while:
+            notVisible: "Train"
+          times: 5
+          commands:
+            - back
+      - extendedWaitUntil:
+          visible: "Train"
+          timeout: 10000
+      - tapOn: "Train"
+      # The dev menu can open over Train after the device-checks screen; it hides everything below it from Maestro.
+      - runFlow: _dismiss-dev-menu.yaml
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - extendedWaitUntil:
+          visible: "Exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - inputText: "incline dumbbell press"
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press, Dumbbell"
+          timeout: 10000
+      - tapOn: "Incline Dumbbell Press, Dumbbell"
+      - extendedWaitUntil:
+          visible: "How to do it"
+          timeout: 10000
+      - takeScreenshot: exercises-detail-disk-offline
+
+      # Step 6a (still offline): open an unviewed exercise and confirm retry button appears.
+      - back
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - eraseText: 40
+      - inputText: "ab roller"
+      - extendedWaitUntil:
+          visible: "Ab Roller, Other"
+          timeout: 10000
+      - tapOn: "Ab Roller, Other"
+      - extendedWaitUntil:
+          visible: "Retry Ab Roller.*"
+          timeout: 15000
+      - takeScreenshot: exercises-detail-offline-retry
+
+- runFlow:
+    when:
+      true: ${PHASE == 'retry-online'}
+    commands:
+      # Step 6b (network restored): tap retry and confirm picture loads.
+      # With the network back the app can reload the picture itself before the flow looks, so tap Retry only if it is still there.
+      - runFlow:
+          when:
+            visible: "Retry Ab Roller, picture 1 of 2"
+          commands:
+            - tapOn: "Retry Ab Roller, picture 1 of 2"
+      - extendedWaitUntil:
+          notVisible: "Retry Ab Roller, picture 1 of 2"
+          timeout: 15000
+      - assertVisible: "Ab Roller, picture 1 of 2"
+      - takeScreenshot: exercises-detail-retried

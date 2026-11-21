@@ -14,21 +14,29 @@ Each person has a profile with a time zone and a unit system for weights. The ph
 
 - Signed in, tap `Settings` on the Today tab. The profile group shows the `Units` and `Time Zone` rows.
 
-## Driving it with drive.sh (adb on an Android emulator)
+## Driving it with Maestro (`flows/profile.yaml`)
 
 Preconditions:
 
-- `D=.claude/skills/verify-compound/scripts/drive.sh` and `eval "$(bash $D env)"` are set in the Bash call. Each step below is `bash $D tap|type|find|absent "<label>"`, as `../SKILL.md` describes; a label that never appears is reported, not worked around.
+- Launch is `READY`, Doctor passes, and `$EMAIL` is signed in on the Today tab (with no profile row yet because Settings has not opened).
+- Run `bash .claude/skills/verify-compound/scripts/run-flow.sh profile`.
 
-- Launch is `READY`, Doctor passes, and `$EMAIL` is signed in on the Today tab (see `sign-in.md`).
-- The person has no profile row yet, because nothing has opened Settings in this run.
+Steps covered by `flows/profile.yaml`:
 
-- **Open Settings.** Tap `Settings`. The title reads `Settings`, the profile group shows the signed-in email, and `Loading your profile…` is replaced by the `Units` and `Time Zone` rows.
-- **Profile created.** The row is created lazily, by the first `GET /me/profile`, and only Settings makes that request, so it doesn't exist after sign-in or on the Today tab. Once Settings has loaded, check the database: `select p.time_zone, p.units, p.time_zone_is_fallback from users u join user_profiles p on p.user_id = u.id where u.email = '$EMAIL'` returns one row with `units` `metric`. The `Time Zone` row on screen shows the same zone as `time_zone`, with underscores shown as spaces.
-- **Switch to lb.** Tap the radio `lb` in the `Units` group. It becomes selected at once. Re-run the query: `units` is `imperial`.
-- **Kept after restart.** Run `bash $D restart`, open Settings again. `lb` is selected, not `kg`.
-- **Switch back.** Tap `kg`. The query returns `metric`.
-- **Load failure (optional, ends the run's usable state).** Stop only this run's server with `taskkill //PID <SERVER_PID from state.env> //T //F`, reopen Settings, and the `Try again` message appears. Run Cleanup afterwards.
+- **Open Settings.** Parks `Tools`, taps `Settings`, confirms `Units`, `Time Zone`, and `$EMAIL` appear, and captures `profile-settings-metric`.
+- **Switch to lb.** Taps `lb` in the `Units` group and captures `profile-settings-imperial`.
+- **Kept after restart.** Force-stops and relaunches the app (`stopApp` + `launchApp`), reopens `Settings`, and captures `profile-reopened-imperial` (`lb` still selected).
+- **Switch back.** Taps `kg` and captures `profile-settings-metric-restored`.
+
+Database check after the flow (`eval "$(bash .claude/skills/verify-compound/scripts/drive.sh env)"`):
+
+```bash
+docker compose exec -T postgres psql -U compound -d compound -c "select p.time_zone, p.units, p.time_zone_is_fallback from users u join user_profiles p on p.user_id = u.id where u.email = '$EMAIL'" | tee "$EVIDENCE_DIR/profile-db.txt"
+```
+
+Confirm one row exists with `units` = `metric` (after switching back), `time_zone_is_fallback` = `f`, and `time_zone` matching the `Time Zone` row in the screenshots (underscores shown as spaces).
+
+- **Load failure (optional, ends the run's usable state).** Stop only this run's server with `taskkill //PID <SERVER_PID from state.env> //T //F`, reopen Settings, and confirm `Try again` appears. Run Cleanup afterwards.
 
 ## Gotchas
 

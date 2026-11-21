@@ -1,13 +1,49 @@
 ---
 name: verify-compound
-description: Drive the Compound iPhone app (Expo, React Native) on an Android emulator against the local stack, sign in a test person, and capture screenshots and database proof. Use when /ship's live-driving step, or you, need to prove a change to the app or the server's identity module works on screen.
+description: Drive the Compound Expo app on an Android emulator with Maestro against the local stack, capture screenshots under $EVIDENCE_DIR, and verify database state. Use when /ship's live-driving step or manual verification needs on-screen and database proof for an app or identity change.
 ---
 
 # Verify Compound
 
-Compound's real target is an iPhone, and the Mac-only iOS Simulator and the paid EAS cloud simulator are out. So this skill drives the same Expo app as a development build on an Android emulator on the Windows laptop, against the local Docker stack and a server started from this worktree. It reaches everything that is JavaScript, layout and server behaviour. It can't reach the real Apple sign-in sheet, HealthKit, iOS safe areas and Dynamic Type, or how the quick-chat sheet's drag feels. Each feature file lists those under Gotchas as a check on the iPhone. Never report one of them as verified from here.
+Compound targets iPhone, where the iOS Simulator is Mac-only and EAS cloud simulators are paid. This skill drives the same Expo JavaScript app as an Android development build on the Windows laptop's emulator against the local Docker stack and this worktree's server. Android proves JavaScript, layout, local SQLite, image caching, and server behaviour; it never proves Apple sign-in, HealthKit, iOS Keychain, iCloud backup exclusion, iOS safe areas, Dynamic Type, VoiceOver, or gesture haptics. Never report an iPhone-only item from a feature file's Gotchas section as verified from Android; list it as an unverified iPhone check instead.
 
-Run every command from the worktree root in Git Bash. In each Bash call that uses adb, first set `ADB="$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe"`; it is not on PATH. The helper scripts are in `.claude/skills/verify-compound/scripts/` and find the SDK at `$LOCALAPPDATA/Android/Sdk` themselves (`ANDROID_HOME` is not set on this laptop; the scripts export it). Read `features/README.md` for the baseline and the feature index.
+Run every command from the worktree root in Git Bash. The scripts in `.claude/skills/verify-compound/scripts/` export `ANDROID_HOME="$LOCALAPPDATA/Android/Sdk"`, prepend `$ANDROID_HOME/platform-tools` to `PATH`, and locate Maestro automatically. Read `features/README.md` for the feature index.
+
+## One-time setup
+
+Two prerequisites live outside the repo and are installed once per laptop.
+
+### 1. Maestro CLI (Windows)
+
+Maestro keeps a persistent accessibility driver running on the emulator, which avoids per-action `uiautomator` dumps and drives screens with live animations (including the 1-second workout clock).
+
+1. Install **Java 17+** (required by Maestro's JVM) and confirm `java -version` prints `17` or higher.
+2. Download `maestro.zip` from the latest [Maestro GitHub Release](https://github.com/mobile-dev-inc/Maestro/releases) and extract it to `C:\maestro`.
+3. Add `C:\maestro\bin` to your Windows User `PATH` (`setx PATH "%PATH%;C:\maestro\bin"` in PowerShell, then open a new terminal).
+4. Confirm `/c/maestro/bin/maestro --version` prints the installed version in Git Bash.
+
+`lib.sh` exports `MAESTRO_CLI_NO_ANALYTICS=1` and `MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true`, and passes `--no-reinstall-driver` once `dev.mobile.maestro` is present on the emulator so repeat runs skip reinstalling the driver APKs.
+
+### 2. Android development build
+
+Launch never builds the native client. Building inside a worktree fails on Windows because the NDK's CMake/ninja 1.10 hits Windows path limits on pnpm's nested store layout (`LongPathsEnabled` does not fix `clang.exe`). Install **Android SDK CMake 3.31.6** (ninja 1.12.1) in Android Studio -> SDK Manager -> SDK Tools -> Show Package Details, boot the emulator, and run:
+
+| Condition | Action |
+|---|---|
+| `com.pratham124.compound` is missing or `origin/main` changed native code | `bash .claude/skills/verify-compound/scripts/build-dev-client.sh` (builds from `C:/cb` at `origin/main`) |
+| Current worktree added/upgraded a native module or `app.json` plugin not yet on `origin/main` | `bash .claude/skills/verify-compound/scripts/build-dev-client.sh --worktree` |
+| JavaScript-only changes (default) | Do not rebuild; Metro serves this worktree's bundle |
+
+Never build with `pnpm exec` or `pnpm --filter ... android`, because pnpm restores the isolated store layout and breaks CMake paths; always use `build-dev-client.sh`. Never edit `C:/cb` by hand because the script resets it on plain runs.
+
+### 3. Emulator snapshot
+
+Launch boots the AVD from its `default_boot` snapshot. Save one after the Maestro driver APKs (`dev.mobile.maestro`, `dev.mobile.maestro.test`) are installed, so a cold Launch skips the ~50 s driver reinstall. Redo this when the AVD is recreated:
+
+1. Run `launch.sh --signed-out` once, so the snapshot holds no session or drafts. (Don't `pm clear` before saving: that brings the dev client's welcome sheet back.)
+2. `adb emu avd snapshot save default_boot` (about 10 s; the snapshot is a ~1.2 GB file under the AVD folder, not in the repo).
+
+Cleanup's emulator kill does not touch it, because Launch boots with `-no-snapshot-save`.
 
 ## Launch
 
@@ -15,48 +51,33 @@ Run every command from the worktree root in Git Bash. In each Bash call that use
 bash .claude/skills/verify-compound/scripts/launch.sh [--signed-out]
 ```
 
-From an empty database it signs the test person in (pass `--signed-out` to stay on the sign-in screen, which `features/sign-in.md` needs), then ends with a `READY:` line and prints `EVIDENCE_DIR=` and `EMAIL=`. It needs the development build installed on the emulator (see One-time setup below). It does these in order, and `READY` means all of them finished:
+| Feature to drive | Command |
+|---|---|
+| `sign-in` (must start on the signed-out landing screen) | `bash .claude/skills/verify-compound/scripts/launch.sh --signed-out` |
+| Every other feature (default) | `bash .claude/skills/verify-compound/scripts/launch.sh` |
 
-If a previous run for this worktree was never cleaned up, Launch refuses to start (`Run <id> was not cleaned up; run cleanup.sh first.`) before it writes anything, so the processes that run left behind can still be found and stopped by Cleanup.
+Launch refuses to start if a previous run for this worktree left a pointer file (`Run <id> was not cleaned up; run cleanup.sh first.`), so orphaned PIDs can still be stopped by Cleanup. Always run `cleanup.sh` before re-launching after any failure.
 
-1. `[ -f .env ] || cp .env.example .env`.
-2. The local stack, shared by every worktree. If `docker compose ps --status running -q` prints something, the stack is already up: it is used and left running. Otherwise `pnpm stack:up` runs, and Cleanup runs `pnpm stack:down`. If your change touched `compose.yaml` or `infra/local/`, run `pnpm stack:up` yourself first so Compose recreates the changed services.
-3. The server, `pnpm --filter @compound/server start`, with output in `$EVIDENCE_DIR/server.log`. It applies migrations before it listens, so `http://localhost:3000/health` answering `"status":"ok"` means the schema exists and Postgres, Valkey and the queue are up. The sign-in code is read from this log, so keep it. Port 3000 must be free: if something this run didn't start owns it, the script stops instead of double-driving it.
-4. The emulator `Pixel_5_API_34` (override with `VERIFY_AVD`). If `emulator-5554` is already online it is used and left running.
-5. `adb reverse` for the server (3000) and Metro (8082), so the app reaches both as `localhost`. Metro uses 8082, not 8081, so it doesn't collide with the Metro serving Pratham's phone.
-6. The app: Metro with `pnpm --filter @compound/mobile start --port 8082`, then the app is cleared (`pm clear`, so a session from an earlier run is gone) and opened with a `compound://expo-development-client/` deep link. If `com.pratham124.compound` isn't installed, Launch stops with exit 1 and prints the one-time setup recipe. Metro runs with `EXPO_PUBLIC_API_URL=http://localhost:3000` set in the shell. `apps/mobile/.env` holds the phone's LAN address and is never edited. A shell variable wins over `.env` in Expo, and the value is baked in when Metro bundles, so Metro must be started with it, which the script does.
+Launch runs these steps, overlapping emulator boot, stack/server startup, and Metro startup to minimize wall-clock time:
 
-Launch dismisses the development client's first-run welcome sheet and developer menu by label (`drive.sh dev-menu`). Ready means `$EVIDENCE_DIR/metro.log` contains `Android Bundled`, the sign-in screen's button was found, and (unless `--signed-out`) `drive.sh sign-in` ended on the Today tab. The sign-in goes through the real email-code screen. That needs no dev-only bypass and no new server code.
+1. Copies `.env.example` to `.env` if `.env` is missing.
+2. Starts emulator `Pixel_5_API_34` (override with `VERIFY_AVD`) from its `default_boot` snapshot (`-snapshot default_boot -no-snapshot-save -no-boot-anim -no-audio`) if `emulator-5554` is not already online. Reuses an already-online emulator (`EMULATOR_STARTED=0`).
+3. Starts the shared local stack (`pnpm stack:up`) only if `docker compose ps --status running -q` is empty (`STACK_STARTED=1`); otherwise reuses it (`STACK_STARTED=0`). If the change touched `compose.yaml` or `infra/local/`, run `pnpm stack:up` yourself first so Compose recreates changed services.
+4. Starts `pnpm --filter @compound/server start` on `:3000` (migrations run before listening; `/health` returning `"status":"ok"` proves schema, Postgres, Valkey, and queue are ready). Fails if `:3000` is already taken so it never double-drives another server.
+5. Handles Metro on `:8082` (never `:8081`, which serves Pratham's phone) according to this table:
 
-The development client also draws a floating gear (accessibility label `Tools`) at the top right, which sits over the Settings button, the search button and the logger's Finish pill. The dev menu (`adb shell input keyevent 82`) has no toggle to hide it, only Reload, Go home, Open DevTools, Fast Refresh, Toggle element inspector and Toggle performance monitor. Drag it aside once after Launch: `bash $D find "Tools"` prints its bounds, then `"$ADB" shell input swipe <centre x> <centre y> 40 1880 600` (about 965,252 to the left edge, low on the screen) parks it over empty space in the logger. It snaps to the nearest edge, so check with a screenshot that it no longer covers a control. Dragging dev chrome is the one place coordinates are fine; app controls are still found by label.
+| State of port `:8082` | Action |
+|---|---|
+| Running, `/status` ok, and `$EVIDENCE_ROOT/metro-8082.env` matches PID, this worktree, and `http://localhost:3000` | Reuse it (`METRO_STARTED=0`) |
+| Taken by another process or another worktree | Exit 1 without starting Metro |
+| Free (default) | Start Metro with `EXPO_PUBLIC_API_URL=http://localhost:3000` (`METRO_STARTED=1`), write `metro-8082.env`, and pre-warm the Android bundle in the background while the emulator finishes booting |
 
-### One-time setup: the development build
+Never edit `apps/mobile/.env` (it holds the phone's LAN URL); the shell variable overrides `.env` when Metro bundles.
 
-Launch never builds the app. Building it in a worktree fails on Windows: the NDK's CMake runs `ninja`, and the default CMake 3.22.1 ships ninja 1.10.2, which can't handle the long paths a worktree's pnpm store produces ("The filename or extension is too long" in `configureCMakeDebug` for `react-native-worklets` and `react-native-screens`). `LongPathsEnabled` doesn't help, because the NDK's `clang.exe` isn't long-path aware. In practice both fixes were needed: a short checkout path with the hoisted node linker, and the newer CMake. With only the short path, ninja 1.10 still failed on gesture-handler codegen, and the same happened with hoisted but old ninja. So the development client is built once from a short-path checkout of `origin/main`, installed on the emulator, and every worktree's Launch reuses it. If the app isn't installed, `launch.sh` exits 1 and points here.
+6. Maps `adb reverse` for `:3000` and `:8082`, verifies `com.pratham124.compound` is installed, resets the app's session and local databases with `run-as` (SecureStore, `files/SQLite`, AsyncStorage's `RKStorage`, the Expo Image disk cache), so every run starts signed out with no data from an earlier one but keeps the dev client's own preferences and skips its welcome sheet, and runs Maestro `flows/_boot-ready.yaml` to open the dev-client deep link, dismiss the welcome sheet (`Continue`) and developer menu (`Reload` + `Close`), and wait for the app's first screen.
+7. Unless `--signed-out`, signs in a fresh test person (`verify-<run id>@example.test`) through the real email-code screen (`flows/_sign-in-request.yaml` -> reads the 6-digit code logged by the console mailer in `$EVIDENCE_DIR/server.log` -> `flows/_sign-in-verify.yaml` ending on `Today`). Never reuse an email address because five failed attempts or rapid sends trigger Valkey rate limits and prevent proving new-user creation.
 
-Prerequisite: Android SDK CMake 3.31.6 (ninja 1.12.1). Install it in Android Studio under SDK Manager, SDK Tools, Show Package Details. Then, with the emulator booted:
-
-```bash
-bash .claude/skills/verify-compound/scripts/build-dev-client.sh
-```
-
-It runs what worked by hand:
-
-```bash
-git worktree add --detach C:/cb origin/main
-cd /c/cb && pnpm install --frozen-lockfile --prefer-offline --node-linker=hoisted   # pnpm 12 ignores --config.node-linker
-cd apps/mobile
-node ../../node_modules/expo/bin/cli prebuild --platform android --no-install     # every run, so app.json plugin changes reach android/
-# android/local.properties must hold:
-#   sdk.dir=C:/Users/psito/AppData/Local/Android/Sdk
-#   cmake.dir=C:/Users/psito/AppData/Local/Android/Sdk/cmake/3.31.6
-ANDROID_HOME="$LOCALAPPDATA/Android/Sdk" ANDROID_SDK_ROOT="$LOCALAPPDATA/Android/Sdk" node ../../node_modules/expo/bin/cli run:android --no-bundler
-```
-
-Don't build with `pnpm exec` or `pnpm --filter ... android`: pnpm reinstalls the isolated layout first and undoes the hoisted install. To refresh, run the script again; it fetches, moves C:/cb to `origin/main` and rebuilds.
-
-Rebuild the client whenever a change adds or upgrades a native module, meaning anything that changes the `android/` prebuild output: a new `expo-*` or `react-native-*` package with native code, or a change to the `app.json` plugins. A stale client fails at run time with a missing native module. Once the change is merged, `build-dev-client.sh` rebuilds it from `origin/main`. Before that, `build-dev-client.sh --worktree` copies this worktree's uncommitted and tracked files over the `C:/cb` checkout first and builds that (about 5 minutes with a warm Gradle cache); the next plain run resets `C:/cb` (`checkout --force` plus `clean -fd`; ignored files stay). The script owns `C:/cb`: never edit it by hand. M2's build added `expo-sqlite`, `expo-image` and the local `backup-exclusion` module, so a client older than that fails on `compound://dev-device-checks` (`features/device-checks.md`). JavaScript-only changes need no rebuild, because Metro serves the worktree's code.
-`depends.txt` beside this file lists the repo files these sections and the scripts depend on; the `verification-sync` gate fails when one changes and nothing in this skill outside `features/` does, so update this file and the scripts with it (or say `No verification update:` in a commit).
+Launch ends by printing `READY:`, `EVIDENCE_DIR=...`, and `EMAIL=...`.
 
 ## Doctor
 
@@ -64,99 +85,95 @@ Rebuild the client whenever a change adds or upgrades a native module, meaning a
 bash .claude/skills/verify-compound/scripts/doctor.sh
 ```
 
-Read-only. Prints `ok` or `FAIL` for each check and exits 1 on any failure: the run belongs to this worktree (its recorded path equals `git rev-parse --show-toplevel`), the stack is running, the processes on :3000 and :8082 are the PIDs `launch.sh` recorded, `/health` is ok, Metro reports running, the emulator is online, `adb reverse` is set, Compound is installed and in the foreground. Run it before driving and whenever a screen looks wrong. On a FAIL, run Cleanup and Launch again rather than patching one piece.
+Read-only. Verifies the run belongs to this worktree, Maestro CLI is installed, the stack is running, the processes on `:3000` and `:8082` match the recorded PIDs, `/health` and Metro `/status` are healthy, the emulator is online, `adb reverse` maps `:3000`, and Compound is installed and focused.
+
+| Doctor result | Action |
+|---|---|
+| Exit 0 (`DOCTOR: healthy`) (default) | Proceed to Drive |
+| Exit 1 (`DOCTOR: not healthy`) | Run `cleanup.sh`, then `launch.sh` again; never patch individual pieces by hand |
 
 ## Drive
 
-Drive with `scripts/drive.sh`, which uses adb and uiautomator, so it needs nothing beyond what Launch started. Expo MCP is not used: its local automation needs the `expo-mcp` dev dependency, an unstable flag on Metro, a matching `expo login` and a manual reconnect after every dev-server start, so a headless Test step can't rely on it.
+Run each touched feature's Maestro flow in one command:
 
 ```bash
-D=.claude/skills/verify-compound/scripts/drive.sh
-eval "$(bash $D env)"   # sets EVIDENCE_DIR, EMAIL, ADB; repeat both lines in every Bash call
-bash $D tap "Use an email code instead"
+bash .claude/skills/verify-compound/scripts/run-flow.sh [--deep] <feature>...
 ```
 
-| Subcommand | Does |
-|---|---|
-| `find "<label>"` | prints the view's bounds; exit 1 if it never appears |
-| `absent "<label>"` | exit 0 once the view is gone, exit 1 if it is still there (use it for "hidden" checks) |
-| `tap "<label>"` | taps the centre of the view |
-| `type "<label>" "<text>"` | taps the field, then types. Only letters, digits and `@ . _ , : / + = -` and spaces; anything else is refused, not mangled |
-| `clear "<label>"` | taps the field and deletes its text (up to 40 characters) |
-| `drag "<label>" left\|right` | swipes the view to that screen edge (600 ms) |
-| `key back\|enter` | presses a system key |
-| `dev-menu` | dismisses the development client's welcome sheet (`Continue`) and developer menu (`Close`) if showing, then waits up to 60 s for the app's first screen |
-| `restart` | force-stops the app, opens it again, and waits up to 60 s (`DRIVE_RESTART_WAIT`) for its first screen, dismissing those overlays, so the next `find` needn't race the reload |
-| `code` | prints the latest sign-in code the server logged for `$EMAIL` |
-| `screenshot <name>` | saves `$EVIDENCE_DIR/<name>.png` |
-| `dump <name>` | saves the view tree as `$EVIDENCE_DIR/<name>.xml` |
+Several features run in order on the current Launch, returning to Today before each, so one Launch covers a whole diff: `run-flow.sh workouts exercises`. A failing feature does not stop the rest; the exit code is non-zero if any failed, and a `PASS`/`FAIL` line with the time per feature closes the output.
 
-When the full dump comes back empty (the workout clock keeps the screen animating), `drive.sh` retries with `uiautomator dump --compressed`. That tree is not empty but drops unlabeled views: in the logger it shows Finish, the sets progress and Add exercise, but not the exercise card title or the Set rows, so those controls still cannot be found by label. Turning the three animation scales to 0 did not change this.
+A feature that fails is rerun once on the same Launch after `_to-today`, with its retry logs and screenshots suffixed `-retry`. If the retry passes, the summary line is `FLAKY <feature> <first>s then <retry>s` and the run still exits 0; if it fails again the line is `FAIL <feature> ...` and the exit is non-zero. Report FLAKY flows (the retry hides real flakiness) but do not stop for them. `RUN_FLOW_RETRY=0` turns the retry off. A flow that signs the test person out (`tab-shell`, `sign-in`) leaves the next flow signed out, so run it last or relaunch; its retry then cannot pass either.
 
-Always find views by label through `drive.sh`, and never tap a hard-coded coordinate. If a label isn't in the view tree, report that (and `dump` the tree as evidence) instead of guessing a position. A label matches the view's `accessibilityLabel` or its visible text, exactly. `testID` is not visible to adb. Views are polled for 8 seconds because screens animate; set `DRIVE_WAIT` to change it. The first match wins, so a label shared by two views (`Ask Compound` is both the chat button and the sheet header) finds whichever comes first in the tree. Every action is also appended to `$EVIDENCE_DIR/drive.log`.
+`--deep` also runs each feature's `flows/<feature>-deep.yaml` after its base flow. These hold the slow durability steps (app restarts, offline recovery) and exist for `workouts` and `exercises`. Use `--deep` when the diff touches the paths named in that feature file's "Deep flow" line, and at milestone end for every feature.
 
-The handles that exist in this repo:
+`<feature>` matches a file under `.claude/skills/verify-compound/flows/<feature>.yaml`: `workouts`, `workouts-fixtures`, `sign-in`, `tab-shell`, `profile`, `chat-button`, `exercises`, or `device-checks`; `workouts` and `exercises` also have `<feature>-deep`. `workouts-fixtures` is the worst-case-data and large-text pass: run it when the diff touches the paths in that line of `features/workouts.md`, and at milestone end.
+
+`run-flow.sh`:
+- Writes Maestro's output to `$EVIDENCE_DIR/<feature>-maestro.log` and artifacts to `$EVIDENCE_DIR/maestro-<feature>/`.
+- Copies every explicit `takeScreenshot` PNG directly to `$EVIDENCE_DIR/<name>.png` (excluding Maestro's internal `step-*.png` debug captures).
+- For features with host-side transitions (`workouts`, `exercises`, `device-checks`, `sign-in`), orchestrates the phases, toggles `adb reverse --remove tcp:3000`, `svc wifi/data disable`, and `settings put system font_scale 2.0` between phases, and restores all three in an `EXIT` trap even if a phase fails.
+- Exits non-zero on any failed assertion, missing flow or failing feature.
+
+Every flow starts with `flows/_park-tools.yaml`, which parks expo-dev-client's floating `Tools` gear on the left edge at about y=1400 of 2340, where no screen has controls or titles. Never park `Tools` manually.
+
+### Rules for flows and handles
+
+- Always select app controls by `accessibilityLabel` or visible text. Never tap hard-coded screen coordinates for app controls; if a label is missing from the view tree, fail and report the missing handle rather than guessing a position. (Relative `point` inside a matched element — such as `point: "90%, 50%"` on a `TextInput` to place the cursor at the end of existing text — is allowed because the element itself is still selected by label.)
+- Never pause, mock, or fake the workout clock; inside the active workout logger, set `waitToSettleTimeoutMs: 250` and `retryTapIfNoChange: false` on `tapOn` commands so Maestro does not wait on the 1-second stopwatch tick.
+- Never call `hideKeyboard` in flows on `Pixel_5_API_34`: the AVD has `hw.keyboard = yes`, so no soft keyboard opens and `hideKeyboard` sends `KEYCODE_BACK`, closing modals.
+- Never tap the Sign in with Apple button; `expo-apple-authentication` cannot complete on Android.
+
+Core handles in this repo:
 
 | Handle | Where | Source |
 |---|---|---|
 | `Use an email code instead` | sign-in screen button | `apps/mobile/app/sign-in.tsx` |
-| `Email address` (text field), `Send code` | email step | `apps/mobile/app/email-code.tsx` |
-| `Sign-in code` (text field), `Sign in` | code step | `apps/mobile/app/email-code.tsx` |
-| `Today`, `Train`, `Money`, `Trends`, `Chat` | tab labels | `apps/mobile/src/navigation/tabs.ts` |
-| `Search exercises` | Train button and catalogue search field; see `features/exercises.md` | `apps/mobile/src/exercises/` |
-| `Settings` | button on the Today tab, opens settings | `apps/mobile/src/components/ProfileButton.tsx` |
-| `Units` (radio group), radios `kg` and `lb` | settings | `apps/mobile/src/components/ProfileCard.tsx` |
-| `Time Zone` row | settings | `apps/mobile/src/components/ProfileCard.tsx` |
-| `Sign out` | settings | `apps/mobile/src/components/SignOutGroup.tsx` |
-| `Ask Compound` | the draggable chat button | `apps/mobile/src/theme/tokens.ts` |
-| `Ask Compound` (header), `Close` | quick-chat sheet | `apps/mobile/src/chatButton/QuickChatHeader.tsx` |
+| `Email address`, `Send code`, `Sign-in code`, `Sign in` | email-code steps | `apps/mobile/app/email-code.tsx` |
+| `Today`, `Train`, `Money`, `Trends`, `Chat` | tab bar labels | `apps/mobile/src/navigation/tabs.ts` |
+| `Settings`, `Units`, `kg`, `lb`, `Time Zone`, `Sign out` | settings screen | `apps/mobile/src/components/` |
+| `Search exercises`, `Exercises` | Train and catalogue | `apps/mobile/src/exercises/` |
+| `Start workout`, `Add exercise`, `Finish`, `Workout done`, `Done` | workout logger & summary | `apps/mobile/src/workout/` |
+| `Set N reps`, `Set N weight in lb\|kg`, `Set N done`, `Add set to <name>`, `More for <name>` | workout set rows & card | `apps/mobile/src/workout/` |
+| `Ask Compound`, `Close` | chat button & quick-chat sheet | `apps/mobile/src/chatButton/` |
 
-Launch signs the test person in with `bash $D sign-in` (also the way back in after a recipe signs out). It is these steps, through the real email-code screens:
+`scripts/drive.sh` has two subcommands, `env` and `code`. `env` loads `EVIDENCE_DIR`, `EMAIL`, and `ADB` into shell commands for post-flow database checks; `code` prints the sign-in code the server logged for `EMAIL`:
 
 ```bash
-bash $D tap "Use an email code instead"
-bash $D find "Email address"
-bash $D type "Email address" "$EMAIL"
-bash $D tap "Send code"
-bash $D find "Sign-in code"
-bash $D type "Sign-in code" "$(bash $D code)"
-bash $D tap "Sign in"
-bash $D find "Today"
+eval "$(bash .claude/skills/verify-compound/scripts/drive.sh env)"
 ```
-
-`code` reads the server log, where the console mailer prints the code and where it appears nowhere else. The Today tab is up once `find "Today"` succeeds.
-
-`$EMAIL` is unique per run (`verify-<run id>@example.test`), so the Valkey rate limit and users left by earlier runs can't interfere. Don't reuse an address: five wrong codes or too many sends lock it for a minute.
-
-The email-code screen is the path a person without Apple takes, so it is the real user path, not a bypass. The Apple button can't complete on Android and must not be tapped. Drive the feature files for what the change touches, from `features/README.md`.
 
 ## Evidence
 
-Everything goes in `$EVIDENCE_DIR` (`$HOME/compound-verify-evidence/<run id>/`), which is outside the repo and outside the worktree, so Cleanup and `git worktree remove` both leave it alone. Override the root with `VERIFY_EVIDENCE_ROOT`.
+All evidence lives in `$EVIDENCE_DIR` (`$HOME/compound-verify-evidence/<run id>/`, override with `VERIFY_EVIDENCE_ROOT`), outside the repo and worktree so Cleanup and `git worktree remove` preserve it.
 
-- Screenshots: `bash $D screenshot <feature>-<step>`, which writes `$EVIDENCE_DIR/<feature>-<step>.png`. When a screen's text matters, also `bash $D dump <feature>-<step>` to keep the view tree beside it.
-- Capture the action and the result: a screenshot before and after each tap that changes state, not only the final screen. Before each "after" screenshot, `find` a handle that only the new screen has (`Email address` after `Use an email code instead`, `About: Money` after opening the sheet). A screenshot a fixed time after a tap can still show the old screen.
-- Verify side effects in the database as well as on screen, as the owner role:
+- **Screenshots:** Inspect every `$EVIDENCE_DIR/<feature>-<step>.png` captured by `run-flow.sh` (a passing label assertion does not prove image pixels loaded or layout remained intact at `font_scale 2.0`).
+- **Logs:** Keep `server.log`, `metro.log`, `launch-maestro.log`, and `<feature>-maestro.log` in `$EVIDENCE_DIR`.
+- **Database checks (shell step after the flow):** Verify real server rows as the owner role:
   ```bash
+  eval "$(bash .claude/skills/verify-compound/scripts/drive.sh env)"
   docker compose exec -T postgres psql -U compound -d compound -c "select u.email, p.units, p.time_zone, p.time_zone_is_fallback from users u left join user_profiles p on p.user_id = u.id where u.email = '$EMAIL'" | tee "$EVIDENCE_DIR/<feature>-db.txt"
   ```
-- The profile row is created only when Settings first loads (the first `GET /me/profile`), so a query on it right after sign-in returns no profile columns: `left join` shows the user with nulls, and the row appears once Settings has opened.
-- Keep `server.log` and `metro.log` in the folder. They show the request that the tap caused.
-- Proof standard: exercise the real user path. Don't call the API with curl in place of a tap, don't edit rows to set up a state, and don't mock the server. Seeing the new value on screen after the app restarts (`bash $D restart`) proves it was stored, not just held in state.
-- Say which Gotchas items you did not and could not check, and name them as iPhone checks.
+  The profile row is created lazily on the first `GET /me/profile` when Settings opens, so right after sign-in the `left join` shows null profile columns until Settings loads.
+- **Local SQLite check (workouts):** Copy `compound.db`, `compound.db-wal`, and `compound.db-shm` via `adb exec-out run-as com.pratham124.compound cat files/SQLite/<file>` into `$EVIDENCE_DIR` and query the copy read-only. Never modify database rows or call APIs with `curl` to fabricate state.
+- **iPhone checks:** Explicitly list every unchecked item from the driven feature files' Gotchas section as an iPhone-only check.
 
 ## Cleanup
 
 ```bash
-bash .claude/skills/verify-compound/scripts/cleanup.sh
+bash .claude/skills/verify-compound/scripts/cleanup.sh [--keep-metro]
 ```
 
-Stops only what `launch.sh` recorded, never by process name: the server and Metro by the PIDs it saved (and only if that PID still owns the port), the emulator only if this run booted it (otherwise it just force-stops the app), the stack only if this run brought it up. The `adb reverse` rules are removed. Evidence in `$EVIDENCE_DIR` is not touched.
+| Situation | Command |
+|---|---|
+| Driving another run in the same worktree immediately after | `bash .claude/skills/verify-compound/scripts/cleanup.sh --keep-metro` (leaves `:8082` warm for the next Launch) |
+| Done verifying (default) | `bash .claude/skills/verify-compound/scripts/cleanup.sh` (stops every process Launch started) |
 
-The test person stays in the local database: `docker compose down` keeps the Postgres volume, and a unique `example.test` address collides with nothing. To remove them, which also deletes the profile row through the foreign key:
+Cleanup waits (up to `EMU_KILL_WAIT`, default 30 s) for the emulator to leave `adb devices` after `emu kill`, so a Launch right after it boots a fresh one. Cleanup stops only what `launch.sh` recorded, and only if the recorded PID still owns its port: the server, Metro (when `METRO_STARTED=1` and `--keep-metro` is not passed), the emulator (when `EMULATOR_STARTED=1`; otherwise force-stops only Compound), and the stack (when `STACK_STARTED=1`). It removes the `adb reverse` rules and the worktree pointer while leaving `$EVIDENCE_DIR` untouched.
+
+Test users stay in Postgres under `verify-%@example.test` because unique addresses never collide. To delete them (which cascades to `user_profiles`), run:
 
 ```bash
 docker compose exec -T postgres psql -U compound -d compound -c "delete from users where email like 'verify-%@example.test'"
 ```
 
-If Launch fails partway, run Cleanup before launching again: Launch records the processes it started before it exits, and Cleanup copes with whatever is missing.
+`depends.txt` beside this file lists the repo files Launch, Doctor, and the flows depend on; the `verification-sync` gate fails when one changes without an update outside `features/` (or a `No verification update: <reason>` commit line).

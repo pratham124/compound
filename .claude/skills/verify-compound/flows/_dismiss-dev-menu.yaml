@@ -1,0 +1,41 @@
+appId: com.pratham124.compound
+---
+# Dismiss expo-dev-client's welcome sheet ("Continue") and developer menu ("Reload" beside "Close").
+# Checking "Reload" before tapping "Close" ensures we never tap the app's own quick-chat Close button.
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn:
+          text: "Continue"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Reload|Use an email code instead|Today|Train"
+          timeout: 90000
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - tapOn:
+          text: "Close"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+# Reanimated's dev-only "Reduced motion" LogBox warning can cover the app after a restart; Dismiss closes it.
+- runFlow:
+    when:
+      visible: "Console Warning"
+    commands:
+      - tapOn:
+          text: "Dismiss"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+# Android's "isn't responding" dialog appears when the emulator is starved late in a long run; Wait keeps the app.
+- runFlow:
+    when:
+      visible: "Compound isn't responding"
+    commands:
+      - tapOn:
+          text: "Wait"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false

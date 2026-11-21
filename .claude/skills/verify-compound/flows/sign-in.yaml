@@ -1,0 +1,97 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/sign-in.md. Requires Launch with --signed-out.
+# Run via scripts/run-flow.sh sign-in, which runs PHASE=request, reads CODE from server.log, then runs PHASE=verify.
+
+- runFlow:
+    when:
+      true: ${PHASE == 'request'}
+    commands:
+      - runFlow: _park-tools.yaml
+      - takeScreenshot: sign-in-landing
+      # Open email step.
+      - tapOn: "Use an email code instead"
+      - extendedWaitUntil:
+          visible: "Email address"
+          timeout: 10000
+      - assertVisible: "We'll email you a code. No password needed."
+      - takeScreenshot: sign-in-email-step
+      # Bad email.
+      - tapOn: "Email address"
+      - inputText: "not-an-email"
+      - tapOn: "Send code"
+      - extendedWaitUntil:
+          visible: "Enter a full email address, like name@example.com."
+          timeout: 10000
+      - takeScreenshot: sign-in-bad-email
+      # Send a real code.
+      - tapOn: "Email address"
+      - eraseText: 40
+      - inputText: ${EMAIL}
+      - tapOn: "Send code"
+      - extendedWaitUntil:
+          visible: "Sign-in code"
+          timeout: 15000
+      - assertVisible: "We sent a code to ${EMAIL}."
+      - takeScreenshot: sign-in-code-step
+
+- runFlow:
+    when:
+      true: ${PHASE == 'wrong-code'}
+    commands:
+      - tapOn: "Sign-in code"
+      - inputText: ${WRONG_CODE}
+      - tapOn: "Sign in"
+      - extendedWaitUntil:
+          visible: "That code didn't work. Ask for a new one."
+          timeout: 10000
+      - takeScreenshot: sign-in-wrong-code
+      # Erasing a refused code races the field's re-render and mangles the next one; a fresh field and a new code don't.
+      - tapOn: "Use a different email"
+      - extendedWaitUntil:
+          visible: "Email address"
+          timeout: 10000
+      - tapOn: "Email address"
+      - inputText: ${EMAIL}
+      - tapOn: "Send code"
+      - extendedWaitUntil:
+          visible: "Sign-in code"
+          timeout: 15000
+
+- runFlow:
+    when:
+      true: ${PHASE == 'verify'}
+    commands:
+      - tapOn: "Sign-in code"
+      - inputText: ${CODE}
+      - tapOn: "Sign in"
+      - extendedWaitUntil:
+          visible: "Today"
+          timeout: 15000
+      - takeScreenshot: sign-in-today
+      # Stays signed in across restart.
+      - stopApp
+      - launchApp
+      - runFlow: _dismiss-dev-menu.yaml
+      - extendedWaitUntil:
+          visible: "Today"
+          timeout: 90000
+      - runFlow: _park-tools.yaml
+      - takeScreenshot: sign-in-reopened
+      # Sign out and confirm signed-out gate survives reopen.
+      - tapOn: "Settings"
+      - extendedWaitUntil:
+          visible: "Sign out"
+          timeout: 10000
+      - tapOn: "Sign out"
+      - extendedWaitUntil:
+          visible: "Use an email code instead"
+          timeout: 15000
+      - takeScreenshot: sign-in-signed-out
+      - stopApp
+      - launchApp
+      - runFlow: _dismiss-dev-menu.yaml
+      - extendedWaitUntil:
+          visible: "Use an email code instead"
+          timeout: 90000
+      - takeScreenshot: sign-in-signed-out-reopened

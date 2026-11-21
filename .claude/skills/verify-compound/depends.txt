@@ -7,7 +7,7 @@ infra/local/
 .env.example
 package.json
 
-# Server: launch.sh starts it, waits on /health, and drive.sh reads the sign-in code the console mailer logs.
+# Server: launch.sh starts it, waits on /health, and lib.sh reads the sign-in code the console mailer logs.
 apps/server/package.json
 apps/server/src/config.ts
 apps/server/src/server.ts

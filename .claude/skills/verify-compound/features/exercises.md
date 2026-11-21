@@ -12,19 +12,27 @@
 
 Sign in, open Train, tap Search exercises, then choose an exercise. Back returns to the searched list; back again returns to Train.
 
-## Driving it with drive.sh (adb on an Android emulator)
+## Driving it with Maestro (`flows/exercises.yaml`)
 
-Use Launch and Doctor from `../SKILL.md`. Set `D=.claude/skills/verify-compound/scripts/drive.sh` and `eval "$(bash $D env)"` in each Bash call. Capture screenshots before actions and after finding the new screen's handle.
+Use Launch and Doctor from `../SKILL.md`, then run:
 
-1. Tap Train, find Search exercises and screenshot `exercises-train`. Tap Search exercises, find Exercises and screenshot `exercises-list`.
-2. Type `incline dumbbell press` into Search exercises. Find `Incline Dumbbell Press, Dumbbell`. Tap Chest, verify that row still appears. Screenshot `exercises-search`; there is no result-count footer. Tap Legs and find `No matching exercises` and `Try another name or muscle.`. Screenshot `exercises-empty`; the empty state has no action button. Tap All to return to the matching exercise before the detail step.
-3. Tap `Incline Dumbbell Press, Dumbbell`, find How to do it and both `Incline Dumbbell Press, picture 1 of 2` and `Incline Dumbbell Press, picture 2 of 2`. Inspect the screenshot to confirm pixels loaded; a labelled image view alone is insufficient. Dump the tree and screenshot `exercises-detail-online`.
-4. Disable emulator network with `"$ADB" -s emulator-5554 shell "svc wifi disable; svc data disable"`. Go back, find the list's Search exercises field, search `dumbbell shoulder press` and verify a matching row with no connection. Search `incline dumbbell press` again, open its row, find How to do it and screenshot `exercises-detail-offline`. The same pictures must remain visible.
-5. For disk-cache proof, open the existing `compound://dev-device-checks` screen and tap Clear memory cache. Dump its tree and confirm `memory cache cleared: true` (it is part of the combined image-status text). Remove the API reverse with `"$ADB" -s emulator-5554 reverse --remove tcp:3000`, disable Wi-Fi/data and return to Train. Search and reopen the viewed exercise. Screenshot `exercises-detail-disk-offline`; both pictures must still show. Restore `reverse tcp:3000 tcp:3000` and `svc wifi enable; svc data enable` even if a check fails. Metro's 8082 reverse stays in place. A cold offline development-client restart can stall before the app's first screen; that does not prove or disprove the image cache, and the fully offline Release-launch check remains on the iPhone.
-6. For a first-view failure, offline open an exercise whose pictures were never viewed; find the Retry picture button, then enable network and tap it. The picture should replace the unavailable message.
-7. Dev fixtures: open `compound://dev-fixtures?fixture=exercises&exerciseData=Worst`. The buttons Exercises Demo, Exercises Worst and Exercises Missing persist the choice in route parameters. Inspect long names, long equipment, instructions, a failing picture, non-Latin text, emoji and absent metadata. Empty and one-result states use the real search list. Repeat at the emulator's largest font scale (`settings put system font_scale 2.0`), then restore the original scale; inspect light and dark appearance. The iPhone's accessibility text sizes need their own check.
+```bash
+bash .claude/skills/verify-compound/scripts/run-flow.sh exercises
+```
 
-The SDK 58 development client can show a floating Tools button over app controls. Its supported development-launch flags `__expo_disable_fab=1` and `__expo_disable_auto_launch=1` hide it for that process; they do not alter the app or persist preferences. If the app still shows old labels after source edits, Cleanup and Launch again before interpreting a failed tap as an app bug.
+`run-flow.sh exercises` drives steps 1–4 and 7 across `online`, `offline`, `fixtures`, and `fixtures-large-text` phases; steps 5–6 are the deep flow `flows/exercises-deep.yaml` (`prime`, `clear-mem-cache`, `disk-offline`, `retry-online`), run with `run-flow.sh --deep exercises`. Both toggling emulator Wi-Fi/data, `:3000` reverse, and `font_scale 2.0` between phases and restoring all three on exit even if a phase fails. Inspect every captured screenshot in `$EVIDENCE_DIR` (a labelled image view alone does not prove pixels loaded).
+
+**Deep flow:** run `--deep` when the change touches the exercise image cache or the exercise detail screen (`apps/mobile/src/exercises/`), and at milestone end.
+
+1. Tap Train, confirm Search exercises and capture `exercises-train`. Tap Search exercises, confirm Exercises and capture `exercises-list`.
+2. Type `incline dumbbell press` into Search exercises. Confirm `Incline Dumbbell Press, Dumbbell`. Tap Chest, confirm that row still appears, and capture `exercises-search` (no result-count footer). Tap Legs and confirm `No matching exercises` and `Try another name or muscle.`, capturing `exercises-empty` (no action button). Tap All to return to the matching exercise before the detail step.
+3. Tap `Incline Dumbbell Press, Dumbbell`, confirm How to do it and both `Incline Dumbbell Press, picture 1 of 2` and `Incline Dumbbell Press, picture 2 of 2`. Capture `exercises-detail-online` and inspect the screenshot to confirm pixels loaded.
+4. `run-flow.sh` disables emulator Wi-Fi and mobile data. The flow goes back, searches `dumbbell shoulder press` offline, then searches `incline dumbbell press` again, opens its row, confirms How to do it, and captures `exercises-detail-offline`.
+5. For disk-cache proof, `run-flow.sh` re-enables network briefly so the flow opens `compound://dev-device-checks`, taps Clear memory cache, confirms `memory cache cleared: true`, and captures `exercises-memory-cache-cleared`. `run-flow.sh` then removes `tcp:3000` reverse (leaving Metro's `8082` reverse up) and disables Wi-Fi/data; the flow returns to Train, searches and reopens `Incline Dumbbell Press`, and captures `exercises-detail-disk-offline` (both pictures must still show). A cold offline development-client restart can stall before the app's first screen; the fully offline Release-launch check remains on the iPhone.
+6. Still offline, the flow opens an unviewed exercise (`Ab Roller`), confirms the `Retry Ab Roller...` button appears (`exercises-detail-offline-retry`), then `run-flow.sh` restores network and the flow taps Retry if it is still showing (the app often reloads the pictures itself first), confirms `Ab Roller, picture 1 of 2` is back and captures `exercises-detail-retried`.
+7. Dev fixtures: opens `compound://dev-fixtures?fixture=exercises&exerciseData=Worst`, captures `exercises-fixture-worst`, `exercises-fixture-demo`, and `exercises-fixture-missing`, then `run-flow.sh` sets `font_scale 2.0` and re-captures `exercises-fixture-worst-large` and `exercises-fixture-missing-large` before restoring the original scale. The iPhone's accessibility text sizes need their own check.
+
+Every flow parks expo-dev-client's floating `Tools` button on the left edge via `flows/_park-tools.yaml`. If the app still shows old labels after source edits, run Cleanup and Launch again before treating a failed assertion as an app bug.
 
 ## Gotchas
 
