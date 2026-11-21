@@ -1,0 +1,14 @@
+appId: com.pratham124.compound
+---
+- tapOn:
+    text: "Sign-in code"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- inputText: ${CODE}
+- tapOn:
+    text: "Sign in"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Today"
+    timeout: 15000

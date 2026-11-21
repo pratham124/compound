@@ -17,9 +17,9 @@ What it does, in order:
 
 Run by hand, the gate scripts print their findings to stderr and exit 0, so read their output rather than the exit code.
 
-`verify-compound` exists in `.claude/skills/verify-compound/`: it drives the app on an Android emulator against the local stack, and each feature file lists what only the iPhone can check. Keep its feature map in step with app changes (the `verification-sync` gate).
+`verify-compound` exists in `.claude/skills/verify-compound/`: it drives the app on an Android emulator against the local stack via Maestro flows (`flows/<feature>.yaml`, run with `scripts/run-flow.sh <feature>`), and each feature file lists what only the iPhone can check. Keep its feature map and Maestro flows in step with app changes (the `verification-sync` gate).
 
-Each `/ship` run only updates and drives the features its change touches, so drift elsewhere builds up between runs. Follow pstack's `maintain-verification-skill` at the end of each milestone, and after any change that breaks the skill itself: a new stack service or port, or a native module that needs `scripts/build-dev-client.sh`. It drives every feature and fixes the feature map, `SKILL.md` and the scripts in one PR.
+Each `/ship` run only updates and drives the features its change touches, so drift elsewhere builds up between runs. Follow pstack's `maintain-verification-skill` at the end of each milestone, and after any change that breaks the skill itself: a new stack service or port, or a native module that needs `scripts/build-dev-client.sh`. It drives every feature with `run-flow.sh --deep` (the deep flows hold the slow restart and offline-recovery checks that per-PR runs skip) and fixes the feature map, flows, `SKILL.md` and the scripts in one PR.
 
 `.claude/skills/verify-compound/depends.txt` lists the files the skill's `SKILL.md` and scripts depend on (compose, the server's start and sign-in code path, the app's package id and sign-in labels), and the `verification-sync` gate fails when one changes and nothing in the skill outside `features/` does; the `No verification update:` commit line is the escape.
 

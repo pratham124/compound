@@ -1,0 +1,29 @@
+appId: com.pratham124.compound
+---
+# Opens the dev-client deep link unless launch.sh already started the app with it (OPEN_LINK=0).
+# When SIGN_IN == '1', also submits EMAIL on the email-code screen so launch.sh saves a second JVM startup.
+- runFlow:
+    when:
+      true: ${OPEN_LINK != '0'}
+    commands:
+      - openLink: "compound://expo-development-client/?url=http%3A%2F%2Flocalhost%3A${METRO_PORT}"
+- extendedWaitUntil:
+    visible: "Continue|Reload|Use an email code instead|Today"
+    timeout: 120000
+- runFlow: _dismiss-dev-menu.yaml
+- runFlow:
+    when:
+      notVisible: "Use an email code instead|Today"
+    commands:
+      - extendedWaitUntil:
+          visible: "Reload|Use an email code instead|Today"
+          timeout: 90000
+      - runFlow: _dismiss-dev-menu.yaml
+- extendedWaitUntil:
+    visible: "Use an email code instead|Today"
+    timeout: 90000
+- runFlow:
+    when:
+      true: ${SIGN_IN == '1'}
+    commands:
+      - runFlow: _sign-in-request.yaml

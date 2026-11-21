@@ -13,20 +13,21 @@ A dev-only screen, `compound://dev-device-checks`, exercises the native modules 
 
 - Only from a dev build: open the deep link `compound://dev-device-checks` while signed in.
 
-## Driving it with drive.sh (adb on an Android emulator)
+## Driving it with Maestro (`flows/device-checks.yaml`)
 
 Preconditions:
 
-- `D=.claude/skills/verify-compound/scripts/drive.sh` and `eval "$(bash $D env)"` are set in the Bash call.
-- Launch is `READY` and `$EMAIL` is signed in on the Today tab. The dev client was built from a tree that has the `backup-exclusion` module and `expo-sqlite` (`build-dev-client.sh`; add `--worktree` before the change is merged), or the screen shows a missing native module error.
-- Open the screen: `"$ADB" -s emulator-5554 shell am start -a android.intent.action.VIEW -d compound://dev-device-checks com.pratham124.compound`, then `bash $D find "Create database and check backup"`.
+- Launch is `READY`, Doctor passes, and `$EMAIL` is signed in on the Today tab. The dev client was built from a tree that has the `backup-exclusion` module and `expo-sqlite` (`build-dev-client.sh`; add `--worktree` before the change is merged), or the screen shows a missing native module error.
+- Run `bash .claude/skills/verify-compound/scripts/run-flow.sh device-checks`. It runs the `online` phase, disables emulator Wi-Fi/data, runs the `offline` phase (including cold restart), and restores Wi-Fi/data on exit even on failure.
 
-- **Database.** Tap `Create database and check backup`. The text reads `database: unsupported on this platform (rows: 1)` and `database at …/SQLite/device-check.db`: Android has no backup-exclusion module, and the database opened in the default folder. Tap again: `rows: 2`, so the file persisted (each tap closes its connection).
-- **Image online.** Tap `Load image (online)`. `image: loaded from none (policy memory-disk)` appears, and the picture shows (view `Cache check image`).
-- **Image from disk.** Tap `Clear memory cache`, then `Load image (cache on disk only)`. `image: loaded from disk (policy disk)` appears. The `disk` policy keeps the image only in the disk cache, not in memory; it still downloads if the disk has no copy, so the `loaded from` source is what proves where the pixels came from.
-- **Network.** The first line reads `network: online`.
-- **Image offline.** Run `"$ADB" -s emulator-5554 shell "svc wifi disable; svc data disable"`, then tap `Clear memory cache` and `Load image (online)`. The first line reads `network: OFFLINE (NONE)`, the image still shows and the status reads `loaded from disk (policy memory-disk)`. Turn the network back on with `svc wifi enable; svc data enable`.
-- **Image after a cold restart, offline.** Load the image online first. Run `svc wifi disable; svc data disable`, then `bash $D restart` (Metro still answers through `adb reverse`), open the screen again with the `am start` line above, and tap `Load image (online)`. The status reads `loaded from disk (policy memory-disk)` and the first line `network: OFFLINE (NONE)`. Turn the network back on afterwards.
+Steps covered by `flows/device-checks.yaml`:
+
+- **Database.** Opens `compound://dev-device-checks`, taps `Create database and check backup` twice, confirms `rows: 1` then `rows: 2` (`unsupported on this platform` on Android), and captures `device-checks-database`.
+- **Haptic.** Taps `Haptic tap` and confirms no error.
+- **Image online.** Taps `Load image (online)`, confirms `loaded from none (policy memory-disk)` and `Cache check image`, and captures `device-checks-image-online`.
+- **Image from disk.** Taps `Clear memory cache`, confirms `memory cache cleared: true`, taps `Load image (cache on disk only)`, confirms `loaded from disk (policy disk)`, and captures `device-checks-image-disk`.
+- **Network & image offline.** After `run-flow.sh` disables Wi-Fi and data, confirms `network: OFFLINE`, taps `Clear memory cache` and `Load image (online)`, confirms `loaded from disk (policy memory-disk)`, and captures `device-checks-image-offline`.
+- **Image after cold restart, offline.** Force-stops and relaunches (`stopApp` + `launchApp` while Metro `:8082` reverse stays up), reopens `compound://dev-device-checks`, confirms `network: OFFLINE`, taps `Load image (online)`, confirms `loaded from disk (policy memory-disk)`, and captures `device-checks-image-offline-reopened`.
 
 ## Check on the iPhone
 

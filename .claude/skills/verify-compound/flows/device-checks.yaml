@@ -1,0 +1,78 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/device-checks.md.
+# Run via scripts/run-flow.sh device-checks, which runs PHASE=online, toggles offline, then runs PHASE=offline.
+
+- runFlow:
+    when:
+      true: ${PHASE == 'online'}
+    commands:
+      - runFlow: _park-tools.yaml
+      - openLink: "compound://dev-device-checks"
+      - extendedWaitUntil:
+          visible: "Create database and check backup"
+          timeout: 15000
+      - assertVisible: "network: online.*"
+      # Database persistence across two calls.
+      - tapOn: "Create database and check backup"
+      - extendedWaitUntil:
+          visible: ".*rows: 1.*"
+          timeout: 10000
+      - tapOn: "Create database and check backup"
+      - extendedWaitUntil:
+          visible: ".*rows: 2.*"
+          timeout: 10000
+      - takeScreenshot: device-checks-database
+      # Haptic tap throws no error.
+      - tapOn: "Haptic tap"
+      # Image online load, then disk-only reload.
+      - tapOn: "Load image (online)"
+      - extendedWaitUntil:
+          visible: ".*loaded from none \\(policy memory-disk\\).*"
+          timeout: 20000
+      - assertVisible: "Cache check image"
+      - takeScreenshot: device-checks-image-online
+      - tapOn: "Clear memory cache"
+      - extendedWaitUntil:
+          visible: ".*memory cache cleared: true.*"
+          timeout: 10000
+      - tapOn: "Load image (cache on disk only)"
+      - extendedWaitUntil:
+          visible: ".*loaded from disk \\(policy disk\\).*"
+          timeout: 15000
+      - takeScreenshot: device-checks-image-disk
+
+- runFlow:
+    when:
+      true: ${PHASE == 'offline'}
+    commands:
+      # Image offline in same session.
+      - extendedWaitUntil:
+          visible: "network: OFFLINE.*"
+          timeout: 15000
+      - tapOn: "Clear memory cache"
+      - extendedWaitUntil:
+          visible: ".*memory cache cleared: true.*"
+          timeout: 10000
+      - tapOn: "Load image (online)"
+      - extendedWaitUntil:
+          visible: ".*loaded from disk \\(policy memory-disk\\).*"
+          timeout: 15000
+      - takeScreenshot: device-checks-image-offline
+      # Image after cold restart while offline.
+      - stopApp
+      - launchApp
+      - runFlow: _dismiss-dev-menu.yaml
+      - extendedWaitUntil:
+          visible: "Today"
+          timeout: 90000
+      - openLink: "compound://dev-device-checks"
+      - extendedWaitUntil:
+          visible: "Load image (online)"
+          timeout: 15000
+      - assertVisible: "network: OFFLINE.*"
+      - tapOn: "Load image (online)"
+      - extendedWaitUntil:
+          visible: ".*loaded from disk \\(policy memory-disk\\).*"
+          timeout: 15000
+      - takeScreenshot: device-checks-image-offline-reopened

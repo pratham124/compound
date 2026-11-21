@@ -1,0 +1,21 @@
+appId: com.pratham124.compound
+---
+# Park expo-dev-client's floating Tools gear on the left edge at about y=1400 of 2340 (the drag end sits above that because the gear lands lower than the end point), in empty space on every screen:
+# higher it covers screen titles (a tap on "Train" while on Train then opens the dev menu), lower it covers the tab bar.
+# This is the one place a flow uses coordinates: the gear is the dev client's own view, not the app's.
+# The first swipe pins it to the left edge from wherever it starts (a zero-travel swipe acts as a tap and opens the dev
+# menu, which _dismiss-dev-menu.yaml closes); the second drags it down from there.
+- runFlow:
+    when:
+      visible: "Tools"
+    commands:
+      - swipe:
+          from:
+            text: "Tools"
+          direction: LEFT
+          duration: 600
+      - runFlow: _dismiss-dev-menu.yaml
+      - swipe:
+          start: 9%, 9%
+          end: 9%, 51%
+          duration: 600

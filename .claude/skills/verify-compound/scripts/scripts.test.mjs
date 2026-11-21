@@ -1,5 +1,4 @@
 // Runs the real verify-compound scripts against a fake adb, netstat, taskkill, pnpm and docker on PATH.
-// The view trees in fixtures/ are uiautomator dumps taken from the emulator, not output of the matcher.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -12,12 +11,24 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: here, encoding: 'utf8' }).trim();
 const worktreeName = basename(repoRoot);
 const scriptPath = (name) => join(here, name);
-const fixture = (name) => join(here, 'fixtures', name);
 const dirs = [];
 
 after(() => dirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
 
 const slashed = (path) => path.replaceAll('\\', '/');
+
+// After `emu kill` the serial stays listed for FAKE_KILL_LINGER more `adb devices` calls, as a shutting-down QEMU does.
+// FAKE_LISTING overrides the state it is listed in; "none" means not listed.
+const fakeDevices = `fake_devices() {
+  local state="\${FAKE_LISTING:-device}" polls
+  if [ -f "$FAKE_CALLS.killed" ]; then
+    polls=$(cat "$FAKE_CALLS.killed")
+    echo $((polls + 1)) > "$FAKE_CALLS.killed"
+    [ "$polls" -ge "\${FAKE_KILL_LINGER:-0}" ] && state=none
+  fi
+  printf "List of devices attached\\n"
+  [ "$state" = none ] || printf "emulator-5554\\t%s\\n" "$state"
+}`;
 
 function executable(path, body) {
   mkdirSync(dirname(path), { recursive: true });
@@ -26,7 +37,12 @@ function executable(path, body) {
 }
 
 // A fake machine: every fake tool appends its arguments to calls.log, and netstat prints `listeners`.
-function makeMachine({ listeners = [], tree = fixture('today-signed-in.xml') } = {}) {
+function makeMachine({
+  listeners = [],
+  maestroBody = 'echo "maestro $*" >> "$FAKE_CALLS"',
+  adbExtra = '',
+  curlBody = 'case "$*" in *"/health"*) echo \'{"status":"ok"}\' ;; *"/status"*) echo "packager-status:running" ;; esac',
+} = {}) {
   const root = resolve(mkdtempSync(join(tmpdir(), 'verify-compound-')));
   dirs.push(root);
 
@@ -42,9 +58,11 @@ function makeMachine({ listeners = [], tree = fixture('today-signed-in.xml') } =
 
   executable(
     join(sdk, 'platform-tools', 'adb.exe'),
-    'echo "adb $*" >> "$FAKE_CALLS"\ncase "$*" in *"uiautomator dump"*) cat "$FAKE_TREE" ;; esac',
+    `${fakeDevices}\necho "adb $*" >> "$FAKE_CALLS"\n${adbExtra}\ncase "$*" in *"emu kill"*) echo 0 > "$FAKE_CALLS.killed" ;; *"getprop sys.boot_completed"*) echo 1 ;; *"devices"*) fake_devices ;; *"pm list packages com.pratham124.compound"*) echo "package:com.pratham124.compound" ;; *"pm list packages dev.mobile.maestro"*) echo "package:dev.mobile.maestro" ;; *"getprop persist.sys.timezone"*) echo "UTC" ;; *"settings get system font_scale"*) echo "\${FAKE_FONT_SCALE:-null}" ;; esac`,
   );
   executable(join(bin, 'netstat'), 'cat "$FAKE_NETSTAT"');
+  executable(join(bin, 'maestro'), maestroBody);
+  executable(join(bin, 'curl'), curlBody);
 
   for (const tool of ['taskkill', 'pnpm', 'docker']) {
     executable(join(bin, tool), `echo "${tool} $*" >> "$FAKE_CALLS"`);
@@ -54,16 +72,17 @@ function makeMachine({ listeners = [], tree = fixture('today-signed-in.xml') } =
     ...process.env,
     PATH: `${slashed(bin)}${delimiter}${process.env.PATH}`,
     ANDROID_HOME: slashed(sdk),
+    MAESTRO: slashed(join(bin, 'maestro')),
     VERIFY_EVIDENCE_ROOT: slashed(evidence),
     FAKE_CALLS: slashed(calls),
     FAKE_NETSTAT: slashed(netstat),
-    FAKE_TREE: slashed(tree),
     DRIVE_WAIT: '0',
-    DRIVE_RESTART_WAIT: '1',
+    RUN_FLOW_RETRY: '0',
   };
 
   return {
     evidence,
+    env,
     calls: () => readFileSync(calls, 'utf8').split('\n').filter(Boolean),
     pointer: join(evidence, `latest-${worktreeName}`),
     // Records an unfinished run, as launch.sh would have left it.
@@ -78,8 +97,17 @@ function makeMachine({ listeners = [], tree = fixture('today-signed-in.xml') } =
 
       return runDir;
     },
+    writeMetroOwner({ pid, worktree = slashed(repoRoot), apiUrl = 'http://localhost:3000' }) {
+      writeFileSync(
+        join(evidence, 'metro-8082.env'),
+        `METRO_PID=${pid}\nMETRO_WORKTREE=${worktree}\nMETRO_API_URL=${apiUrl}\n`,
+      );
+    },
     run(script, ...args) {
       return spawnSync('bash', [scriptPath(script), ...args], { cwd: repoRoot, env, encoding: 'utf8' });
+    },
+    runWithEnv(extraEnv, script, ...args) {
+      return spawnSync('bash', [scriptPath(script), ...args], { cwd: repoRoot, env: { ...env, ...extraEnv }, encoding: 'utf8' });
     },
   };
 }
@@ -121,6 +149,33 @@ describe('cleanup.sh', () => {
     assert.ok(machine.calls().some((line) => line.includes('emu kill')));
   });
 
+  test('waits for the emulator to drop out of adb devices after emu kill, so a launch right after cannot see it', () => {
+    const machine = makeMachine();
+
+    machine.startRun({ STACK_STARTED: 0, EMULATOR_STARTED: 1 });
+
+    const result = machine.runWithEnv({ FAKE_KILL_LINGER: '3' }, 'cleanup.sh');
+
+    assert.equal(result.status, 0, result.stderr);
+    const adbCalls = machine.calls().filter((line) => line.startsWith('adb '));
+    const killIdx = adbCalls.findIndex((line) => line.includes('emu kill'));
+    const polls = adbCalls.slice(killIdx + 1).filter((line) => line === 'adb devices');
+    assert.equal(polls.length, 4, 'polls until the serial is gone');
+    assert.match(result.stdout, /stopped emulator emulator-5554/);
+  });
+
+  test('says so instead of claiming the emulator stopped when it is still listed after the bounded wait', () => {
+    const machine = makeMachine();
+
+    machine.startRun({ STACK_STARTED: 0, EMULATOR_STARTED: 1 });
+
+    const result = machine.runWithEnv({ FAKE_KILL_LINGER: '99', EMU_KILL_WAIT: '2' }, 'cleanup.sh');
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stderr, /still listed after 2s/);
+    assert.doesNotMatch(result.stdout, /stopped emulator/);
+  });
+
   test('leaves the shared stack running when the run found it already up', () => {
     const machine = makeMachine();
 
@@ -148,6 +203,32 @@ describe('cleanup.sh', () => {
     assert.equal(machine.run('cleanup.sh').status, 0);
     assert.ok(machine.calls().includes('pnpm stack:down'));
   });
+
+  test('leaves a reused Metro running when METRO_STARTED=0', () => {
+    const machine = makeMachine({ listeners: [[3000, 4242], [8082, 5252]] });
+
+    machine.startRun({ SERVER_PID: 4242, METRO_PID: 5252, METRO_STARTED: 0, STACK_STARTED: 0, EMULATOR_STARTED: 0 });
+    machine.writeMetroOwner({ pid: 5252 });
+
+    const result = machine.run('cleanup.sh');
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(taskkills(machine), ['taskkill //PID 4242 //T //F']);
+    assert.ok(existsSync(join(machine.evidence, 'metro-8082.env')));
+  });
+
+  test('keeps a launched Metro running when --keep-metro is passed', () => {
+    const machine = makeMachine({ listeners: [[3000, 4242], [8082, 5252]] });
+
+    machine.startRun({ SERVER_PID: 4242, METRO_PID: 5252, METRO_STARTED: 1, STACK_STARTED: 0, EMULATOR_STARTED: 0 });
+    machine.writeMetroOwner({ pid: 5252 });
+
+    const result = machine.run('cleanup.sh', '--keep-metro');
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(taskkills(machine), ['taskkill //PID 4242 //T //F']);
+    assert.ok(existsSync(join(machine.evidence, 'metro-8082.env')));
+  });
 });
 
 describe('launch.sh', () => {
@@ -165,73 +246,253 @@ describe('launch.sh', () => {
     assert.deepEqual(readdirSync(machine.evidence).sort(), before);
     assert.equal(readFileSync(machine.pointer, 'utf8'), '20260101-000000');
   });
-});
 
-describe('drive.sh finds views by label in real uiautomator dumps', () => {
-  test('matches a notice whose text has an apostrophe, which uiautomator writes unescaped', () => {
-    const machine = makeMachine({ tree: fixture('wrong-code-notice.xml') });
+  test('does not reuse or reboot an emulator that is listed as offline, and fails before adb reverse', () => {
+    const machine = makeMachine({ listeners: [[8082, 5252]] });
 
-    machine.startRun({});
+    machine.writeMetroOwner({ pid: 5252 });
 
-    const result = machine.run('drive.sh', 'find', "That code didn't work. Ask for a new one.");
+    const result = machine.runWithEnv({ FAKE_LISTING: 'offline', EMU_SETTLE_WAIT: '2' }, 'launch.sh', '--signed-out');
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /listed as 'offline'/);
+    assert.ok(!machine.calls().some((line) => line.includes('reverse tcp')));
+  });
+
+  test('refuses to reuse Metro on 8082 when it belongs to another worktree', () => {
+    const machine = makeMachine({ listeners: [[8082, 5252]] });
+
+    machine.writeMetroOwner({ pid: 5252, worktree: '/c/other/worktree' });
+
+    const result = machine.run('launch.sh', '--signed-out');
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /not this worktree's Metro/);
+    assert.ok(!machine.calls().some((line) => line.includes('@compound/mobile start')));
+  });
+
+  test('reuses a running Metro on 8082 when owned by this worktree and records METRO_STARTED=0', () => {
+    const machine = makeMachine({ listeners: [[8082, 5252]] });
+
+    machine.writeMetroOwner({ pid: 5252 });
+
+    const result = machine.run('launch.sh', '--signed-out');
 
     assert.equal(result.status, 0, result.stderr);
-    // bounds="[44,505][1036,552]" in the dump
-    assert.equal(result.stdout.trim(), '44 505 1036 552');
-  });
-
-  test('taps the centre of the view', () => {
-    const machine = makeMachine();
-
-    machine.startRun({});
-
-    assert.equal(machine.run('drive.sh', 'tap', 'Train').status, 0);
-    // The tab spans [216,2054][432,2274] in the dump.
-    assert.ok(machine.calls().includes('adb -s emulator-5554 shell input tap 324 2164'));
-  });
-
-  test('taps the chat button where it is drawn, though uiautomator reports its width and height as the corner', () => {
-    const machine = makeMachine();
-
-    machine.startRun({});
-
-    assert.equal(machine.run('drive.sh', 'tap', 'Ask Compound').status, 0);
-    // The dump says bounds="[904,1928][154,154]". The button sits at the bottom right of the 1080x2340 screen in the
-    // screenshot taken at the same time, about x 980, y 2005.
-    assert.ok(machine.calls().includes('adb -s emulator-5554 shell input tap 981 2005'));
-  });
-
-  test('exits 1 and taps nothing when the label is not in the tree', () => {
-    const machine = makeMachine();
-
-    machine.startRun({});
-
-    const result = machine.run('drive.sh', 'find', 'No such label');
-
-    assert.equal(result.status, 1);
-    assert.ok(!machine.calls().some((line) => line.includes('input tap')));
+    assert.match(result.stdout, /READY:/);
+    assert.ok(!machine.calls().some((line) => line.includes('@compound/mobile start')));
+    assert.ok(!machine.calls().some((line) => line.includes('8081')));
+    assert.ok(machine.calls().some((line) => line.includes('run-as com.pratham124.compound rm -rf shared_prefs/SecureStore.xml files/SQLite')), 'session and databases removed');
+    assert.ok(!machine.calls().some((line) => line.includes('pm clear')), 'dev client preferences left alone');
+    const runId = readFileSync(machine.pointer, 'utf8').trim();
+    const state = readFileSync(join(machine.evidence, runId, 'state.env'), 'utf8');
+    assert.match(state, /^METRO_STARTED=0$/m);
+    assert.match(state, /^METRO_PID=5252$/m);
   });
 });
 
-describe('drive.sh dev-menu', () => {
-  test('closes the development client menu by its Close button', () => {
-    const machine = makeMachine({ tree: fixture('dev-menu.xml') });
+describe('run-flow.sh', () => {
+  test('exits non-zero when no flow file matches the requested feature', () => {
+    const machine = makeMachine();
 
     machine.startRun({});
-    machine.run('drive.sh', 'dev-menu');
 
-    // Close spans [943,1040][987,1084] in the dump.
-    assert.ok(machine.calls().includes('adb -s emulator-5554 shell input tap 965 1062'));
+    const result = machine.run('run-flow.sh', 'no-such-feature');
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /No Maestro flow found/);
+    assert.deepEqual(machine.calls(), []);
   });
 
-  test("leaves the app's own Close button on the quick-chat sheet alone", () => {
-    const machine = makeMachine({ tree: fixture('quick-chat-sheet.xml') });
+  test('runs maestro test, writes logs and copies only explicit screenshots into EVIDENCE_DIR', () => {
+    const maestroBody = [
+      'echo "maestro $*" >> "$FAKE_CALLS"',
+      'out=""',
+      'while [ $# -gt 0 ]; do',
+      '  if [ "$1" = "--test-output-dir" ]; then out="$2"; shift 2; else shift; fi',
+      'done',
+      'mkdir -p "$out/takeScreenshot" "$out/screenshots"',
+      'printf "png" > "$out/takeScreenshot/tab-shell-today.png"',
+      'printf "dbg" > "$out/screenshots/step-001-tap.png"',
+    ].join('\n');
+    const machine = makeMachine({ maestroBody });
+    const runDir = machine.startRun({});
+
+    const result = machine.run('run-flow.sh', 'tab-shell');
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(existsSync(join(runDir, 'tab-shell-today.png')), 'explicit takeScreenshot PNG copied');
+    assert.ok(!existsSync(join(runDir, 'step-001-tap.png')), 'Maestro internal step-* PNG excluded');
+    assert.ok(existsSync(join(runDir, 'tab-shell-maestro.log')), 'maestro log written');
+    assert.ok(machine.calls().some((line) => line.includes('maestro test') && line.includes('-e EMAIL=verify-test@example.test')));
+  });
+
+  test('runs several features in order on one Launch, returning to Today between them, and prints a summary', () => {
+    const machine = makeMachine();
 
     machine.startRun({});
 
-    const result = machine.run('drive.sh', 'dev-menu');
+    const result = machine.run('run-flow.sh', 'tab-shell', 'profile');
 
     assert.equal(result.status, 0, result.stderr);
-    assert.ok(!machine.calls().some((line) => line.includes('input tap')));
+    const flows = machine.calls().filter((line) => line.startsWith('maestro')).map((line) => /(\w[\w-]*)\.yaml$/.exec(line)?.[1]);
+    assert.deepEqual(flows, ['_to-today', 'tab-shell', '_to-today', 'profile']);
+    assert.match(result.stdout, /^PASS tab-shell \d+s$/m);
+    assert.match(result.stdout, /^PASS profile \d+s$/m);
+  });
+
+  test('runs the remaining features after one fails, then exits non-zero with FAIL in the summary', () => {
+    const maestroBody = ['echo "maestro $*" >> "$FAKE_CALLS"', 'case "$*" in *tab-shell.yaml*) exit 1 ;; esac'].join('\n');
+    const machine = makeMachine({ maestroBody });
+
+    machine.startRun({});
+
+    const result = machine.run('run-flow.sh', 'tab-shell', 'profile');
+
+    assert.notEqual(result.status, 0);
+    assert.ok(machine.calls().some((line) => line.endsWith('profile.yaml')), 'profile still ran');
+    assert.match(result.stdout, /^FAIL tab-shell \d+s$/m);
+    assert.match(result.stdout, /^PASS profile \d+s$/m);
+  });
+
+  test('reports a flow that fails once and passes on retry as FLAKY, keeping both attempts apart, and exits 0', () => {
+    const maestroBody = [
+      'echo "maestro $*" >> "$FAKE_CALLS"',
+      'out=""',
+      'while [ $# -gt 0 ]; do',
+      '  if [ "$1" = "--test-output-dir" ]; then out="$2"; shift 2; else shift; fi',
+      'done',
+      'mkdir -p "$out/takeScreenshot"; printf png > "$out/takeScreenshot/shot.png"',
+      'case "$out" in *profile*) if [ ! -f "$FAKE_CALLS.failed" ]; then touch "$FAKE_CALLS.failed"; exit 1; fi ;; esac',
+    ].join('\n');
+    const machine = makeMachine({ maestroBody });
+    const runDir = machine.startRun({});
+
+    const result = machine.runWithEnv({ RUN_FLOW_RETRY: '1' }, 'run-flow.sh', 'profile');
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /^FLAKY profile \d+s then \d+s$/m);
+    assert.ok(existsSync(join(runDir, 'profile-maestro.log')) && existsSync(join(runDir, 'profile-retry-maestro.log')), 'both attempts keep a log');
+    assert.ok(existsSync(join(runDir, 'shot-retry.png')), 'the retry screenshots carry a suffix');
+  });
+
+  test('reports FAIL and exits non-zero when the retry fails too, and not at all when RUN_FLOW_RETRY=0', () => {
+    const maestroBody = ['echo "maestro $*" >> "$FAKE_CALLS"', 'case "$*" in *profile.yaml*) exit 1 ;; esac'].join('\n');
+    const machine = makeMachine({ maestroBody });
+
+    machine.startRun({});
+
+    const retried = machine.runWithEnv({ RUN_FLOW_RETRY: '1' }, 'run-flow.sh', 'profile');
+
+    assert.notEqual(retried.status, 0);
+    assert.match(retried.stdout, /^FAIL profile \d+s then \d+s$/m);
+    assert.equal(machine.calls().filter((line) => line.endsWith('profile.yaml')).length, 2, 'one retry, no more');
+
+    const single = machine.run('run-flow.sh', 'profile');
+
+    assert.match(single.stdout, /^FAIL profile \d+s$/m);
+    assert.equal(machine.calls().filter((line) => line.endsWith('profile.yaml')).length, 3, 'no retry when turned off');
+  });
+
+  test('runs a feature deep flow only with --deep, offline, after its base flow', () => {
+    const machine = makeMachine();
+
+    machine.startRun({});
+
+    assert.equal(machine.run('run-flow.sh', 'workouts').status, 0);
+    assert.ok(!machine.calls().some((line) => line.endsWith('workouts-deep.yaml')), 'no deep flow without --deep');
+
+    const result = machine.run('run-flow.sh', '--deep', 'workouts', 'tab-shell');
+
+    assert.equal(result.status, 0, result.stderr);
+    const calls = machine.calls();
+    const deepIdx = calls.findIndex((line) => line.endsWith('workouts-deep.yaml'));
+    const offIdx = calls.findLastIndex((line, i) => i < deepIdx && line.includes('svc wifi disable'));
+    const baseIdx = calls.findLastIndex((line, i) => i < offIdx && line.endsWith('workouts.yaml'));
+    assert.ok(baseIdx >= 0 && offIdx > baseIdx && deepIdx > offIdx, 'base, then network off, then deep');
+    assert.ok(!calls.some((line) => line.endsWith('tab-shell-deep.yaml')), 'no deep flow exists for tab-shell');
+    assert.match(result.stdout, /^PASS workouts-deep \d+s$/m);
+  });
+
+  test('rejects an unknown option before touching the emulator', () => {
+    const machine = makeMachine();
+
+    machine.startRun({});
+
+    const result = machine.run('run-flow.sh', '--bogus', 'workouts');
+
+    assert.equal(result.status, 2);
+    assert.deepEqual(machine.calls(), []);
+  });
+
+  test('restores adb reverse :3000 and wifi/data when workouts offline phase fails', () => {
+    const maestroBody = [
+      'echo "maestro $*" >> "$FAKE_CALLS"',
+      'case "$*" in *"PHASE=offline"*) exit 1 ;; esac',
+    ].join('\n');
+    const machine = makeMachine({ maestroBody });
+
+    machine.startRun({});
+
+    const result = machine.run('run-flow.sh', 'workouts');
+
+    assert.notEqual(result.status, 0);
+    const adbCalls = machine.calls().filter((line) => line.startsWith('adb '));
+    const dropIdx = adbCalls.findIndex((line) => line.includes('reverse --remove tcp:3000'));
+    const disableIdx = adbCalls.findIndex((line) => line.includes('svc wifi disable; svc data disable'));
+    const restoreRevIdx = adbCalls.findIndex((line, i) => i > dropIdx && line.includes('reverse tcp:3000 tcp:3000'));
+    const restoreNetIdx = adbCalls.findIndex((line, i) => i > disableIdx && line.includes('svc wifi enable; svc data enable'));
+    assert.ok(dropIdx >= 0, 'API reverse removed before offline phase');
+    assert.ok(disableIdx >= 0, 'wifi/data disabled before offline phase');
+    assert.ok(restoreRevIdx > dropIdx, 'API reverse restored on failure');
+    assert.ok(restoreNetIdx > disableIdx, 'wifi/data restored on failure');
+  });
+
+  test('restores original font_scale when workouts-fixtures large-text phase fails', () => {
+    const maestroBody = [
+      'echo "maestro $*" >> "$FAKE_CALLS"',
+      'case "$*" in *"PHASE=fixtures-large-text"*) exit 1 ;; esac',
+    ].join('\n');
+    const machine = makeMachine({ maestroBody });
+
+    machine.env.FAKE_FONT_SCALE = '1.15';
+    machine.startRun({});
+
+    const result = machine.run('run-flow.sh', 'workouts-fixtures');
+
+    assert.notEqual(result.status, 0);
+    const adbCalls = machine.calls().filter((line) => line.startsWith('adb '));
+    const setIdx = adbCalls.findIndex((line) => line.includes('settings put system font_scale 2.0'));
+    const restoreIdx = adbCalls.findIndex((line, i) => i > setIdx && line.includes('settings put system font_scale 1.15'));
+    assert.ok(setIdx >= 0, 'font_scale set to 2.0');
+    assert.ok(restoreIdx > setIdx, 'original font_scale restored on failure');
+  });
+});
+
+describe('drive.sh', () => {
+  test('env prints the run folder, email and adb for eval', () => {
+    const machine = makeMachine();
+
+    const runDir = machine.startRun({});
+    const result = machine.run('drive.sh', 'env');
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /^EVIDENCE_DIR=.*20260101-000000$/m);
+    assert.match(result.stdout, /^EMAIL=verify-test@example\.test$/m);
+  });
+
+  test('code prints the latest code the server logged for the run email, and fails when none arrives', () => {
+    const machine = makeMachine();
+
+    const runDir = machine.startRun({});
+
+    assert.equal(machine.run('drive.sh', 'code').status, 1);
+
+    writeFileSync(
+      join(runDir, 'server.log'),
+      '[dev mailer] sign-in code for verify-test@example.test: 111111\n[dev mailer] sign-in code for verify-test@example.test: 222222\n',
+    );
+
+    assert.equal(machine.run('drive.sh', 'code').stdout.trim(), '222222');
   });
 });

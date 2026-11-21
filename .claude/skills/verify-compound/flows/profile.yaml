@@ -1,0 +1,42 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/profile.md. Starts signed in on Today.
+# Post-flow DB checks run via psql against user_profiles.
+- runFlow: _park-tools.yaml
+- tapOn: "Settings"
+- extendedWaitUntil:
+    visible: "Units"
+    timeout: 15000
+- assertVisible: "Time Zone"
+- assertVisible: ${EMAIL}
+- takeScreenshot: profile-settings-metric
+
+# Switch to lb.
+- tapOn: "lb"
+- waitForAnimationToEnd:
+    timeout: 1000
+- takeScreenshot: profile-settings-imperial
+
+# Confirm lb persists across restart.
+- stopApp
+- launchApp
+- runFlow: _dismiss-dev-menu.yaml
+- extendedWaitUntil:
+    visible: "Settings"
+    timeout: 90000
+- runFlow: _park-tools.yaml
+- tapOn: "Settings"
+- extendedWaitUntil:
+    visible: "Units"
+    timeout: 15000
+- takeScreenshot: profile-reopened-imperial
+
+# Switch back to kg.
+- tapOn: "kg"
+- waitForAnimationToEnd:
+    timeout: 1000
+- takeScreenshot: profile-settings-metric-restored
+- back
+- extendedWaitUntil:
+    visible: "Today"
+    timeout: 10000

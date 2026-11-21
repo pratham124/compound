@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Brings up everything a drive needs: local stack, migrated server, emulator, and the app on it.
-# Usage: launch.sh [--signed-out]. Signs the test person in unless told not to. Prints the evidence folder and email on the last lines. See SKILL.md, Launch.
+# Brings up everything a drive needs: local stack, migrated server, emulator, Metro and the app on it.
+# Usage: launch.sh [--signed-out]. Signs the test person in via Maestro unless told not to. See SKILL.md, Launch.
 set -euo pipefail
 
 . "$(dirname "$0")/lib.sh"
@@ -15,6 +15,8 @@ fi
 SIGN_IN=1
 [ "${1:-}" = "--signed-out" ] && SIGN_IN=0
 
+require_maestro || exit 1
+
 wait_for() { # description, seconds, command...
   local what="$1" seconds="$2"; shift 2
   for _ in $(seq "$seconds"); do
@@ -28,7 +30,6 @@ wait_for() { # description, seconds, command...
 server_ready() { curl -sf "$API_URL/health" | grep -q '"status":"ok"'; }
 metro_ready() { curl -sf "http://localhost:$METRO_PORT/status" | grep -q 'packager-status:running'; }
 booted() { [ "$("$ADB" -s "$SERIAL" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; }
-bundled() { grep -q 'Android Bundled' "$RUN_DIR/metro.log"; }
 
 RUN_ID="$(date +%Y%m%d-%H%M%S)"
 RUN_DIR="$EVIDENCE_ROOT/$RUN_ID"
@@ -45,12 +46,45 @@ on_exit() {
   local status=$?
   [ "$status" = 0 ] && return
   [ "$server_started" = 1 ] && remember SERVER_PID "$(listener_pid "$SERVER_PORT")"
-  [ "$metro_started" = 1 ] && remember METRO_PID "$(listener_pid "$METRO_PORT")"
+  if [ "$metro_started" = 1 ]; then
+    local mpid
+    mpid="$(listener_pid "$METRO_PORT")"
+    remember METRO_PID "$mpid"
+    remember METRO_STARTED 1
+    [ -n "$mpid" ] && record_metro_owner "$mpid"
+  fi
   echo "Launch failed (exit $status). Run scripts/cleanup.sh before launching again." >&2
 }
 trap on_exit EXIT
 
 [ -f .env ] || cp .env.example .env
+
+# Boot the emulator first in the background so it overlaps with stack, server and Metro startup.
+emulator_started=0
+# A listed emulator that is offline or not yet booted is either starting or shutting down: wait for it to settle
+# instead of reusing it (adb reverse fails on it) or starting a second one on the same serial.
+for _ in $(seq "${EMU_SETTLE_WAIT:-60}"); do
+  listing="$(emulator_listing)"
+  [ -z "$listing" ] && break
+  [ "$listing" = device ] && booted && break
+  sleep 1
+done
+if [ -n "$listing" ] && ! { [ "$listing" = device ] && booted; }; then
+  echo "$SERIAL is listed as '$listing' but never became ready or went away. Close it, then launch again." >&2
+  exit 1
+fi
+
+if [ -n "$listing" ]; then
+  remember EMULATOR_STARTED 0
+else
+  emu_args=(-avd "$AVD" -no-snapshot-save -no-boot-anim -no-audio)
+  if [ -d "$HOME/.android/avd/$AVD.avd/snapshots/default_boot" ]; then
+    emu_args+=(-snapshot default_boot)
+  fi
+  nohup "$EMULATOR" "${emu_args[@]}" > "$RUN_DIR/emulator.log" 2>&1 &
+  emulator_started=1
+  remember EMULATOR_STARTED 1
+fi
 
 # The stack is shared by every worktree: use it if it is up and leave it running.
 if [ -z "$(docker compose ps --status running -q)" ]; then
@@ -68,14 +102,39 @@ fi
 # The server migrates the database before it listens, so a passing /health means an empty database is ready.
 nohup pnpm --filter @compound/server start > "$RUN_DIR/server.log" 2>&1 &
 server_started=1
-wait_for "server /health to report ok" 90 server_ready
-remember SERVER_PID "$(listener_pid "$SERVER_PORT")"
 
-if "$ADB" devices | tr -d '\r' | grep -q "^$SERIAL	device"; then
-  remember EMULATOR_STARTED 0
+# Reuse a running Metro on :8082 only if it belongs to this worktree and API URL; never touch :8081.
+existing_metro="$(listener_pid "$METRO_PORT")"
+if [ -n "$existing_metro" ]; then
+  if metro_ready && metro_owned_by_worktree "$existing_metro"; then
+    remember METRO_STARTED 0
+    remember METRO_PID "$existing_metro"
+  else
+    echo "Port $METRO_PORT is already taken by a process that is not this worktree's Metro. Not double-driving it." >&2
+    exit 1
+  fi
 else
-  nohup "$EMULATOR" -avd "$AVD" -no-snapshot-save -no-boot-anim -no-audio > "$RUN_DIR/emulator.log" 2>&1 &
-  remember EMULATOR_STARTED 1
+  # A shell variable beats apps/mobile/.env, which holds the phone's LAN address and stays untouched.
+  export EXPO_PUBLIC_API_URL="$API_URL"
+  nohup pnpm --filter @compound/mobile start --port "$METRO_PORT" > "$RUN_DIR/metro.log" 2>&1 &
+  metro_started=1
+fi
+
+if [ "$metro_started" = 1 ]; then
+  wait_for "Metro to answer" 120 metro_ready
+  mpid="$(listener_pid "$METRO_PORT")"
+  remember METRO_PID "$mpid"
+  remember METRO_STARTED 1
+  record_metro_owner "$mpid"
+  # Pre-warm Metro's Android bundle in the background while the emulator finishes booting.
+  (
+    url="$(curl -sf -H 'expo-platform: android' "http://localhost:$METRO_PORT" \
+      | node -e 'const d = JSON.parse(require("fs").readFileSync(0,"utf8")); console.log(d.launchAsset?.url ?? "")' 2>/dev/null)" || exit 0
+    [ -n "$url" ] && curl -sf "$url" -o /dev/null 2>/dev/null || true
+  ) &
+fi
+
+if [ "$emulator_started" = 1 ]; then
   wait_for "the emulator to boot" 240 booted
 fi
 
@@ -96,38 +155,31 @@ RECIPE
   exit 1
 fi
 
-if [ -n "$(listener_pid "$METRO_PORT")" ]; then
-  echo "Port $METRO_PORT is already taken by a process this run did not start. Not double-driving it." >&2
-  exit 1
-fi
+# Every run starts signed out with no local data from an earlier run. pm clear would also wipe the dev client's own
+# preferences, bringing its welcome sheet and developer menu back each time, so remove only the session and databases.
+reset_app_data
 
-# A shell variable beats apps/mobile/.env, which holds the phone's LAN address and stays untouched.
-export EXPO_PUBLIC_API_URL="$API_URL"
+# Start the app's 50-100 s cold bundle load now, so it overlaps the server's startup; the Maestro boot flow then only
+# waits for the first screen. The server is needed only once the sign-in screen sends a code.
+"$ADB" -s "$SERIAL" shell am start -a android.intent.action.VIEW -d "compound://expo-development-client/?url=http%3A%2F%2Flocalhost%3A$METRO_PORT" "$APP_ID" >/dev/null
 
-nohup pnpm --filter @compound/mobile start --port "$METRO_PORT" > "$RUN_DIR/metro.log" 2>&1 &
-metro_started=1
-wait_for "Metro to answer" 120 metro_ready
+wait_for "server /health to report ok" 90 server_ready
+remember SERVER_PID "$(listener_pid "$SERVER_PORT")"
 
-# Clearing the app's data drops a session left by an earlier run, so every run starts on the sign-in screen.
-"$ADB" -s "$SERIAL" shell pm clear "$APP_ID" >/dev/null
-"$ADB" -s "$SERIAL" shell am start -a android.intent.action.VIEW \
-  -d "compound://expo-development-client/?url=http%3A%2F%2Flocalhost%3A$METRO_PORT" "$APP_ID" >/dev/null
-
-wait_for "the app's JavaScript bundle to load" 300 bundled
-remember METRO_PID "$(listener_pid "$METRO_PORT")"
-
-# After the data clear the dev client shows its welcome sheet and then its developer menu over the app.
-bash "$(dirname "$0")/drive.sh" dev-menu
-DRIVE_WAIT=30 bash "$(dirname "$0")/drive.sh" find "Use an email code instead" >/dev/null
+LAUNCH_LOG="$RUN_DIR/launch-maestro.log"
+: > "$LAUNCH_LOG"
 
 if [ "$SIGN_IN" = 1 ]; then
-  bash "$(dirname "$0")/drive.sh" sign-in
+  run_maestro "$FLOWS_DIR/_boot-ready.yaml" "$RUN_DIR/maestro-launch/boot" "$LAUNCH_LOG" -e "METRO_PORT=$METRO_PORT" -e "OPEN_LINK=0" -e "SIGN_IN=1" -e "EMAIL=$EMAIL" >/dev/null
+  CODE="$(wait_for_code 15)"
+  run_maestro "$FLOWS_DIR/_sign-in-verify.yaml" "$RUN_DIR/maestro-launch/sign-in-verify" "$LAUNCH_LOG" -e "CODE=$CODE" >/dev/null
   WHERE="signed in as the test person, on Today"
 else
+  run_maestro "$FLOWS_DIR/_boot-ready.yaml" "$RUN_DIR/maestro-launch/boot" "$LAUNCH_LOG" -e "METRO_PORT=$METRO_PORT" -e "OPEN_LINK=0" -e "SIGN_IN=0" >/dev/null
   WHERE="signed out, on the sign-in screen"
 fi
 
 echo "READY: stack, server (:$SERVER_PORT), emulator ($SERIAL) and app (Metro :$METRO_PORT) are up, $WHERE."
 echo "EVIDENCE_DIR=$RUN_DIR"
 echo "EMAIL=$EMAIL"
-echo "Next: scripts/doctor.sh, then scripts/drive.sh (SKILL.md, Drive)."
+echo "Next: scripts/doctor.sh, then scripts/run-flow.sh <feature> (SKILL.md, Drive)."

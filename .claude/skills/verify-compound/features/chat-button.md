@@ -12,25 +12,26 @@ A small mochi button floats over the app. Tapping it opens the Ask Compound shee
 
 ## How to get to it (user POV)
 
-- Tap the floating button on any tab except Chat. Its accessibility label is `Ask Compound`.
+- Tap the floating button on any tab except Chat. Its accessibility label is `Ask Compound` (iPhone only; see Gotchas).
 - Drag the button to move it.
 
-## Driving it with drive.sh (adb on an Android emulator)
+## Driving it with Maestro (`flows/chat-button.yaml`)
 
 Preconditions:
 
-- `D=.claude/skills/verify-compound/scripts/drive.sh` and `eval "$(bash $D env)"` are set in the Bash call. Each step below is `bash $D tap|type|find|absent "<label>"`, as `../SKILL.md` describes; a label that never appears is reported, not worked around.
-
 - Launch is `READY`, Doctor passes, and `$EMAIL` is signed in on the Today tab.
+- Run `bash .claude/skills/verify-compound/scripts/run-flow.sh chat-button`.
 
-- **Shown.** On Today `bash $D find "Ask Compound"` succeeds. `tap` `Train`, `Money`, `Trends` in turn (the tab labels are in the view tree even where the bar draws only one): the button is found on each.
-- **Hidden.** `tap "Chat"`: `bash $D absent "Ask Compound"` succeeds. `tap "Today"`, then `tap "Settings"`: `absent` succeeds there too. After `Sign out`, the sign-in screen has no button.
-- **Open the sheet.** `tap "Money"`, then `tap "Ask Compound"`. `find "About: Money"` succeeds, so the sheet is open. Repeat from Today and expect `About: Today`. Take the screenshot after that `find`.
-- **Close.** Tap `Close`. The sheet goes and the button reappears on the same tab. Capture before and after.
-- **Moves.** Run `bash $D drag "Ask Compound" left`. The button lands against the left edge. Run `bash $D restart`: it comes back on the left. Capture before and after.
+Steps covered by `flows/chat-button.yaml` (screenshots only; inspect each one):
+
+- **Shown.** Parks `Tools`, then captures the button on `Today` (`chat-button-today`), `Train` (`chat-button-train`), `Money` (`chat-button-money`) and `Trends` (`chat-button-trends`).
+- **Hidden.** Taps `Chat` and captures the screen with no button (`chat-button-hidden-chat`). Returns to `Today`, opens `Settings` and captures it with no button (`chat-button-hidden-settings`), then presses back and captures `chat-button-back-on-today`.
+
+Not covered on Android, so check on the iPhone: the `Ask Compound` accessibility label and VoiceOver reading and activating the button, tapping it to open the sheet with `About: <screen>` and closing it with `Close`, and dragging it to an edge and finding it there after a restart.
 
 ## Gotchas
 
+- On Android, Maestro's hierarchy has ChatButton's `Animated.View` at its untransformed bounds `[0,0][154,154]` with `important-for-accessibility=false` and no label, because the button is placed with `translateX`/`translateY`. It cannot be selected by `Ask Compound` or tapped by label. A likely Android accessibility bug, for a later app ticket.
 - Check on the iPhone: how the drag feels, meaning the finger tracking, the spring snap and the haptics. A dev build on an emulator runs extra debug code and can't tell you.
 - Check on the iPhone: how the sheet looks and behaves as a native iOS sheet, including swiping it down to dismiss and the glass `Close` button. On Android the same route renders as a different kind of modal.
 - Check on the iPhone: that the button sits clear of the tab bar and the home indicator, and that it fades when the keyboard comes up.

@@ -1,0 +1,127 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/workouts.md step 5: a workout in progress survives force-stops, offline. Run via
+# scripts/run-flow.sh --deep workouts, which drops the API reverse and Wi-Fi first (PHASE=deep).
+# Same emulator constraints as workouts.yaml: no hideKeyboard, 250 ms settle on the live logger, 90 s after restarts.
+- runFlow: _park-tools.yaml
+- tapOn: "Train"
+- extendedWaitUntil:
+    visible: "Start workout"
+    timeout: 10000
+- tapOn:
+    text: "Start workout"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Add exercise"
+    timeout: 10000
+- tapOn:
+    text: "Add exercise"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Search exercises"
+    timeout: 10000
+- tapOn: "Search exercises"
+- inputText: "incline dumbbell press"
+- extendedWaitUntil:
+    visible: "Incline Dumbbell Press, Dumbbell"
+    timeout: 10000
+- tapOn:
+    text: "Incline Dumbbell Press, Dumbbell"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Set 1 reps"
+    timeout: 10000
+- tapOn:
+    text: "Set 1 reps"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- inputText: "8"
+- tapOn:
+    text: "Set 1 done"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- tapOn:
+    text: "Add set to Incline Dumbbell Press"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Set 2 reps"
+    timeout: 10000
+- tapOn:
+    text: "Set 2 reps"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- inputText: "7"
+- tapOn:
+    text: "Set 2 done"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "2 of 2 sets done"
+    timeout: 10000
+- takeScreenshot: workout-deep-before-restart
+
+# Restart 1: the checked sets survive.
+- stopApp
+- launchApp
+- runFlow: _dismiss-dev-menu.yaml
+- extendedWaitUntil:
+    visible: "Train"
+    timeout: 90000
+- runFlow: _park-tools.yaml
+- tapOn:
+    text: "Train"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "2 of 2 sets done"
+    timeout: 15000
+- takeScreenshot: workout-deep-reopened
+
+# An unchecked third set with reps typed survives a second restart.
+- tapOn:
+    text: "Add set to Incline Dumbbell Press"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Set 3 reps"
+    timeout: 10000
+- tapOn:
+    text: "Set 3 reps"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- inputText: "5"
+- stopApp
+- launchApp
+- runFlow: _dismiss-dev-menu.yaml
+- extendedWaitUntil:
+    visible: "Train"
+    timeout: 90000
+- runFlow: _park-tools.yaml
+- tapOn:
+    text: "Train"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "2 of 3 sets done"
+    timeout: 15000
+- assertVisible: "5"
+- takeScreenshot: workout-deep-reopened-again
+
+# Finish counts only the checked sets.
+- tapOn:
+    text: "Finish"
+    waitToSettleTimeoutMs: 250
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Workout done"
+    timeout: 15000
+- assertVisible: "Sets done: 2"
+- takeScreenshot: workout-deep-finished
+- tapOn: "Done"
+- extendedWaitUntil:
+    visible: "Start workout"
+    timeout: 15000

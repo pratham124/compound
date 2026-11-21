@@ -1,0 +1,61 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/tab-shell.md. Starts signed in on Today.
+- runFlow: _park-tools.yaml
+- extendedWaitUntil:
+    visible: "Today"
+    timeout: 10000
+- takeScreenshot: tab-shell-today
+
+# Cycle through all five tabs.
+- tapOn: "Train"
+- extendedWaitUntil:
+    visible: "Start workout"
+    timeout: 10000
+- takeScreenshot: tab-shell-train
+
+- tapOn: "Money"
+- waitForAnimationToEnd:
+    timeout: 1000
+- assertVisible: "Money"
+- takeScreenshot: tab-shell-money
+
+- tapOn: "Trends"
+- waitForAnimationToEnd:
+    timeout: 1000
+- assertVisible: "Trends"
+- takeScreenshot: tab-shell-trends
+
+- tapOn: "Chat"
+- waitForAnimationToEnd:
+    timeout: 1000
+- assertVisible: "Chat"
+- takeScreenshot: tab-shell-chat
+
+- tapOn: "Today"
+- waitForAnimationToEnd:
+    timeout: 1000
+- assertVisible: "Settings"
+
+# Open and close Settings.
+- tapOn: "Settings"
+- extendedWaitUntil:
+    visible: "Sign out"
+    timeout: 10000
+- takeScreenshot: tab-shell-settings
+- back
+- extendedWaitUntil:
+    visible: "Settings"
+    timeout: 10000
+
+# Signed-out gate hides the tab bar.
+- tapOn: "Settings"
+- extendedWaitUntil:
+    visible: "Sign out"
+    timeout: 10000
+- tapOn: "Sign out"
+- extendedWaitUntil:
+    visible: "Use an email code instead"
+    timeout: 15000
+- assertNotVisible: "Train"
+- takeScreenshot: tab-shell-signed-out

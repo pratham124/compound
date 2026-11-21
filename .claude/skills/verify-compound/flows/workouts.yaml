@@ -1,0 +1,270 @@
+appId: com.pratham124.compound
+---
+# Mirrors features/workouts.md steps 1-4 and 6 (step 5 is workouts-deep.yaml, steps 8-9 workouts-fixtures.yaml, step 7 the post-flow SQLite check).
+# Run via scripts/run-flow.sh workouts, which drives PHASE=online, toggles offline, drives PHASE=offline,
+# and restores network.
+# Pixel_5_API_34 has hw.keyboard=yes, so no soft keyboard opens and hideKeyboard would send BACK and close modals.
+# Taps inside the active logger set waitToSettleTimeoutMs: 250 so Maestro does not wait on the live 1s stopwatch.
+
+- runFlow:
+    when:
+      true: ${PHASE == 'online'}
+    commands:
+      - runFlow: _park-tools.yaml
+      # Step 1: Select lb in Settings, return to Train, capture workout-train.
+      - tapOn: "Settings"
+      - extendedWaitUntil:
+          visible: "Units"
+          timeout: 10000
+      - tapOn: "lb"
+      - waitForAnimationToEnd:
+          timeout: 1000
+      - back
+      - extendedWaitUntil:
+          visible: "Train"
+          timeout: 10000
+      - tapOn: "Train"
+      - extendedWaitUntil:
+          visible: "Start workout"
+          timeout: 10000
+      - takeScreenshot: workout-train
+
+      # Step 2: Start workout, confirm Add exercise visible and Ask Compound hidden.
+      - tapOn:
+          text: "Start workout"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Add exercise"
+          timeout: 10000
+      - assertNotVisible: "Ask Compound"
+      - takeScreenshot: workout-empty
+
+      # Step 3: Add Incline Dumbbell Press, log sets, open instructions, add Pushups, test jump-to-card, remove Pushups.
+      - tapOn:
+          text: "Add exercise"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - inputText: "incline dumbbell press"
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press, Dumbbell"
+          timeout: 10000
+      - takeScreenshot: workout-picker
+      - tapOn:
+          text: "Incline Dumbbell Press, Dumbbell"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Set 1 reps"
+          timeout: 10000
+      - assertVisible: "Set 1 weight in lb"
+      - takeScreenshot: workout-first-exercise
+
+      # Set 1: 8 reps, blank weight, check done.
+      - tapOn:
+          text: "Set 1 reps"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - inputText: "8"
+      - tapOn:
+          text: "Set 1 done"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+
+      # Set 2: 7 reps, unfinished weight "22.".
+      - tapOn:
+          text: "Add set to Incline Dumbbell Press"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Set 2 reps"
+          timeout: 10000
+      - tapOn:
+          text: "Set 2 reps"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - inputText: "7"
+      - tapOn:
+          text: "Set 2 weight in lb"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - inputText: "22."
+
+      # Instructions modal and return preserving state.
+      - tapOn:
+          text: "Incline Dumbbell Press"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "How to do it"
+          timeout: 10000
+      - assertVisible: "Done"
+      - tapOn:
+          text: "Done"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Set 2 reps"
+          timeout: 10000
+      - assertVisible: "1 of 2 sets done"
+      - assertVisible: "22."
+
+      # Add Pushups, add enough sets to scroll Incline Dumbbell Press off screen.
+      - scrollUntilVisible:
+          element: "Add exercise"
+          direction: DOWN
+      - tapOn:
+          text: "Add exercise"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - inputText: "pushups"
+      - extendedWaitUntil:
+          visible: "Pushups, Body only"
+          timeout: 10000
+      - tapOn:
+          text: "Pushups, Body only"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - repeat:
+          times: 5
+          commands:
+            - scrollUntilVisible:
+                element: "Add set to Pushups"
+                direction: DOWN
+            - tapOn:
+                text: "Add set to Pushups"
+                waitToSettleTimeoutMs: 250
+                retryTapIfNoChange: false
+      - scrollUntilVisible:
+          element: "Add exercise"
+          direction: DOWN
+      - runFlow:
+          when:
+            visible: "Incline Dumbbell Press"
+          commands:
+            - repeat:
+                times: 3
+                commands:
+                  - scrollUntilVisible:
+                      element: "Add set to Pushups"
+                      direction: DOWN
+                  - tapOn:
+                      text: "Add set to Pushups"
+                      waitToSettleTimeoutMs: 250
+                      retryTapIfNoChange: false
+            - scrollUntilVisible:
+                element: "Add exercise"
+                direction: DOWN
+      - assertNotVisible: "Incline Dumbbell Press"
+
+      # Re-pick Incline Dumbbell Press ("In workout") and verify logger jumps back to it.
+      - tapOn:
+          text: "Add exercise"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Search exercises"
+          timeout: 10000
+      - tapOn: "Search exercises"
+      - inputText: "incline dumbbell press"
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press, Dumbbell, in workout"
+          timeout: 10000
+      - tapOn:
+          text: "Incline Dumbbell Press, Dumbbell, in workout"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      # Wait for the picker modal to finish closing before checking the logger card (the picker row shares the title).
+      - extendedWaitUntil:
+          notVisible: "Search exercises"
+          timeout: 10000
+      - extendedWaitUntil:
+          visible: "Incline Dumbbell Press"
+          timeout: 10000
+      - assertVisible: "Set 1 reps"
+      - takeScreenshot: workout-jump
+
+      # Remove Pushups via its overflow menu so later set counts hold.
+      - scrollUntilVisible:
+          element: "More for Pushups"
+          direction: DOWN
+      - tapOn:
+          text: "More for Pushups"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "(?i)Remove exercise"
+          timeout: 10000
+      - tapOn:
+          text: "(?i)Remove exercise"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          notVisible: "Pushups"
+          timeout: 10000
+      - assertVisible: "1 of 2 sets done"
+
+- runFlow:
+    when:
+      true: ${PHASE == 'offline'}
+    commands:
+      # Step 4 (offline): finish Set 2 weight ("22.") as "22.5", check Set 2 done, then swipe-delete Set 3.
+      # Tap the right side of the centered field so the cursor lands after "22." instead of mid-string.
+      - tapOn:
+          text: "Set 2 weight in lb"
+          point: "90%, 50%"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - inputText: "5"
+      - tapOn:
+          text: "Set 2 done"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "2 of 2 sets done"
+          timeout: 10000
+      - takeScreenshot: workout-offline-sets
+
+      - tapOn:
+          text: "Add set to Incline Dumbbell Press"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "2 of 3 sets done"
+          timeout: 10000
+      # Start on the right side of Set 3 so a LEFT swipe crosses more than half the row width.
+      - swipe:
+          from:
+            text: "Set 3 done"
+          direction: LEFT
+          duration: 600
+      - extendedWaitUntil:
+          visible: "2 of 2 sets done"
+          timeout: 10000
+      - assertNotVisible: "Set 3"
+      - takeScreenshot: workout-swipe-delete
+
+      # Step 6 (offline): Finish, verify summary and hidden Ask Compound, then Done back to Train.
+      - tapOn:
+          text: "Finish"
+          waitToSettleTimeoutMs: 250
+          retryTapIfNoChange: false
+      - extendedWaitUntil:
+          visible: "Workout done"
+          timeout: 15000
+      - assertVisible: ${TODAY_DATE}
+      - assertVisible: "Sets done: 2"
+      - assertNotVisible: "Ask Compound"
+      - takeScreenshot: workout-finished
+      - tapOn: "Done"
+      - extendedWaitUntil:
+          visible: "Start workout"
+          timeout: 15000
