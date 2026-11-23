@@ -5,8 +5,9 @@ import { useAuthClient } from '../auth/AuthClientContext.tsx';
 import { useSignedInSession } from '../auth/useSignedInSession.ts';
 import { fetchProfile } from '../profile/profileApi.ts';
 import { refreshWorkoutUnits } from '../profile/refreshWorkoutUnits.ts';
+import { useSyncKick } from '../sync/OutboxSync.tsx';
 import { useWorkoutStoreFactory } from './WorkoutStoreContext.ts';
-import { uuidv7 } from './uuidv7.ts';
+import { uuidv7 } from '../localDatabase/uuidv7.ts';
 import { pickExercise } from './pickExercise.ts';
 import { WorkoutExerciseId, WorkoutId, WorkoutSetId, type WeightUnit, type Workout } from './workout.ts';
 import { applyWorkoutEdit, type WorkoutEdit } from './workoutEdit.ts';
@@ -68,6 +69,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
 
 export function AccountWorkouts({ children, userId, refreshUnits }: { children: ReactNode; userId: string | null; refreshUnits?: (store: WorkoutStore, isCurrent: () => boolean) => Promise<WeightUnit> }) {
   const openStore = useWorkoutStoreFactory();
+  const kickSync = useSyncKick();
   const [state, setState] = useState<WorkoutState>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -294,10 +296,12 @@ export function AccountWorkouts({ children, userId, refreshUnits }: { children: 
     }
 
     locked.current = true;
-    const workout = { ...latestWorkout.current, finishedAt: Date.now() };
+    // A clock moved back mid-workout would otherwise finish it before it started, which the server rejects.
+    const workout = { ...latestWorkout.current, finishedAt: Math.max(latestWorkout.current.startedAt, Date.now()) };
 
     try {
       await persist(workout);
+      kickSync();
       latestWorkout.current = null;
       setFocus(null);
       showActive(null);

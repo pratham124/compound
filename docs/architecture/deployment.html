@@ -5292,7 +5292,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         </g>
         <g data-graph-role="automatic-crossover" style="--step:10">
           <path data-graph-role="automatic-crossover-underlay" d="M 536 370 L 536 630" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="10" data-edge-id="api-grafana" data-composition-points="536,370;536,630" data-composition-crossover="halo" data-composition-independent="true" d="M 536 370 L 536 630" class="a-dashed" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-edge-from="api" data-edge-to="grafana" data-edge-label="OTel · traces · metrics · logs" data-edge-key="10" data-edge-id="api-grafana" data-composition-points="536,370;536,630" data-composition-crossover="halo" data-composition-independent="true" d="M 536 370 L 536 630" class="a-dashed" data-animate="edge" style="--step:10" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:11">
           <path data-graph-role="automatic-crossover-underlay" d="M 617 370 L 617 652 Q 617 660 625 660 L 650 660" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -5638,9 +5638,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <rect x="726" y="421" width="82" height="14" rx="3" class="c-mask"/>
           <text x="767" y="431" class="t-edge-emphasis" font-size="8" text-anchor="middle">save the change</text>
         </g>
-        <g data-detail="context" data-edge-from="api" data-edge-to="grafana" data-edge-label="traces · metrics · logs" data-edge-key="10" data-edge-id="api-grafana">
-          <rect x="409.6" y="558" width="120.39999999999999" height="14" rx="3" class="c-mask"/>
-          <text x="469.8" y="568" class="t-edge-dashed" font-size="8" text-anchor="middle">traces · metrics · logs</text>
+        <g data-detail="context" data-edge-from="api" data-edge-to="grafana" data-edge-label="OTel · traces · metrics · logs" data-edge-key="10" data-edge-id="api-grafana">
+          <rect x="376" y="558" width="154" height="14" rx="3" class="c-mask"/>
+          <text x="453" y="568" class="t-edge-dashed" font-size="8" text-anchor="middle">OTel · traces · metrics · logs</text>
         </g>
         <g data-detail="context" data-edge-from="api" data-edge-to="model" data-edge-label="chat replies" data-edge-key="11" data-edge-id="api-model">
           <rect x="543.4000000000001" y="508" width="67.6" height="14" rx="3" class="c-mask"/>
@@ -5966,6 +5966,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <li>Sentry, from M3: phone crashes and errors with the stack trace, app version and device; request bodies, screenshots, replay and breadcrumbs are off</li>
           <li>Grafana Cloud, from M7: traces, metrics and logs over OpenTelemetry from the API server and background worker (one arrow, since always-on runs them in one process); the dashboards and phone alerts live there</li>
           <li>Before M7 the server logs to the console only, never with personal data</li>
+          <li>Server logs are structured JSON, such as sync_change_rejected (kind, reason, database code; never the body or the person)</li>
         </ul>
       </div>
     </div>

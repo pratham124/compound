@@ -1,0 +1,2 @@
+# Runs the model, its broken variants and the real-code property test. Needs Java 11+ and the local stack.
+node .claude/skills/verify-offline-replay/run.mjs

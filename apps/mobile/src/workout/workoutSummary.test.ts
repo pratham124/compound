@@ -7,13 +7,13 @@ describe('durationText', () => {
 
   it('rounds down to whole minutes', () => {
     expect(durationText({ startedAt: 0, finishedAt: 60_000 })).toBe('1 min');
-    expect(durationText({ startedAt: 0, finishedAt: 125_000 })).toBe('2 min');
+    expect(durationText({ startedAt: 0, finishedAt: 125_000 })).toBe('2 mins');
   });
 
   it('switches to hours from an hour on, dropping zero minutes', () => {
-    expect(durationText({ startedAt: 0, finishedAt: 59 * 60_000 })).toBe('59 min');
+    expect(durationText({ startedAt: 0, finishedAt: 59 * 60_000 })).toBe('59 mins');
     expect(durationText({ startedAt: 0, finishedAt: 60 * 60_000 })).toBe('1 h');
-    expect(durationText({ startedAt: 0, finishedAt: 95 * 60_000 })).toBe('1 h 35 min');
+    expect(durationText({ startedAt: 0, finishedAt: 95 * 60_000 })).toBe('1 h 35 mins');
   });
 
   it('treats an unfinished or backwards workout as under a minute', () => {

@@ -1,0 +1,11 @@
+# Code the offline-replay check describes.
+apps/mobile/src/sync/
+apps/mobile/src/localDatabase/migrations/0003-sync-outbox.ts
+apps/mobile/src/localDatabase/migrations/0004-workout-sync.ts
+apps/mobile/src/workout/workoutSyncKind.ts
+apps/server/src/sync/
+apps/server/src/workouts/workoutStore.ts
+apps/server/migrations/0003_sync.sql
+apps/server/migrations/0004_workouts.sql
+packages/contracts/src/sync.ts
+packages/contracts/src/workouts.ts

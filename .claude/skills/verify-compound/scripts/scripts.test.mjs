@@ -4,6 +4,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, delimiter, dirname, join, resolve } from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { after, describe, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -12,6 +13,7 @@ const repoRoot = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: he
 const worktreeName = basename(repoRoot);
 const scriptPath = (name) => join(here, name);
 const dirs = [];
+const PHONE_WORKOUT_ID = '01930000-0000-7000-8000-0000000000ff';
 
 after(() => dirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
 
@@ -41,6 +43,7 @@ function makeMachine({
   listeners = [],
   maestroBody = 'echo "maestro $*" >> "$FAKE_CALLS"',
   adbExtra = '',
+  pnpmExtra = '',
   curlBody = 'case "$*" in *"/health"*) echo \'{"status":"ok"}\' ;; *"/status"*) echo "packager-status:running" ;; esac',
 } = {}) {
   const root = resolve(mkdtempSync(join(tmpdir(), 'verify-compound-')));
@@ -51,22 +54,31 @@ function makeMachine({
   const evidence = join(root, 'evidence');
   const calls = join(root, 'calls.log');
   const netstat = join(root, 'netstat.txt');
+  const phoneDb = join(root, 'compound.db');
 
   mkdirSync(evidence);
   writeFileSync(calls, '');
+
+  // The phone's database as run-flow.sh copies it off the emulator: one finished workout.
+  const phone = new DatabaseSync(phoneDb);
+
+  phone.exec(`CREATE TABLE workouts (id TEXT PRIMARY KEY, user_id TEXT, finished_at INTEGER, body TEXT); INSERT INTO workouts VALUES ('${PHONE_WORKOUT_ID}', 'person', 1000, '{}')`);
+  phone.close();
   writeFileSync(netstat, listeners.map(([port, pid]) => `  TCP    0.0.0.0:${port}           0.0.0.0:0              LISTENING       ${pid}`).join('\n'));
 
   executable(
     join(sdk, 'platform-tools', 'adb.exe'),
-    `${fakeDevices}\necho "adb $*" >> "$FAKE_CALLS"\n${adbExtra}\ncase "$*" in *"emu kill"*) echo 0 > "$FAKE_CALLS.killed" ;; *"getprop sys.boot_completed"*) echo 1 ;; *"devices"*) fake_devices ;; *"pm list packages com.pratham124.compound"*) echo "package:com.pratham124.compound" ;; *"pm list packages dev.mobile.maestro"*) echo "package:dev.mobile.maestro" ;; *"getprop persist.sys.timezone"*) echo "UTC" ;; *"settings get system font_scale"*) echo "\${FAKE_FONT_SCALE:-null}" ;; esac`,
+    `${fakeDevices}\necho "adb $*" >> "$FAKE_CALLS"\n${adbExtra}\ncase "$*" in *"emu kill"*) echo 0 > "$FAKE_CALLS.killed" ;; *"getprop sys.boot_completed"*) echo 1 ;; *"devices"*) fake_devices ;; *"pm list packages com.pratham124.compound"*) echo "package:com.pratham124.compound" ;; *"pm list packages dev.mobile.maestro"*) echo "package:dev.mobile.maestro" ;; *"getprop persist.sys.timezone"*) echo "UTC" ;; *"settings get system font_scale"*) echo "\${FAKE_FONT_SCALE:-null}" ;; *"files/SQLite/compound.db") cat "$FAKE_PHONE_DB" ;; esac`,
   );
   executable(join(bin, 'netstat'), 'cat "$FAKE_NETSTAT"');
   executable(join(bin, 'maestro'), maestroBody);
   executable(join(bin, 'curl'), curlBody);
 
-  for (const tool of ['taskkill', 'pnpm', 'docker']) {
-    executable(join(bin, tool), `echo "${tool} $*" >> "$FAKE_CALLS"`);
-  }
+  executable(join(bin, 'taskkill'), 'echo "taskkill $*" >> "$FAKE_CALLS"');
+  executable(join(bin, 'pnpm'), `echo "pnpm $*" >> "$FAKE_CALLS"\n${pnpmExtra}`);
+
+  // psql count queries answer FAKE_SERVER_WORKOUTS (default 1): the workouts the server holds for the test person.
+  executable(join(bin, 'docker'), `echo "docker $*" >> "$FAKE_CALLS"\ncase "$*" in *"select count(*)"*) echo "\${FAKE_SERVER_WORKOUTS:-1}" ;; esac`);
 
   const env = {
     ...process.env,
@@ -76,8 +88,10 @@ function makeMachine({
     VERIFY_EVIDENCE_ROOT: slashed(evidence),
     FAKE_CALLS: slashed(calls),
     FAKE_NETSTAT: slashed(netstat),
+    FAKE_PHONE_DB: slashed(phoneDb),
     DRIVE_WAIT: '0',
     RUN_FLOW_RETRY: '0',
+    SERVER_RECORD_WAIT: '0',
   };
 
   return {
@@ -259,7 +273,7 @@ describe('launch.sh', () => {
     assert.ok(!machine.calls().some((line) => line.includes('reverse tcp')));
   });
 
-  test('refuses to reuse Metro on 8082 when it belongs to another worktree', () => {
+  test('refuses to reuse Metro on 8082 when it belongs to another worktree, before starting a server it could not record', () => {
     const machine = makeMachine({ listeners: [[8082, 5252]] });
 
     machine.writeMetroOwner({ pid: 5252, worktree: '/c/other/worktree' });
@@ -269,6 +283,24 @@ describe('launch.sh', () => {
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /not this worktree's Metro/);
     assert.ok(!machine.calls().some((line) => line.includes('@compound/mobile start')));
+    assert.ok(!machine.calls().some((line) => line.includes('@compound/server start')), 'no server left behind for cleanup to miss');
+  });
+
+  test('a launch that fails after starting the server records the server once it listens, so cleanup can stop it', () => {
+    const machine = makeMachine({
+      listeners: [[8082, 5252]],
+      // The server starts listening as pnpm starts it; the app is not installed, so launch fails right after.
+      pnpmExtra: 'case "$*" in *"@compound/server start"*) printf "\\n  TCP    0.0.0.0:3000           0.0.0.0:0              LISTENING       4242" >> "$FAKE_NETSTAT" ;; esac',
+      adbExtra: 'case "$*" in *"pm list packages com.pratham124.compound"*) exit 0 ;; esac',
+    });
+
+    machine.writeMetroOwner({ pid: 5252 });
+
+    const result = machine.runWithEnv({ SERVER_RECORD_WAIT: '5' }, 'launch.sh', '--signed-out');
+
+    assert.notEqual(result.status, 0);
+    const runId = readFileSync(machine.pointer, 'utf8').trim();
+    assert.match(readFileSync(join(machine.evidence, runId, 'state.env'), 'utf8'), /^SERVER_PID=4242$/m);
   });
 
   test('reuses a running Metro on 8082 when owned by this worktree and records METRO_STARTED=0', () => {
@@ -412,6 +444,38 @@ describe('run-flow.sh', () => {
     assert.ok(baseIdx >= 0 && offIdx > baseIdx && deepIdx > offIdx, 'base, then network off, then deep');
     assert.ok(!calls.some((line) => line.endsWith('tab-shell-deep.yaml')), 'no deep flow exists for tab-shell');
     assert.match(result.stdout, /^PASS workouts-deep \d+s$/m);
+  });
+
+  test('workouts fails when the workout finished offline never reaches the server after the network returns', () => {
+    const machine = makeMachine();
+
+    machine.env.FAKE_SERVER_WORKOUTS = '0';
+    machine.env.SYNC_WAIT = '1';
+    machine.startRun({});
+
+    const result = machine.run('run-flow.sh', 'workouts');
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /did not upload by itself/);
+    const calls = machine.calls();
+    const restoreIdx = calls.findIndex((line) => line.includes('svc wifi enable; svc data enable'));
+    const queryIdx = calls.findIndex((line) => line.startsWith('docker compose exec -T postgres psql'));
+    assert.ok(restoreIdx >= 0 && queryIdx > restoreIdx, 'the server is checked only after the network is back');
+  });
+
+  test('workouts-deep waits for the id of the workout the phone just finished, read from the phone after the offline phase', () => {
+    const machine = makeMachine();
+
+    machine.startRun({});
+
+    const result = machine.run('run-flow.sh', 'workouts-deep');
+
+    assert.equal(result.status, 0, result.stderr);
+    const calls = machine.calls();
+    const copyIdx = calls.findIndex((line) => line.endsWith('cat files/SQLite/compound.db'));
+    const relaunchIdx = calls.findIndex((line) => line.includes('PHASE=relaunch'));
+    assert.ok(copyIdx >= 0 && relaunchIdx > copyIdx, 'the id is read before the relaunch');
+    assert.ok(calls.some((line) => line.startsWith('docker compose exec') && line.includes(`w.id = '${PHONE_WORKOUT_ID}'`)), 'the server is asked for that workout by id');
   });
 
   test('rejects an unknown option before touching the emulator', () => {

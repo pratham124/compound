@@ -156,6 +156,45 @@ emulator_today_date() {
   ' "$tz"
 }
 
+server_psql() { # sql; as the owner, which (a superuser locally) sees every person's rows
+  (cd "$REPO" && docker compose exec -T postgres psql -U compound -d compound -tAc "$1")
+}
+
+# The newest finished workout in the phone's own database, read from a copy taken with run-as.
+phone_latest_workout() {
+  local copy="$RUN_DIR/$FEATURE$SUFFIX-phone-db" file
+  rm -rf "$copy"
+  mkdir -p "$copy"
+  for file in compound.db compound.db-wal compound.db-shm; do
+    "$ADB" -s "$SERIAL" exec-out run-as "$APP_ID" cat "files/SQLite/$file" > "$copy/$file" 2>/dev/null || true
+    [ -s "$copy/$file" ] || rm -f "$copy/$file"
+  done
+  # An unreadable copy prints nothing here; wait_for_uploaded_workout then names the problem.
+  node "$(dirname "$0")/phone-latest-workout.mjs" "$copy" 2>/dev/null | tr -d '\r' || true
+}
+
+# The outbox uploads by itself once the network is back; this waits, with no app action, for the server to hold the
+# workout the phone just finished, by its id, and keeps what the server stored (one line per set) as evidence.
+wait_for_uploaded_workout() { # the phone's workout id
+  local id="$1" deadline=$((SECONDS + ${SYNC_WAIT:-45})) got
+  if ! [[ "$id" =~ ^[0-9a-f-]{36}$ ]]; then
+    echo "Could not read the finished workout's id from the phone's database (got '$id')" >&2
+    return 1
+  fi
+  local from="from workouts w join users u on u.id = w.user_id"
+  local where="where u.email = '$EMAIL' and w.id = '$id'"
+  while :; do
+    got="$(server_psql "select count(*) $from $where" | tr -d '\r ')"
+    if [ "${got:-0}" -ge 1 ] 2>/dev/null; then
+      server_psql "select w.id, e.exercise_id, s.position + 1 as set_number, s.reps, coalesce(s.weight::text, 'bodyweight') as weight, s.unit $from join workout_exercises e on e.user_id = w.user_id and e.workout_id = w.id join workout_sets s on s.user_id = e.user_id and s.workout_exercise_id = e.id $where order by e.position, s.position" > "$RUN_DIR/$FEATURE$SUFFIX-server.txt"
+      echo "Server holds workout $id from $FEATURE; sets in $RUN_DIR/$FEATURE$SUFFIX-server.txt"
+      return 0
+    fi
+    [ "$SECONDS" -ge "$deadline" ] && { echo "The server does not hold workout $id for $EMAIL after ${SYNC_WAIT:-45}s: the outbox did not upload by itself" >&2; return 1; }
+    sleep 1
+  done
+}
+
 run_phase() { # phase_name, extra -e flags...
   local phase="$1"; shift
   local phase_out="$OUT_ROOT/$phase"
@@ -170,7 +209,9 @@ case "$FEATURE" in
     run_phase online
     disable_network 1
     run_phase offline -e "TODAY_DATE=$TODAY_DATE"
+    WORKOUT_ID="$(phone_latest_workout)"
     enable_network
+    wait_for_uploaded_workout "$WORKOUT_ID"
     ;;
   workouts-fixtures)
     run_phase fixtures
@@ -200,7 +241,10 @@ case "$FEATURE" in
   workouts-deep)
     disable_network 1
     run_phase deep
+    WORKOUT_ID="$(phone_latest_workout)"
     enable_network
+    run_phase relaunch
+    wait_for_uploaded_workout "$WORKOUT_ID"
     ;;
   exercises-deep)
     run_phase prime

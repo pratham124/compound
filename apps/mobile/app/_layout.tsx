@@ -11,11 +11,16 @@ import { useSignedInSession } from '../src/auth/useSignedInSession.ts';
 import { ChatButtonOverlay } from '../src/chatButton/ChatButtonOverlay.tsx';
 import { fonts, motion } from '../src/theme/tokens.ts';
 import { useAppearance } from '../src/theme/useAppearance.ts';
+import { OutboxSync } from '../src/sync/OutboxSync.tsx';
+import { workoutDatabase } from '../src/workout/deviceWorkoutStore.ts';
 import { WorkoutProvider } from '../src/workout/WorkoutProvider.tsx';
+import { workoutSyncKind } from '../src/workout/workoutSyncKind.ts';
 
 SplashScreen.setOptions({ fade: true, duration: motion.splashFadeMs });
 
 void SplashScreen.preventAutoHideAsync();
+
+const SYNC_KINDS = [workoutSyncKind];
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -51,6 +56,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={theme}>
       <GestureHandlerRootView style={styles.root}>
+        <OutboxSync kinds={SYNC_KINDS} openDatabase={workoutDatabase}>
         <WorkoutProvider>
         <Stack screenOptions={{ headerShown: false, animation: reduceMotion ? 'fade' : 'default' }}>
           <Stack.Protected guard={session !== null}>
@@ -96,6 +102,7 @@ export default function RootLayout() {
         </Stack>
         <ChatButtonOverlay />
         </WorkoutProvider>
+        </OutboxSync>
       </GestureHandlerRootView>
     </ThemeProvider>
   );

@@ -9,7 +9,7 @@ Ship every PR with `/ship` (a user skill in `~/.claude/skills/ship/`), from the 
 What it does, in order:
 - **Post-handback review:** Neon reviews only the changes made after `/ticket`'s handback, against the `refs/ticket/<n>-handback` snapshot. The rest was reviewed in `/ticket`.
 - **Rebase** onto `origin/main`, then the **checks** CI runs.
-- **Feature files:** creates or updates the feature-map files in `.claude/skills/verify-*/features/`, following `document.instructions` in `.no-mistakes.yaml`. Skipped when `node scripts/verification/pipeline-skips.mjs` prints `test` (docs or tooling only).
+- **Feature files:** creates or updates the feature-map files in `.claude/skills/verify-*/features/`, following `document.instructions` in `docs/agents/ship-settings.yaml`. Skipped when `node scripts/verification/pipeline-skips.mjs` prints `test` (docs or tooling only).
 - **Live driving:** drives each touched feature with `verify-compound`, following `test.instructions`, and keeps the screenshots under `.ticket/evidence/`.
 - **Gate `verification-sync`** fails if app code changed without a feature-map change, or a formal check's covered code changed without its skill changing.
 - **Gate `formal-checks`** runs each formal check whose covered code changed.

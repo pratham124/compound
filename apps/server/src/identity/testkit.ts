@@ -5,7 +5,8 @@ import type { TestContext } from 'node:test';
 import type { InjectOptions } from 'fastify';
 import { exportJWK, generateKeyPair, SignJWT } from 'jose';
 
-import { buildApp } from '../app.ts';
+import { buildApp, SYNC_KINDS } from '../app.ts';
+import type { RegisteredKind } from '../sync/kinds.ts';
 import { parseConfig } from '../config.ts';
 import { connect } from '../connections.ts';
 import { createAuth } from './auth.ts';
@@ -14,7 +15,7 @@ import { migrate } from './migrate.ts';
 
 export type SentCode = { email: string; code: string };
 
-export async function startIdentity(t: TestContext) {
+export async function startIdentity(t: TestContext, { syncKinds = SYNC_KINDS }: { syncKinds?: readonly RegisteredKind[] } = {}) {
   const config = parseConfig(process.env);
   const connections = connect(config);
 
@@ -30,7 +31,7 @@ export async function startIdentity(t: TestContext) {
   };
 
   const auth = createAuth({ pool: connections.authPool, valkey: connections.valkey, config, mailer });
-  const app = buildApp({ logger: false, healthChecks: connections.healthChecks, auth, apiPool: connections.apiPool });
+  const app = buildApp({ logger: false, healthChecks: connections.healthChecks, auth, apiPool: connections.apiPool, syncKinds });
 
   t.after(() => app.close());
 

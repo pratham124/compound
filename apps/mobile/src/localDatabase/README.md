@@ -32,7 +32,13 @@ On Android there is no module, so the database opens in `expo-sqlite`'s default 
 
 Add a new file to `migrations/` with a unique stable name, then append its exported migration to the registry in `migrations.ts`. Never edit a migration already shipped. The `local_migrations` table records names; each migration's SQL and ledger entry commit together, or both roll back. Later features own their new tables and migration files.
 
-`workouts` contains an account UUID, a nullable finished timestamp, and a JSON snapshot, validated on read, of the workout and its unfinished input fields. A unique partial index permits one active workout per account. Future sync changes go in their own migration; this ticket sends no workout data to the server.
+`workouts` contains an account UUID, a nullable finished timestamp, and a JSON snapshot, validated on read, of the workout and its unfinished input fields. A unique partial index permits one active workout per account.
+
+`sync_outbox` (`0003-sync-outbox`) holds one row per change waiting to upload: its idempotency key, account, kind, item id and the phone's clock at the change. It holds no body; the kind reads the item as it is now when the row uploads (`../sync/`). `0004-workout-sync` adds the triggers that queue a workout in the same statement that saves it finished, and queues once the workouts finished before it ran. A new kind of item adds its own migration like `0004`, not a change to the outbox.
+
+`0004`'s `AFTER INSERT` trigger queues every workout inserted with `finished_at` set, whatever wrote it. The ticket that pulls workouts down from the server must insert them without queuing them (for example with a column the trigger's `WHEN` skips), or every downloaded workout uploads straight back.
+
+`uuidv7.ts` makes the UUIDv7 ids local rows and outbox keys use, so they sort by creation time.
 
 ## Checking it
 
