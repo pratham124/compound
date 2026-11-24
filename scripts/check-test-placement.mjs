@@ -1,4 +1,4 @@
-// Enforces CLAUDE.md "Where tests live": a test imports something from its own package, and never in apps/mobile/app/.
+// Enforces AGENTS.md "Where tests live": a test imports something from its own package, and never in apps/mobile/app/.
 // Run from the repo root as part of `pnpm lint`.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
@@ -65,6 +65,6 @@ for (const file of files) {
 }
 
 if (problems.length > 0) {
-  console.error(`Test placement problems (CLAUDE.md, "Where tests live"):\n${problems.map((p) => `  ${p}`).join('\n')}`);
+  console.error(`Test placement problems (AGENTS.md, "Where tests live"):\n${problems.map((p) => `  ${p}`).join('\n')}`);
   process.exit(1);
 }
