@@ -45,7 +45,16 @@ metro_started=0
 on_exit() {
   local status=$?
   [ "$status" = 0 ] && return
-  [ "$server_started" = 1 ] && remember SERVER_PID "$(listener_pid "$SERVER_PORT")"
+  if [ "$server_started" = 1 ]; then
+    # The server only listens once its migrations finish, so a launch that fails soon after starting it waits for that.
+    local spid=""
+    for _ in $(seq "${SERVER_RECORD_WAIT:-30}"); do
+      spid="$(listener_pid "$SERVER_PORT")"
+      [ -n "$spid" ] && break
+      sleep 1
+    done
+    remember SERVER_PID "$spid"
+  fi
   if [ "$metro_started" = 1 ]; then
     local mpid
     mpid="$(listener_pid "$METRO_PORT")"
@@ -99,11 +108,8 @@ if [ -n "$(listener_pid "$SERVER_PORT")" ]; then
   exit 1
 fi
 
-# The server migrates the database before it listens, so a passing /health means an empty database is ready.
-nohup pnpm --filter @compound/server start > "$RUN_DIR/server.log" 2>&1 &
-server_started=1
-
-# Reuse a running Metro on :8082 only if it belongs to this worktree and API URL; never touch :8081.
+# Reuse a running Metro on :8082 only if it belongs to this worktree and API URL; never touch :8081. Checked before
+# the server starts: the server isn't listening yet when this fails, so on_exit couldn't record its PID for cleanup.
 existing_metro="$(listener_pid "$METRO_PORT")"
 if [ -n "$existing_metro" ]; then
   if metro_ready && metro_owned_by_worktree "$existing_metro"; then
@@ -119,6 +125,10 @@ else
   nohup pnpm --filter @compound/mobile start --port "$METRO_PORT" > "$RUN_DIR/metro.log" 2>&1 &
   metro_started=1
 fi
+
+# The server migrates the database before it listens, so a passing /health means an empty database is ready.
+nohup pnpm --filter @compound/server start > "$RUN_DIR/server.log" 2>&1 &
+server_started=1
 
 if [ "$metro_started" = 1 ]; then
   wait_for "Metro to answer" 120 metro_ready

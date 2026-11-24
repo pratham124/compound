@@ -14,7 +14,7 @@ import { SetRow } from './SetRow.tsx';
 import { showWorkoutMenu } from './workoutMenu.ts';
 import type { WorkoutEdit } from './workoutEdit.ts';
 import type { WorkoutRemoval } from './workoutRemoval.ts';
-import { uuidv7 } from './uuidv7.ts';
+import { uuidv7 } from '../localDatabase/uuidv7.ts';
 import { WorkoutSetId, type WeightUnit, type WorkoutExercise, type WorkoutExerciseId } from './workout.ts';
 
 const DOT_X = [5, 12, 19];

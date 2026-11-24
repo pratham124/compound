@@ -114,6 +114,7 @@ Five tabs: **Today**, **Train**, **Money**, **Trends**, **Chat**.
 - **Units.** Weight is stored with its unit (kg or lb). Pratham picks a display unit in Settings.
 - **Apple Health workouts** are read in as past workouts with type, duration and energy. They count as workout days but add no training volume, since they have no sets.
 - **Past workouts** show as a month calendar with a dot on each workout day (logged workouts and Apple Health workouts told apart) and the month's workout count. The calendar can step back through earlier months, and tapping a day shows that day's workouts. Volume in kilograms isn't shown.
+- **This week** is a card on Train: a Monday-to-Sunday row with a filled dot on each workout day (Apple Health days told apart, from M3) and a ring on today, the week's workout count, the week's workouts newest first, and See all workouts, which opens the calendar. With no workouts it says "No workouts this week."
 - **Calories on logged workouts.** When an Apple Health workout covers at least half of a workout logged in Compound, it isn't listed separately: its energy is shown on the logged workout, which keeps its own sets and volume. A logged workout with no overlapping Apple Health workout shows no calories. Compound never estimates calories.
 - **Routines** are built by hand: name the routine, add days, and add exercises to each day. A finished workout can be saved as a new day in any routine, or as a new one-day routine. Chat or an assistant can save a routine after confirmation (section 10); it's saved, not made current.
 - **Current routine and next day.** One routine is current, and any saved routine can be made current. Its days have an order Pratham sets by dragging. Train shows the next day of the current routine first, with a Start button: the day after the one he finished most recently in that routine, wrapping back to the first. Days started from another routine, empty workouts and Apple Health workouts don't move it. A new day goes at the end of the order. With no day finished yet, next is the first day.
@@ -323,7 +324,7 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 - **Lint:** the anti-slop Oxlint rules across every package (`apps/mobile`, `apps/server`, `packages/contracts`, `mocks/`, `loadtest/`), run in CI on every merge, alongside the smoke test once it exists (its mocks are built in M7). Findings are fixed, never silenced by weakening or suppressing a rule. Two rules need a policy for Expo, decided when lint is installed: `no-module-mocking` (Expo tests often mock native modules) and `no-array-filter-map` (iterator helpers must be supported on Hermes).
 
 **Shape**
-- A **modular monolith** of seven modules. Each is a Fastify plugin with its own tables, one data-access place and a small public interface. No module reads another module's tables.
+- A **modular monolith** of eight modules. Each is a Fastify plugin with its own tables, one data-access place and a small public interface. No module reads another module's tables.
 - **One build, two process roles.** The api role serves HTTP. The worker role runs the outbox relay, queue consumers and tick handlers. The laptop and always-on run both in one process; the load test runs them as separate services.
 - **Background work:** the app writes an outbox row in the same commit as the change. A relay deletes it, sends it to SQS and commits. SQS standard queues have dead-letter queues. Recurring EventBridge Scheduler ticks wake workers to find due rows.
 - **Seams:** every read goes through a module's data-access place, so a cache or replica plugs in there. Nothing beyond the required parts is built until a run proves it's needed.
@@ -353,6 +354,7 @@ The invite-only and public stages add more (a privacy policy, encrypted tokens w
 | coaching | recovery checks, per-day claims and recovery notes |
 | assistant | the tool module, MCP adapter and OAuth clients and tokens, AI sharing switches, chat conversations and parts, the chat meter, the AI changes list and before-states, the MCP rate limiter |
 | notifications | device tokens, per-kind switches, quiet hours, held pushes, push sending |
+| sync | the phone's uploads for every kind of item, and each item's last winning change (`sync_versions`). Each module describes its own kinds and stores their bodies in its own tables |
 
 The daily timeline is built at read time from the workouts, health and money modules' per-day tables, through their public interfaces. A nightly job checks the per-day tables against their sources.
 

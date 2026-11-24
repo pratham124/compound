@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { buildApp } from './app.ts';
+import { buildApp, SYNC_KINDS } from './app.ts';
 import { parseConfig } from './config.ts';
 import { connect } from './connections.ts';
 import type { HealthChecks } from './health.ts';
@@ -27,7 +27,7 @@ function appWith(t: test.TestContext, checks: HealthChecks) {
 
   t.after(() => connections.close());
 
-  return buildApp({ logger: false, healthChecks: checks, auth, apiPool: connections.apiPool });
+  return buildApp({ logger: false, healthChecks: checks, auth, apiPool: connections.apiPool, syncKinds: SYNC_KINDS });
 }
 
 test('GET /health returns 200 when Postgres, Valkey and the queue are reachable', async (t) => {

@@ -12,7 +12,7 @@ export async function sessionFor(auth: Auth, request: FastifyRequest) {
   return auth.api.getSession({ headers: fromNodeHeaders(request.headers) });
 }
 
-async function signedInUserId(auth: Auth, request: FastifyRequest): Promise<UserId | null> {
+export async function signedInUserId(auth: Auth, request: FastifyRequest): Promise<UserId | null> {
   const session = await sessionFor(auth, request);
 
   return session === null ? null : UserId.parse(session.user.id);

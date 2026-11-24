@@ -20,10 +20,10 @@ async function tablesReachableBy(pool: pg.Pool, role: string) {
   return result.rows.map(({ name }) => name);
 }
 
-test('the api role can reach only user_profiles, and the sign-in role only users and accounts', async (t) => {
+test('the api role can reach only per-person tables, and the sign-in role only users and accounts', async (t) => {
   const { connections } = await startIdentity(t);
 
-  assert.deepEqual(await tablesReachableBy(connections.pool, 'compound_api'), ['user_profiles']);
+  assert.deepEqual(await tablesReachableBy(connections.pool, 'compound_api'), ['sync_versions', 'user_profiles', 'workout_exercises', 'workout_sets', 'workouts']);
   assert.deepEqual(await tablesReachableBy(connections.pool, 'compound_auth'), ['accounts', 'users']);
 });
 

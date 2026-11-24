@@ -68,6 +68,11 @@ export function validSet(set: WorkoutSet) {
   return validReps(set.reps) && validWeight(set.weight);
 }
 
+/** A valid set's weight as a number, or null for bodyweight. */
+export function setWeight(set: WorkoutSet): number | null {
+  return set.weight.trim() === '' ? null : weightNumber(set.weight);
+}
+
 export type ShownWeight = { weight: string; unit: WeightUnit };
 
 /** The weight to show and edit for a set. A half-typed weight like `22.` can't be converted, so it stays in the unit it was typed in. */

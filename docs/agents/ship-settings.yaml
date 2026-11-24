@@ -1,0 +1,47 @@
+# Read by /ship: document.instructions and test.instructions for the live-driving step, gates for the verification gates.
+
+document:
+  instructions: |
+    .claude/skills/verify-*/features/ owns how each user-facing feature is verified. When the
+    change adds or alters a user-facing feature, create or update that feature's file there.
+    Match the existing feature files' format, which is pstack's feature map: an H1 with the
+    feature name, then four H2 sections: Sub-features, How to get to it (user POV),
+    Driving it with <the verify skill's harness>, Gotchas. Add a new file to the map's
+    README.md index too.
+    Each .claude/skills/verify-*/depends.txt lists the files that skill's SKILL.md and scripts
+    depend on. When the change touches a path it lists, also update that skill's SKILL.md and
+    scripts/ (ports, services, env, start commands, labels the recipes use), not only the
+    feature files. If the change adds or upgrades a native module or an app.json plugin, don't
+    try to rebuild the development client: say in your report that
+    .claude/skills/verify-compound/scripts/build-dev-client.sh must be rerun.
+    Do not edit formal verification models or any covers.txt; flag drift instead.
+    docs/prd/ is the product spec. README.md is the introduction.
+    docs/architecture/*.svg are archify exports of the sources in docs/diagrams/ (see the
+    docs/agents/diagrams.md). If the change alters what one of those
+    diagrams shows and the diagram wasn't updated, raise a finding naming the diagram.
+    Never hand-edit the SVGs.
+
+test:
+  instructions: |
+    1. If every changed file is docs or tooling (under docs/, .claude/, .github/, spike/, or a
+       .md file), there is nothing to drive: report that and pass.
+    2. If .claude/skills/verify-compound/SKILL.md exists, follow its Launch, Doctor, Drive,
+       Evidence and Cleanup sections for each feature the change touches (use the run's
+       verification plan if one was given). Capture screenshots or recordings as evidence.
+    3. If step 2 did not apply, run the repo's tests for the changed area and say live driving
+       isn't set up yet (the verify skill arrives at the end of M1). The server tests need the
+       local stack, which every worktree shares. Run `[ -f .env ] || cp .env.example .env`. If
+       `docker compose ps --status running -q` prints nothing, run `pnpm stack:up` before the
+       tests and `pnpm stack:down` after. If it prints something, the stack was already running:
+       use it and leave it running, except that if the change touches compose.yaml or
+       infra/local/, run `pnpm stack:up` anyway so Compose recreates the changed services.
+
+gates:
+  # Feature map and formal-check skills must change with the code they describe.
+  - name: verification-sync
+    after: document
+    command: node scripts/verification/check-sync.mjs
+  # Runs each formal check whose covered code changed (needs test's code to be final).
+  - name: formal-checks
+    after: test
+    command: node scripts/verification/run-formal.mjs

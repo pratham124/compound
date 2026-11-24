@@ -47,7 +47,7 @@ it('applies each named migration once, and rolls back a failed later migration',
     await expect(migrateLocalDatabase(db, [{ name: 'later', sql: 'CREATE TABLE later (id TEXT); INVALID SQL;' }])).rejects.toThrow();
     expect(native.prepare("SELECT name FROM sqlite_master WHERE name = 'later'").all()).toEqual([]);
     await migrateLocalDatabase(db, [{ name: 'later', sql: 'CREATE TABLE later (id TEXT);' }]);
-    expect(native.prepare('SELECT name FROM local_migrations ORDER BY name').all()).toEqual([{ name: '0001-workouts' }, { name: '0002-workout-preference-revision' }, { name: 'later' }]);
+    expect(native.prepare('SELECT name FROM local_migrations ORDER BY name').all()).toEqual([{ name: '0001-workouts' }, { name: '0002-workout-preference-revision' }, { name: '0003-sync-outbox' }, { name: '0004-workout-sync' }, { name: 'later' }]);
   } finally {
     native.close();
   }

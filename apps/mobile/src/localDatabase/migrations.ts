@@ -1,5 +1,7 @@
 import { workoutMigration } from './migrations/0001-workouts.ts';
 import { workoutPreferenceRevisionMigration } from './migrations/0002-workout-preference-revision.ts';
+import { syncOutboxMigration } from './migrations/0003-sync-outbox.ts';
+import { workoutSyncMigration } from './migrations/0004-workout-sync.ts';
 
 export type LocalDatabase = {
   execAsync: (sql: string) => Promise<void>;
@@ -9,7 +11,7 @@ export type LocalDatabase = {
 
 export type LocalMigration = { name: string; sql: string };
 
-export const migrations: readonly LocalMigration[] = [workoutMigration, workoutPreferenceRevisionMigration];
+export const migrations: readonly LocalMigration[] = [workoutMigration, workoutPreferenceRevisionMigration, syncOutboxMigration, workoutSyncMigration];
 
 export async function migrateLocalDatabase(db: LocalDatabase, steps = migrations) {
   await db.execAsync('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; CREATE TABLE IF NOT EXISTS local_migrations (name TEXT PRIMARY KEY NOT NULL);');

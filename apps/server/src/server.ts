@@ -1,4 +1,4 @@
-import { buildApp } from './app.ts';
+import { buildApp, SYNC_KINDS } from './app.ts';
 import { parseConfig, type Config } from './config.ts';
 import { connect } from './connections.ts';
 import { createAuth } from './identity/auth.ts';
@@ -30,7 +30,7 @@ const auth = createAuth({
   mailer: mailerFor(config.signInMailer),
 });
 
-const app = buildApp({ logger: true, healthChecks: connections.healthChecks, auth, apiPool: connections.apiPool });
+const app = buildApp({ logger: true, healthChecks: connections.healthChecks, auth, apiPool: connections.apiPool, syncKinds: SYNC_KINDS });
 
 // The laptop runs the api and worker roles in one process (PRD section 12).
 const worker = startTickWorker({ sqs: connections.sqs, queueUrl: connections.ticksQueueUrl, logger: app.log });

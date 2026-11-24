@@ -2,7 +2,7 @@
 
 Claude writes the plan and the code. Gemini 4 Neon reads that work and looks for what Claude missed. Pratham makes every decision that changes the product, and he merges.
 
-The skills that run this workflow (`/ticket`, `/review-ticket`, `/ship`) and their helper scripts are Pratham's personal Claude Code setup, so they live in his home folder, not in this repo. This page explains how they fit together. The repo-side pieces they use are `CLAUDE.md`, `CODING_STANDARDS.md`, `.no-mistakes.yaml`, the `verify-compound` skill, and the gate scripts in `scripts/verification/`.
+The skills that run this workflow (`/ticket`, `/review-ticket`, `/ship`) and their helper scripts are Pratham's personal Claude Code setup, so they live in his home folder, not in this repo. This page explains how they fit together. The repo-side pieces they use are `CLAUDE.md`, `CODING_STANDARDS.md`, `docs/agents/review-rules.md` (what the reviewers check), `docs/agents/ship-settings.yaml` (what `/ship` runs), the `verify-compound` skill, and the gate scripts in `scripts/verification/`.
 
 ## The stages
 
